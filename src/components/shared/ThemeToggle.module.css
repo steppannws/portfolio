@@ -1,0 +1,19 @@
+.button {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--meta);
+  background: transparent;
+  border: 1px solid var(--hair-strong);
+  padding: 8px 16px;
+  cursor: pointer;
+  transition:
+    color 0.2s,
+    border-color 0.2s;
+}
+
+.button:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
