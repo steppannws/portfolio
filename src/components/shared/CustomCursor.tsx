@@ -6,8 +6,16 @@ export function CustomCursor() {
 
   return (
     <>
-      <div ref={dotRef} className={styles.dot} />
-      <div ref={ringRef} className={styles.ring} />
+      <div ref={dotRef} className={styles.ballWrap}>
+        <div className={styles.ball} />
+      </div>
+      <div ref={ringRef} className={styles.rings}>
+        <div className={styles.ringsInner}>
+          <div className={styles.ringA} />
+          <div className={styles.ringB} />
+          <div className={styles.ringC} />
+        </div>
+      </div>
     </>
   );
 }

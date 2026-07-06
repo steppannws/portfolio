@@ -3,8 +3,10 @@ import { render } from '@testing-library/react';
 import { CustomCursor } from './CustomCursor';
 
 describe('CustomCursor', () => {
-  it('renders without crashing', () => {
+  it('renders the ball and its orbiting rings', () => {
     const { container } = render(<CustomCursor />);
-    expect(container.querySelectorAll('div')).toHaveLength(2);
+    const [ballWrap, rings] = Array.from(container.children);
+    expect(ballWrap.children).toHaveLength(1); // the ball
+    expect(rings.children[0].children).toHaveLength(3); // three Saturn rings
   });
 });
