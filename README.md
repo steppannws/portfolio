@@ -8,9 +8,9 @@ with Vitest and Playwright, deployed to GitHub Pages via Actions.
 
 ## Pages
 
-| Entry | What it is |
-|-------|-----------|
-| `index.html` → `/` | Landing — Three.js particle hero, custom cursor, parallax, light/dark theme |
+| Entry                      | What it is                                                                                         |
+| -------------------------- | -------------------------------------------------------------------------------------------------- |
+| `index.html` → `/`         | Landing — Three.js particle hero, custom cursor, parallax, light/dark theme                        |
 | `deck.html` → `/deck.html` | 13-slide deck — keyboard nav (arrows/Home/End), hash-linkable slides, scale-to-fit 1920×1080 stage |
 
 ## Development

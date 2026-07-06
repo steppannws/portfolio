@@ -1,5 +1,6 @@
 import type { ProjectSlideProps } from './ProjectSlide';
 import styles from './slides.module.css';
+import { asset } from '../../../lib/asset';
 
 function Placeholder({ label, phone = false }: { label: string; phone?: boolean }) {
   return (
@@ -27,13 +28,17 @@ export const PROJECT_SLIDES: ProjectSlideProps[] = [
     media: (
       <>
         <img
-          src="/assets/gs1.png"
+          src={asset('assets/gs1.png')}
           alt="Goalsetter dashboard"
           className={`${styles.mediaImageThird} ${styles.raiseSlight}`}
         />
-        <img src="/assets/gs3.png" alt="Goalsetter investing" className={styles.mediaImageThird} />
         <img
-          src="/assets/gs4.png"
+          src={asset('assets/gs3.png')}
+          alt="Goalsetter investing"
+          className={styles.mediaImageThird}
+        />
+        <img
+          src={asset('assets/gs4.png')}
           alt="Goalsetter goals"
           className={`${styles.mediaImageThird} ${styles.dropSlight}`}
         />
@@ -129,7 +134,7 @@ export const PROJECT_SLIDES: ProjectSlideProps[] = [
     tags: ['React Native', 'Performance', 'Analytics'],
     media: (
       <img
-        src="/assets/image8.png"
+        src={asset('assets/image8.png')}
         alt="Ace Hardware Rewards screens"
         className={styles.mediaImage}
       />
@@ -151,13 +156,13 @@ export const PROJECT_SLIDES: ProjectSlideProps[] = [
     media: (
       <>
         <img
-          src="/assets/image2.png"
+          src={asset('assets/image2.png')}
           alt="Club Premier screen"
           className={`${styles.mediaImage} ${styles.raiseSlight}`}
           style={{ width: '44%' }}
         />
         <img
-          src="/assets/image4.png"
+          src={asset('assets/image4.png')}
           alt="Club Premier screen"
           className={`${styles.mediaImage} ${styles.dropSlight}`}
           style={{ width: '44%' }}
@@ -179,7 +184,11 @@ export const PROJECT_SLIDES: ProjectSlideProps[] = [
     ],
     tags: ['React Native', 'Web → Native Migration', 'Animations'],
     media: (
-      <img src="/assets/image7.png" alt="Aeromexico app screens" className={styles.mediaImage} />
+      <img
+        src={asset('assets/image7.png')}
+        alt="Aeromexico app screens"
+        className={styles.mediaImage}
+      />
     ),
   },
   {
@@ -200,7 +209,7 @@ export const PROJECT_SLIDES: ProjectSlideProps[] = [
     tags: ['React Native', 'Google Maps'],
     media: (
       <img
-        src="/assets/image10.png"
+        src={asset('assets/image10.png')}
         alt="Guía Arqui Buenos Aires screens"
         className={styles.mediaImage}
       />
@@ -218,6 +227,12 @@ export const PROJECT_SLIDES: ProjectSlideProps[] = [
       'Trip tracking with added driver benefits',
     ],
     tags: ['React Native', 'Native SDK', 'Google Maps'],
-    media: <img src="/assets/image9.png" alt="Humber app screens" className={styles.mediaImage} />,
+    media: (
+      <img
+        src={asset('assets/image9.png')}
+        alt="Humber app screens"
+        className={styles.mediaImage}
+      />
+    ),
   },
 ];

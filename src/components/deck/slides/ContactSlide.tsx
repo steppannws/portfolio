@@ -1,4 +1,5 @@
 import styles from './slides.module.css';
+import { asset } from '../../../lib/asset';
 
 const FIELDS = [
   { label: 'Email', value: 'stepan.nikulenko@gmail.com' },
@@ -9,7 +10,7 @@ const FIELDS = [
 export function ContactSlide() {
   return (
     <div className={`${styles.slide} ${styles.contactSlide}`}>
-      <img src="/assets/image11.png" alt="" className={styles.contactBackdrop} />
+      <img src={asset('assets/image11.png')} alt="" className={styles.contactBackdrop} />
       <div className={styles.contactScrim} />
       <div className={styles.contactContent}>
         <div>

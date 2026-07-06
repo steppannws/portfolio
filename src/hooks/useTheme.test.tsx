@@ -10,7 +10,11 @@ describe('useTheme', () => {
       'matchMedia',
       vi
         .fn()
-        .mockReturnValue({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() })
+        .mockReturnValue({
+          matches: false,
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+        })
     );
   });
 

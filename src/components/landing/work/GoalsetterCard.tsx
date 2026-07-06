@@ -1,5 +1,6 @@
 import { WorkCard } from './WorkCard';
 import styles from './GoalsetterCard.module.css';
+import { asset } from '../../../lib/asset';
 
 const TAGS = ['React Native', 'TypeScript', 'Technical Lead'];
 
@@ -12,8 +13,8 @@ export function GoalsetterCard() {
       </div>
       <h3 className={styles.title}>Goalsetter</h3>
       <p className={styles.description}>
-        Banking &amp; investing for the next generation. Four years on the flagship React Native
-        app — from engineer to technical lead. 100K+ downloads.
+        Banking &amp; investing for the next generation. Four years on the flagship React Native app
+        — from engineer to technical lead. 100K+ downloads.
       </p>
       <div className={styles.tags}>
         {TAGS.map((tag) => (
@@ -23,8 +24,12 @@ export function GoalsetterCard() {
         ))}
       </div>
       <div className={styles.media}>
-        <img src="/assets/gs1.png" alt="Goalsetter app" className={styles.imageTop} />
-        <img src="/assets/gs3.png" alt="Goalsetter investing" className={styles.imageBottom} />
+        <img src={asset('assets/gs1.png')} alt="Goalsetter app" className={styles.imageTop} />
+        <img
+          src={asset('assets/gs3.png')}
+          alt="Goalsetter investing"
+          className={styles.imageBottom}
+        />
       </div>
     </WorkCard>
   );

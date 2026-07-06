@@ -41,6 +41,7 @@ add an indirection layer.
 ### Task 1: Vite + TypeScript scaffold, tooling, legacy archive
 
 **Files:**
+
 - Create: `package.json`, `tsconfig.json`, `tsconfig.node.json`, `vite.config.ts`, `.eslintrc.cjs`, `.prettierrc.json`, `.prettierignore`, `index.html`, `deck.html`
 - Create: `src/main.tsx` (stub), `src/vite-env.d.ts`
 - Create: `legacy/README.md`
@@ -51,6 +52,7 @@ add an indirection layer.
 - Delete: `uploads/Stepan Nikulenko - Mobile Engineer (1)-ac6a048d.pptx`, `uploads/Stepan Nikulenko - Mobile Engineer (1).pptx`, `.thumbnail`
 
 **Interfaces:**
+
 - Produces: a runnable `npm run dev` Vite project with two HTML entries, strict TS, lint/format/test scripts that later tasks build on.
 
 - [ ] **Step 1: Move legacy files and assets**
@@ -208,7 +210,14 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
   plugins: ['react-hooks'],
-  ignorePatterns: ['dist', 'legacy', 'playwright-report', 'test-results', '*.config.ts', '*.config.js'],
+  ignorePatterns: [
+    'dist',
+    'legacy',
+    'playwright-report',
+    'test-results',
+    '*.config.ts',
+    '*.config.js',
+  ],
   rules: {
     '@typescript-eslint/no-explicit-any': 'error',
   },
@@ -218,6 +227,7 @@ module.exports = {
 - [ ] **Step 8: Write `.prettierrc.json` and `.prettierignore`**
 
 `.prettierrc.json`:
+
 ```json
 {
   "semi": true,
@@ -228,6 +238,7 @@ module.exports = {
 ```
 
 `.prettierignore`:
+
 ```
 dist
 legacy
@@ -275,7 +286,9 @@ test-results
       rel="stylesheet"
     />
     <style>
-      body { margin: 0; }
+      body {
+        margin: 0;
+      }
     </style>
   </head>
   <body>
@@ -307,6 +320,7 @@ createRoot(document.getElementById('root')!).render(
 - [ ] **Step 13: Update `.gitignore`**
 
 Add these lines (keep existing entries):
+
 ```
 dist/
 node_modules/
@@ -338,9 +352,11 @@ git commit -m "chore: scaffold Vite+React+TS project, archive legacy files"
 ### Task 2: Design tokens and global CSS
 
 **Files:**
+
 - Create: `src/styles/tokens.css`, `src/styles/global.css`
 
 **Interfaces:**
+
 - Produces: `--bg`, `--ink`, `--card`, `--inner`, `--win`, `--muted`, `--meta`, `--faint`, `--sep`, `--hair`, `--hair-soft`, `--hair-strong`, `--word`, `--shadow`, `--accent-soft`, `--green`, `--green-bd`, `--band`, `--band-text`, `--nav1`, `--nav2`, `--badge` (theme-switched), plus constants `--accent`, `--font-display`, `--font-body`, `--font-mono`. Global class `.reveal-hidden` and attribute selector `[data-reveal]` (consumed by `useReveal`, Task 6). Global class `.hover-lift` (consumed by several components).
 
 - [ ] **Step 1: Write `src/styles/tokens.css`**
@@ -502,11 +518,13 @@ git commit -m "feat: add design token and global stylesheets"
 ### Task 3: Vitest setup file + `useTheme` hook (TDD)
 
 **Files:**
+
 - Create: `src/test/setup.ts`
 - Create: `src/hooks/useTheme.ts`
 - Test: `src/hooks/useTheme.test.tsx`
 
 **Interfaces:**
+
 - Produces: `ThemeMode = 'light' | 'dark'`, `useTheme(): [ThemeMode, () => void]`. Sets `data-theme` on `document.documentElement`, persists to `localStorage['sn-theme']`. Consumed by `App.tsx` (Task 20), `Nav.tsx` (Task 12), `Hero.tsx` (Task 13).
 
 - [ ] **Step 1: Write `src/test/setup.ts`** (jsdom polyfills needed by later hook/component tests)
@@ -555,7 +573,13 @@ describe('useTheme', () => {
     document.documentElement.removeAttribute('data-theme');
     vi.stubGlobal(
       'matchMedia',
-      vi.fn().mockReturnValue({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() })
+      vi
+        .fn()
+        .mockReturnValue({
+          matches: false,
+          addEventListener: vi.fn(),
+          removeEventListener: vi.fn(),
+        })
     );
   });
 
@@ -634,10 +658,12 @@ git commit -m "feat: add useTheme hook with light/dark persistence"
 ### Task 4: `useDeckController` hook (TDD)
 
 **Files:**
+
 - Create: `src/hooks/useDeckController.ts`
 - Test: `src/hooks/useDeckController.test.tsx`
 
 **Interfaces:**
+
 - Consumes: nothing (pure hook, takes `count: number`).
 - Produces: `DeckController { index: number; scale: number; containerRef: RefObject<HTMLDivElement>; goTo(i: number): void; next(): void; prev(): void }`. Consumed by `Deck.tsx` (Task 24) and `DeckNav.tsx` (Task 23).
 
@@ -752,7 +778,12 @@ export function useDeckController(count: number): DeckController {
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+      if (
+        e.key === 'ArrowRight' ||
+        e.key === 'ArrowDown' ||
+        e.key === 'PageDown' ||
+        e.key === ' '
+      ) {
         e.preventDefault();
         next();
       } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
@@ -808,9 +839,11 @@ git commit -m "feat: add useDeckController hook for slide nav and scale-to-fit"
 ### Task 5: `useParallax` and `useReveal` hooks
 
 **Files:**
+
 - Create: `src/hooks/useParallax.ts`, `src/hooks/useReveal.ts`
 
 **Interfaces:**
+
 - Produces: `useParallax<T extends HTMLElement>(factor: number, mode?: 'scroll' | 'position', fadeDistance?: number): RefObject<T>`. Consumed by `Hero.tsx` (mode `'scroll'`, fade), `WorkSection.tsx` and `AboutSection.tsx` (mode `'position'`).
 - Produces: `useReveal<T extends HTMLElement>(): RefObject<T>` — attaches to a container; toggles `.reveal-hidden` on descendant `[data-reveal]` elements via IntersectionObserver. Consumed by `App.tsx` (Task 20).
 - Per Global Constraints, neither hook gets a Vitest test — DOM/scroll side effects with no branching logic, covered by the landing Playwright smoke test.
@@ -913,9 +946,11 @@ git commit -m "feat: add useParallax and useReveal scroll-effect hooks"
 ### Task 6: `useCursor` hook
 
 **Files:**
+
 - Create: `src/hooks/useCursor.ts`
 
 **Interfaces:**
+
 - Produces: `useCursor(): { dotRef: RefObject<HTMLDivElement>; ringRef: RefObject<HTMLDivElement> }`. No-ops (returns refs that are simply never animated) on coarse-pointer devices. Consumed by `CustomCursor.tsx` (Task 7).
 
 - [ ] **Step 1: Write `src/hooks/useCursor.ts`**
@@ -1001,10 +1036,12 @@ git commit -m "feat: add useCursor hook for custom cursor tracking"
 ### Task 7: `CustomCursor` component
 
 **Files:**
+
 - Create: `src/components/shared/CustomCursor.tsx`, `src/components/shared/CustomCursor.module.css`
 - Test: `src/components/shared/CustomCursor.test.tsx`
 
 **Interfaces:**
+
 - Consumes: `useCursor()` from Task 6.
 - Produces: `<CustomCursor />` — renders dot + ring divs, no props. Consumed by `App.tsx` (Task 20).
 
@@ -1096,10 +1133,12 @@ git commit -m "feat: add CustomCursor component"
 ### Task 8: `ThemeToggle` component
 
 **Files:**
+
 - Create: `src/components/shared/ThemeToggle.tsx`, `src/components/shared/ThemeToggle.module.css`
 - Test: `src/components/shared/ThemeToggle.test.tsx`
 
 **Interfaces:**
+
 - Consumes: `ThemeMode` type from `../../hooks/useTheme` (Task 3).
 - Produces: `<ThemeToggle theme={ThemeMode} onToggle={() => void} />`. Consumed by `Nav.tsx` (Task 12).
 
@@ -1194,9 +1233,11 @@ git commit -m "feat: add ThemeToggle component"
 ### Task 9: `ParticleField` component (Three.js hero background)
 
 **Files:**
+
 - Create: `src/components/landing/ParticleField.tsx`, `src/components/landing/ParticleField.module.css`
 
 **Interfaces:**
+
 - Consumes: `ThemeMode` from `useTheme`.
 - Produces: `<ParticleField mouseRef={RefObject<{x,y}>} scrollRef={RefObject<number>} theme={ThemeMode} />`. Consumed lazily by `Hero.tsx` (Task 13). No Vitest test — WebGL isn't available in jsdom; covered by the landing Playwright smoke test rendering the hero without throwing.
 
@@ -1337,7 +1378,8 @@ export function ParticleField({ mouseRef, scrollRef, theme }: ParticleFieldProps
       for (let ix = 0; ix < GRID_X; ix++) {
         for (let iy = 0; iy < GRID_Y; iy++) {
           let y =
-            Math.sin((ix + frame) * 0.28) * WAVE_AMPLITUDE + Math.sin((iy + frame) * 0.46) * WAVE_AMPLITUDE;
+            Math.sin((ix + frame) * 0.28) * WAVE_AMPLITUDE +
+            Math.sin((iy + frame) * 0.46) * WAVE_AMPLITUDE;
           const dx = posArray[k] - mx;
           const dz = posArray[k + 2] - mz;
           const distSq = dx * dx + dz * dz;
@@ -1408,10 +1450,12 @@ git commit -m "feat: add ParticleField Three.js hero background"
 ### Task 10: `Nav` component
 
 **Files:**
+
 - Create: `src/components/landing/Nav.tsx`, `src/components/landing/Nav.module.css`
 - Test: `src/components/landing/Nav.test.tsx`
 
 **Interfaces:**
+
 - Consumes: `ThemeMode` (Task 3), `<ThemeToggle>` (Task 8).
 - Produces: `<Nav theme={ThemeMode} onToggleTheme={() => void} />`. Consumed by `App.tsx` (Task 20).
 
@@ -1560,10 +1604,12 @@ git commit -m "feat: add landing Nav component"
 ### Task 11: `Marquee` component
 
 **Files:**
+
 - Create: `src/components/landing/Marquee.tsx`, `src/components/landing/Marquee.module.css`
 - Test: `src/components/landing/Marquee.test.tsx`
 
 **Interfaces:**
+
 - Produces: `<Marquee />`, no props. Consumed by `App.tsx` (Task 20).
 
 - [ ] **Step 1: Write `src/components/landing/Marquee.module.css`**
@@ -1678,9 +1724,11 @@ git commit -m "feat: add landing Marquee component"
 ### Task 12: `Hero` component
 
 **Files:**
+
 - Create: `src/components/landing/Hero.tsx`, `src/components/landing/Hero.module.css`
 
 **Interfaces:**
+
 - Consumes: `ParticleField` (Task 9, lazy-loaded), `useParallax` (Task 5), `ThemeMode`.
 - Produces: `<Hero theme={ThemeMode} />`. Consumed by `App.tsx` (Task 20). No unit test — covered by the landing Playwright smoke test (Task 22); a render test here would need to mock WebGL/`ResizeObserver`/`matchMedia` for no real value beyond what Playwright already confirms end to end.
 
@@ -1895,9 +1943,11 @@ files. All 8 share hover chrome via one `WorkCard` wrapper. Files live under
 ### Task 13: `WorkCard` shared wrapper
 
 **Files:**
+
 - Create: `src/components/landing/work/WorkCard.tsx`, `src/components/landing/work/WorkCard.module.css`
 
 **Interfaces:**
+
 - Produces: `<WorkCard span={number} minHeight={number} style={CSSProperties}>{children}</WorkCard>`. Consumed by every card in this Part.
 
 - [ ] **Step 1: Write `src/components/landing/work/WorkCard.module.css`**
@@ -1969,9 +2019,11 @@ git commit -m "feat: add shared WorkCard hover-chrome wrapper"
 ### Task 14: `GoalsetterCard`
 
 **Files:**
+
 - Create: `src/components/landing/work/GoalsetterCard.tsx`, `src/components/landing/work/GoalsetterCard.module.css`
 
 **Interfaces:**
+
 - Consumes: `WorkCard` (Task 13).
 - Produces: `<GoalsetterCard />`, no props. Consumed by `WorkSection.tsx` (Task 19).
 
@@ -2062,8 +2114,8 @@ export function GoalsetterCard() {
       </div>
       <h3 className={styles.title}>Goalsetter</h3>
       <p className={styles.description}>
-        Banking &amp; investing for the next generation. Four years on the flagship React
-        Native app — from engineer to technical lead. 100K+ downloads.
+        Banking &amp; investing for the next generation. Four years on the flagship React Native app
+        — from engineer to technical lead. 100K+ downloads.
       </p>
       <div className={styles.tags}>
         {TAGS.map((tag) => (
@@ -2113,9 +2165,11 @@ git commit -m "feat: add GoalsetterCard"
 ### Task 15: `ClassroomCard`
 
 **Files:**
+
 - Create: `src/components/landing/work/ClassroomCard.tsx`, `src/components/landing/work/ClassroomCard.module.css`
 
 **Interfaces:**
+
 - Consumes: `WorkCard` (Task 13).
 - Produces: `<ClassroomCard />`. Consumed by `WorkSection.tsx` (Task 19).
 
@@ -2219,8 +2273,8 @@ export function ClassroomCard() {
       </div>
       <h3 className={styles.title}>Goalsetter Classroom</h3>
       <p className={styles.description}>
-        Web apps &amp; microservices bringing financial literacy into schools — plus AI
-        agents, local-LLM tools and agentic workflows powering internal delivery.
+        Web apps &amp; microservices bringing financial literacy into schools — plus AI agents,
+        local-LLM tools and agentic workflows powering internal delivery.
       </p>
       <div className={styles.lmsList}>
         {LMS_ROWS.map((row) => (
@@ -2275,9 +2329,11 @@ git commit -m "feat: add ClassroomCard"
 ### Task 16: `TydeeCard`
 
 **Files:**
+
 - Create: `src/components/landing/work/TydeeCard.tsx`, `src/components/landing/work/TydeeCard.module.css`
 
 **Interfaces:**
+
 - Consumes: `WorkCard` (Task 13).
 - Produces: `<TydeeCard />`. Consumed by `WorkSection.tsx` (Task 19).
 
@@ -2463,8 +2519,8 @@ export function TydeeCard() {
       </div>
       <h3 className={styles.title}>Tydee</h3>
       <p className={styles.description}>
-        Multi-tenant platform for cleaning companies — web, admin &amp; mobile. 200+
-        businesses, 10K+ jobs managed.
+        Multi-tenant platform for cleaning companies — web, admin &amp; mobile. 200+ businesses,
+        10K+ jobs managed.
       </p>
       <div className={styles.window}>
         <div className={styles.windowBar}>
@@ -2536,9 +2592,11 @@ git commit -m "feat: add TydeeCard"
 ### Task 17: `AceHardwareCard`
 
 **Files:**
+
 - Create: `src/components/landing/work/AceHardwareCard.tsx`, `src/components/landing/work/AceHardwareCard.module.css`
 
 **Interfaces:**
+
 - Consumes: `WorkCard` (Task 13).
 - Produces: `<AceHardwareCard />`. Consumed by `WorkSection.tsx` (Task 19).
 
@@ -2607,8 +2665,8 @@ export function AceHardwareCard() {
         </div>
         <h3 className={styles.title}>Ace Hardware Rewards</h3>
         <p className={styles.description}>
-          Rewards app built on the RN starter I architected — performance profiling,
-          analytics, oversight.
+          Rewards app built on the RN starter I architected — performance profiling, analytics,
+          oversight.
         </p>
       </div>
       <img src="/assets/image8.png" alt="Ace Hardware Rewards" className={styles.image} />
@@ -2649,9 +2707,11 @@ git commit -m "feat: add AceHardwareCard"
 ### Task 18: `SimpleProjectCard` + compact projects data (Club Premier, Aeromexico, Guía Arqui, Humber)
 
 **Files:**
+
 - Create: `src/data/compactProjects.ts`, `src/components/landing/work/SimpleProjectCard.tsx`, `src/components/landing/work/SimpleProjectCard.module.css`
 
 **Interfaces:**
+
 - Consumes: `WorkCard` (Task 13).
 - Produces: `CompactProject` interface, `COMPACT_PROJECTS: CompactProject[]`, `<SimpleProjectCard {...project} />`. Consumed by `WorkSection.tsx` (Task 19).
 
@@ -2673,7 +2733,8 @@ export const COMPACT_PROJECTS: CompactProject[] = [
     minHeight: 300,
     date: '2018 — 2021',
     title: 'Club Premier',
-    description: "Aeromexico's loyalty platform — native SDK bridges (Lotame, SAS CI360, ThreatMetrix).",
+    description:
+      "Aeromexico's loyalty platform — native SDK bridges (Lotame, SAS CI360, ThreatMetrix).",
     image: { src: '/assets/image4.png', alt: 'Club Premier' },
   },
   {
@@ -2681,7 +2742,8 @@ export const COMPACT_PROJECTS: CompactProject[] = [
     minHeight: 300,
     date: '2017 — 2018',
     title: 'Aeromexico',
-    description: 'Legacy React web migrated to a performant native app — team of 12, tight deadlines.',
+    description:
+      'Legacy React web migrated to a performant native app — team of 12, tight deadlines.',
     image: { src: '/assets/image7.png', alt: 'Aeromexico' },
   },
   {
@@ -2697,7 +2759,8 @@ export const COMPACT_PROJECTS: CompactProject[] = [
     minHeight: 260,
     date: '2016 — 2017',
     title: 'Humber',
-    description: 'Freight & merchants for truck drivers — precise GSM-network tracking via native SDK.',
+    description:
+      'Freight & merchants for truck drivers — precise GSM-network tracking via native SDK.',
     image: { src: '/assets/image9.png', alt: 'Humber' },
   },
 ];
@@ -2753,7 +2816,14 @@ import { WorkCard } from './WorkCard';
 import type { CompactProject } from '../../../data/compactProjects';
 import styles from './SimpleProjectCard.module.css';
 
-export function SimpleProjectCard({ span, minHeight, date, title, description, image }: CompactProject) {
+export function SimpleProjectCard({
+  span,
+  minHeight,
+  date,
+  title,
+  description,
+  image,
+}: CompactProject) {
   return (
     <WorkCard span={span} minHeight={minHeight}>
       <div className={styles.row}>
@@ -2805,10 +2875,12 @@ git commit -m "feat: add SimpleProjectCard and compact project data"
 ### Task 19: `WorkSection` composition
 
 **Files:**
+
 - Create: `src/components/landing/WorkSection.tsx`, `src/components/landing/WorkSection.module.css`
 - Test: `src/components/landing/WorkSection.test.tsx`
 
 **Interfaces:**
+
 - Consumes: `useParallax` (Task 5), all 4 bespoke cards + `SimpleProjectCard`/`COMPACT_PROJECTS` (Tasks 14–18).
 - Produces: `<WorkSection />`. Consumed by `App.tsx` (Task 20).
 
@@ -2964,6 +3036,7 @@ git commit -m "feat: compose WorkSection from all eight project cards"
 ### Task 20: `AboutSection`, `ContactSection`, `Footer`, `App` + real `main.tsx`
 
 **Files:**
+
 - Create: `src/components/landing/AboutSection.tsx`, `src/components/landing/AboutSection.module.css`
 - Create: `src/components/landing/ContactSection.tsx`, `src/components/landing/ContactSection.module.css`
 - Create: `src/components/landing/Footer.tsx`, `src/components/landing/Footer.module.css`
@@ -2972,6 +3045,7 @@ git commit -m "feat: compose WorkSection from all eight project cards"
 - Test: `src/components/landing/AboutSection.test.tsx`, `src/components/landing/ContactSection.test.tsx`, `src/App.test.tsx`
 
 **Interfaces:**
+
 - Consumes: `useTheme` (Task 3), `useReveal` (Task 5), `CustomCursor` (Task 7), `Nav` (Task 10), `Marquee` (Task 11), `Hero` (Task 12), `WorkSection` (Task 19).
 - Produces: `<AboutSection />`, `<ContactSection />`, `<Footer />`, `<App />` — full landing page. `main.tsx` mounts `<App>` with `styles/tokens.css` + `styles/global.css` imported.
 - `App.test.tsx` mocks `./components/landing/Hero` (WebGL not available in jsdom): `vi.mock('./components/landing/Hero', () => ({ Hero: () => <section id="top" /> }))`.
@@ -3101,11 +3175,7 @@ export function AboutSection() {
   return (
     <section id="about" className={styles.section}>
       <div ref={portraitRef} data-reveal="1" className={styles.portrait}>
-        <img
-          src="/assets/image6.png"
-          alt="Stepan Nikulenko"
-          className={styles.portraitImage}
-        />
+        <img src="/assets/image6.png" alt="Stepan Nikulenko" className={styles.portraitImage} />
         <div className={styles.badge}>Buenos Aires, AR · Remote</div>
       </div>
       <div data-reveal="1">
@@ -3116,15 +3186,14 @@ export function AboutSection() {
           as build.
         </h2>
         <p className={styles.paragraph}>
-          It started with the first computer my father brought home — which I took apart,
-          piece by piece. Fifteen years later I&apos;m shipping fintech and edtech products
-          end to end: native mobile apps, Node.js services, and AI-augmented internal
-          tooling.
+          It started with the first computer my father brought home — which I took apart, piece by
+          piece. Fifteen years later I&apos;m shipping fintech and edtech products end to end:
+          native mobile apps, Node.js services, and AI-augmented internal tooling.
         </p>
         <p className={`${styles.paragraph} ${styles.paragraphLast}`}>
-          As technical lead at Goalsetter and lead developer at MediaMonks, I&apos;ve
-          guided teams of up to 12 engineers — code standards, mentoring, and turning
-          requirements into products that ship.
+          As technical lead at Goalsetter and lead developer at MediaMonks, I&apos;ve guided teams
+          of up to 12 engineers — code standards, mentoring, and turning requirements into products
+          that ship.
         </p>
         <div className={styles.stats}>
           {STATS.map((stat) => (
@@ -3432,6 +3501,7 @@ createRoot(document.getElementById('root')!).render(
 - [ ] **Step 9: Write render tests**
 
 `src/components/landing/AboutSection.test.tsx`:
+
 ```tsx
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
@@ -3448,6 +3518,7 @@ describe('AboutSection', () => {
 ```
 
 `src/components/landing/ContactSection.test.tsx`:
+
 ```tsx
 import { describe, expect, it } from 'vitest';
 import { render, screen } from '@testing-library/react';
@@ -3456,15 +3527,17 @@ import { ContactSection } from './ContactSection';
 describe('ContactSection', () => {
   it('renders email CTA and social links', () => {
     render(<ContactSection />);
-    expect(
-      screen.getByRole('link', { name: 'stepan.nikulenko@gmail.com' })
-    ).toHaveAttribute('href', 'mailto:stepan.nikulenko@gmail.com');
+    expect(screen.getByRole('link', { name: 'stepan.nikulenko@gmail.com' })).toHaveAttribute(
+      'href',
+      'mailto:stepan.nikulenko@gmail.com'
+    );
     expect(screen.getByRole('link', { name: 'GitHub ↗' })).toBeInTheDocument();
   });
 });
 ```
 
 `src/App.test.tsx`:
+
 ```tsx
 import { describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
@@ -3525,6 +3598,7 @@ theme tokens (matches the original, which hardcodes its colors).
 ### Task 21: Deck slide components
 
 **Files:**
+
 - Create: `src/components/deck/slides/slides.module.css` (shared slide styles)
 - Create: `src/components/deck/slides/CoverSlide.tsx`
 - Create: `src/components/deck/slides/AboutSlide.tsx`
@@ -3537,6 +3611,7 @@ theme tokens (matches the original, which hardcodes its colors).
 - Test: `src/components/deck/slides/slides.test.tsx`
 
 **Interfaces:**
+
 - Produces: `SLIDES: { label: string; element: ReactElement }[]` (length 13) from `slides/index.tsx`. Consumed by `Deck.tsx` (Task 24).
 - Produces: `ProjectSlideData` interface in `projects.tsx`.
 - Every slide root is `width:100%;height:100%` and box-sized — it fills the 1920×1080 stage that `Deck.tsx` provides.
@@ -4207,9 +4282,9 @@ export function CoverSlide() {
             <span className={styles.accentDot}>.</span>
           </h1>
           <p className={styles.coverSubtitle}>
-            React Native technical lead and full-stack engineer — shipping fintech and
-            edtech products end to end, from native mobile apps to Node.js services and
-            AI-augmented internal tooling.
+            React Native technical lead and full-stack engineer — shipping fintech and edtech
+            products end to end, from native mobile apps to Node.js services and AI-augmented
+            internal tooling.
           </p>
         </div>
         <div className={styles.pills}>
@@ -4221,7 +4296,11 @@ export function CoverSlide() {
         </div>
       </div>
       <div className={styles.coverPortrait}>
-        <img src="/assets/image6.png" alt="Stepan Nikulenko" className={styles.coverPortraitImage} />
+        <img
+          src="/assets/image6.png"
+          alt="Stepan Nikulenko"
+          className={styles.coverPortraitImage}
+        />
         <div className={styles.coverPortraitFade} />
       </div>
     </div>
@@ -4241,26 +4320,29 @@ export function AboutSlide() {
         <div className={styles.kicker}>About</div>
         <h2 className={styles.aboutTitle}>Me, in a nutshell.</h2>
         <p className={styles.aboutParagraph}>
-          I&apos;ve been fascinated by technology for as long as I can remember. It started
-          with the first computer my father brought home — which I promptly took apart,
-          piece by piece.
+          I&apos;ve been fascinated by technology for as long as I can remember. It started with the
+          first computer my father brought home — which I promptly took apart, piece by piece.
         </p>
         <p className={styles.aboutParagraph}>
-          Reassembling machines from whatever parts I could find pulled me into networking
-          and OS administration. Then a friend showed me{' '}
-          <span className={styles.aboutHighlight}>Macromedia Flash 4</span> — and that lit
-          the spark. Websites, interactive games, and everything since.
+          Reassembling machines from whatever parts I could find pulled me into networking and OS
+          administration. Then a friend showed me{' '}
+          <span className={styles.aboutHighlight}>Macromedia Flash 4</span> — and that lit the
+          spark. Websites, interactive games, and everything since.
         </p>
         <p className={styles.aboutParagraph}>
           Fifteen years on, I lead as well as build. As{' '}
-          <span className={styles.aboutHighlight}>technical lead at Goalsetter</span> — and
-          lead developer at MediaMonks before that — I&apos;ve guided teams of up to 12
-          engineers: setting code standards, mentoring developers, and turning business
-          requirements into products that ship.
+          <span className={styles.aboutHighlight}>technical lead at Goalsetter</span> — and lead
+          developer at MediaMonks before that — I&apos;ve guided teams of up to 12 engineers:
+          setting code standards, mentoring developers, and turning business requirements into
+          products that ship.
         </p>
       </div>
       <div className={styles.aboutAside}>
-        <img src="/assets/image11.png" alt="Mountain landscape" className={styles.aboutAsideImage} />
+        <img
+          src="/assets/image11.png"
+          alt="Mountain landscape"
+          className={styles.aboutAsideImage}
+        />
         <div>
           <div className={styles.asideLabel}>Beyond code</div>
           <div className={styles.asideValue}>Nature · Music · Life</div>
@@ -4314,8 +4396,8 @@ export function FocusSlide() {
           <h2 className={styles.focusTitle}>What I build.</h2>
         </div>
         <p className={styles.focusLede}>
-          From native mobile apps to full-stack services and AI tooling — three areas where
-          I ship real product.
+          From native mobile apps to full-stack services and AI tooling — three areas where I ship
+          real product.
         </p>
       </div>
       <div className={styles.focusCards}>
@@ -4399,7 +4481,15 @@ export interface ProjectSlideProps {
   media: ReactNode;
 }
 
-export function ProjectSlide({ date, role, title, description, points, tags, media }: ProjectSlideProps) {
+export function ProjectSlide({
+  date,
+  role,
+  title,
+  description,
+  points,
+  tags,
+  media,
+}: ProjectSlideProps) {
   return (
     <div className={styles.slide}>
       <div className={styles.projectText}>
@@ -4463,9 +4553,17 @@ export const PROJECT_SLIDES: ProjectSlideProps[] = [
     tags: ['React Native', 'TypeScript', 'Redux', 'Native Modules', 'Bitrise', 'Jest'],
     media: (
       <>
-        <img src="/assets/gs1.png" alt="Goalsetter dashboard" className={`${styles.mediaImageThird} ${styles.raiseSlight}`} />
+        <img
+          src="/assets/gs1.png"
+          alt="Goalsetter dashboard"
+          className={`${styles.mediaImageThird} ${styles.raiseSlight}`}
+        />
         <img src="/assets/gs3.png" alt="Goalsetter investing" className={styles.mediaImageThird} />
-        <img src="/assets/gs4.png" alt="Goalsetter goals" className={`${styles.mediaImageThird} ${styles.dropSlight}`} />
+        <img
+          src="/assets/gs4.png"
+          alt="Goalsetter goals"
+          className={`${styles.mediaImageThird} ${styles.dropSlight}`}
+        />
       </>
     ),
   },
@@ -4556,7 +4654,13 @@ export const PROJECT_SLIDES: ProjectSlideProps[] = [
       'Built the analytics tracking system',
     ],
     tags: ['React Native', 'Performance', 'Analytics'],
-    media: <img src="/assets/image8.png" alt="Ace Hardware Rewards screens" className={styles.mediaImage} />,
+    media: (
+      <img
+        src="/assets/image8.png"
+        alt="Ace Hardware Rewards screens"
+        className={styles.mediaImage}
+      />
+    ),
   },
   {
     date: '2018 — 2021',
@@ -4601,7 +4705,9 @@ export const PROJECT_SLIDES: ProjectSlideProps[] = [
       'Shipped under demanding deadlines',
     ],
     tags: ['React Native', 'Web → Native Migration', 'Animations'],
-    media: <img src="/assets/image7.png" alt="Aeromexico app screens" className={styles.mediaImage} />,
+    media: (
+      <img src="/assets/image7.png" alt="Aeromexico app screens" className={styles.mediaImage} />
+    ),
   },
   {
     date: '2016',
@@ -4619,7 +4725,13 @@ export const PROJECT_SLIDES: ProjectSlideProps[] = [
       'Custom image carousel for architectural media',
     ],
     tags: ['React Native', 'Google Maps'],
-    media: <img src="/assets/image10.png" alt="Guía Arqui Buenos Aires screens" className={styles.mediaImage} />,
+    media: (
+      <img
+        src="/assets/image10.png"
+        alt="Guía Arqui Buenos Aires screens"
+        className={styles.mediaImage}
+      />
+    ),
   },
   {
     date: '2016 — 2017',
@@ -4763,9 +4875,11 @@ git commit -m "feat: add all 13 deck slide components"
 ### Task 22: Playwright setup + landing smoke test
 
 **Files:**
+
 - Create: `playwright.config.ts`, `e2e/landing.spec.ts`
 
 **Interfaces:**
+
 - Consumes: the full landing app (Task 20).
 - Produces: `npm run test:e2e` runs against a Vite preview server. Deck spec added in Task 25 reuses this config.
 
@@ -4833,10 +4947,12 @@ git commit -m "test: add Playwright landing smoke test"
 ### Task 23: `DeckNav` component
 
 **Files:**
+
 - Create: `src/components/deck/DeckNav.tsx`, `src/components/deck/DeckNav.module.css`
 - Test: `src/components/deck/DeckNav.test.tsx`
 
 **Interfaces:**
+
 - Consumes: nothing new.
 - Produces: `<DeckNav index={number} count={number} onPrev={() => void} onNext={() => void} onGoTo={(i: number) => void} />`. Consumed by `Deck.tsx` (Task 24).
 
@@ -5007,11 +5123,13 @@ git commit -m "feat: add DeckNav slide navigation controls"
 ### Task 24: `Deck` composition + `deck-main.tsx` entry
 
 **Files:**
+
 - Create: `src/components/deck/Deck.tsx`, `src/components/deck/Deck.module.css`
 - Create: `src/deck-main.tsx`
 - Test: `src/components/deck/Deck.test.tsx`
 
 **Interfaces:**
+
 - Consumes: `useDeckController` (Task 4), `SLIDES` (Task 21), `DeckNav` (Task 23).
 - Produces: `<Deck />` — renders only the active slide inside a 1920×1080 stage scaled to fit; `deck.html` entry mounts it. Deck forces `data-theme="dark"` on `<html>` (dark-only design; slide styles use literal colors, but `--accent`/font tokens come from tokens.css).
 
@@ -5123,9 +5241,11 @@ git commit -m "feat: add Deck page with scale-to-fit stage and keyboard nav"
 ### Task 25: Deck e2e smoke test
 
 **Files:**
+
 - Create: `e2e/deck.spec.ts`
 
 **Interfaces:**
+
 - Consumes: Playwright config (Task 22), deck page (Task 24).
 
 - [ ] **Step 1: Write `e2e/deck.spec.ts`**
@@ -5168,9 +5288,11 @@ git commit -m "test: add deck e2e smoke test"
 ### Task 26: GitHub Actions deploy workflow
 
 **Files:**
+
 - Create: `.github/workflows/deploy.yml`
 
 **Interfaces:**
+
 - Consumes: `npm run build` (Task 1 scripts), unit tests, lint.
 - Produces: on push to `main`: lint + test + build + deploy `dist/` to GitHub Pages.
 
@@ -5248,9 +5370,11 @@ git commit -m "ci: add GitHub Pages deploy workflow"
 ### Task 27: README rewrite + full verification sweep
 
 **Files:**
+
 - Modify: `README.md` (full rewrite)
 
 **Interfaces:**
+
 - Consumes: everything.
 - Produces: final verified project.
 
@@ -5267,9 +5391,9 @@ with Vitest and Playwright, deployed to GitHub Pages via Actions.
 
 ## Pages
 
-| Entry | What it is |
-|-------|-----------|
-| `index.html` → `/` | Landing — Three.js particle hero, custom cursor, parallax, light/dark theme |
+| Entry                      | What it is                                                                                         |
+| -------------------------- | -------------------------------------------------------------------------------------------------- |
+| `index.html` → `/`         | Landing — Three.js particle hero, custom cursor, parallax, light/dark theme                        |
 | `deck.html` → `/deck.html` | 13-slide deck — keyboard nav (arrows/Home/End), hash-linkable slides, scale-to-fit 1920×1080 stage |
 
 ## Development
@@ -5345,30 +5469,29 @@ git commit -m "docs: rewrite README for the TypeScript rebuild"
 
 ## Task summary
 
-| # | Task | Deliverable |
-|---|------|-------------|
-| 1 | Scaffold + legacy archive | Runnable Vite+TS project, old files in `legacy/` |
-| 2 | Tokens + global CSS | Theme-switched design tokens |
-| 3 | `useTheme` (TDD) | Tested theme hook |
-| 4 | `useDeckController` (TDD) | Tested deck nav/scale hook |
-| 5 | `useParallax` + `useReveal` | Scroll-effect hooks |
-| 6 | `useCursor` | Cursor-tracking hook |
-| 7 | `CustomCursor` | Cursor dot + ring |
-| 8 | `ThemeToggle` | Theme button |
-| 9 | `ParticleField` | Three.js hero background |
-| 10 | `Nav` | Landing header |
-| 11 | `Marquee` | Skills band |
-| 12 | `Hero` | Hero with lazy particles |
-| 13 | `WorkCard` | Shared card chrome |
-| 14–17 | Bespoke cards | Goalsetter, Classroom, Tydee, Ace |
-| 18 | `SimpleProjectCard` + data | 4 compact cards, data-driven |
-| 19 | `WorkSection` | Full work grid |
-| 20 | About/Contact/Footer/App | Complete landing |
-| 21 | Deck slides | All 13 slides (8 data-driven) |
-| 22 | Playwright + landing e2e | Smoke coverage |
-| 23 | `DeckNav` | Slide controls |
-| 24 | `Deck` + entry | Complete deck page |
-| 25 | Deck e2e | Smoke coverage |
-| 26 | Deploy workflow | CI → GitHub Pages |
-| 27 | README + sweep | Verified final state |
-
+| #     | Task                        | Deliverable                                      |
+| ----- | --------------------------- | ------------------------------------------------ |
+| 1     | Scaffold + legacy archive   | Runnable Vite+TS project, old files in `legacy/` |
+| 2     | Tokens + global CSS         | Theme-switched design tokens                     |
+| 3     | `useTheme` (TDD)            | Tested theme hook                                |
+| 4     | `useDeckController` (TDD)   | Tested deck nav/scale hook                       |
+| 5     | `useParallax` + `useReveal` | Scroll-effect hooks                              |
+| 6     | `useCursor`                 | Cursor-tracking hook                             |
+| 7     | `CustomCursor`              | Cursor dot + ring                                |
+| 8     | `ThemeToggle`               | Theme button                                     |
+| 9     | `ParticleField`             | Three.js hero background                         |
+| 10    | `Nav`                       | Landing header                                   |
+| 11    | `Marquee`                   | Skills band                                      |
+| 12    | `Hero`                      | Hero with lazy particles                         |
+| 13    | `WorkCard`                  | Shared card chrome                               |
+| 14–17 | Bespoke cards               | Goalsetter, Classroom, Tydee, Ace                |
+| 18    | `SimpleProjectCard` + data  | 4 compact cards, data-driven                     |
+| 19    | `WorkSection`               | Full work grid                                   |
+| 20    | About/Contact/Footer/App    | Complete landing                                 |
+| 21    | Deck slides                 | All 13 slides (8 data-driven)                    |
+| 22    | Playwright + landing e2e    | Smoke coverage                                   |
+| 23    | `DeckNav`                   | Slide controls                                   |
+| 24    | `Deck` + entry              | Complete deck page                               |
+| 25    | Deck e2e                    | Smoke coverage                                   |
+| 26    | Deploy workflow             | CI → GitHub Pages                                |
+| 27    | README + sweep              | Verified final state                             |

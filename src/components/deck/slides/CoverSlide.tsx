@@ -1,4 +1,5 @@
 import styles from './slides.module.css';
+import { asset } from '../../../lib/asset';
 
 const PILLS = ['React Native', 'TypeScript', 'Node.js', 'AI-Augmented Dev'];
 
@@ -34,7 +35,7 @@ export function CoverSlide() {
       </div>
       <div className={styles.coverPortrait}>
         <img
-          src="/assets/image6.png"
+          src={asset('assets/image6.png')}
           alt="Stepan Nikulenko"
           className={styles.coverPortraitImage}
         />

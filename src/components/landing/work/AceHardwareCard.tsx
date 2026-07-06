@@ -1,5 +1,6 @@
 import { WorkCard } from './WorkCard';
 import styles from './AceHardwareCard.module.css';
+import { asset } from '../../../lib/asset';
 
 export function AceHardwareCard() {
   return (
@@ -19,7 +20,7 @@ export function AceHardwareCard() {
           oversight.
         </p>
       </div>
-      <img src="/assets/image8.png" alt="Ace Hardware Rewards" className={styles.image} />
+      <img src={asset('assets/image8.png')} alt="Ace Hardware Rewards" className={styles.image} />
     </WorkCard>
   );
 }

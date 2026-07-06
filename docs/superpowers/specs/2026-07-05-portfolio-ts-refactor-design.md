@@ -86,7 +86,7 @@ portfolio/
 - **useDeckController.ts**: slide index state; `ArrowLeft/Right`, `Home/End`
   keyboard nav; `ResizeObserver`-driven scale-to-fit (1920×1080 design canvas
   → viewport); slide index synced to URL hash (`#5`) so a slide is linkable.
-- **Slide.tsx / slides/*.tsx**: each slide is a fixed 1920×1080 presentational
+- **Slide.tsx / slides/\*.tsx**: each slide is a fixed 1920×1080 presentational
   component, no logic — scaling is applied by the controller, not the slide.
 
 ## Data flow

@@ -1,4 +1,5 @@
 import styles from './slides.module.css';
+import { asset } from '../../../lib/asset';
 
 export function AboutSlide() {
   return (
@@ -7,9 +8,8 @@ export function AboutSlide() {
         <div className={styles.kicker}>About</div>
         <h2 className={styles.aboutTitle}>Me, in a nutshell.</h2>
         <p className={styles.aboutParagraph}>
-          I&apos;ve been fascinated by technology for as long as I can remember. It started with
-          the first computer my father brought home — which I promptly took apart, piece by
-          piece.
+          I&apos;ve been fascinated by technology for as long as I can remember. It started with the
+          first computer my father brought home — which I promptly took apart, piece by piece.
         </p>
         <p className={styles.aboutParagraph}>
           Reassembling machines from whatever parts I could find pulled me into networking and OS
@@ -27,7 +27,7 @@ export function AboutSlide() {
       </div>
       <div className={styles.aboutAside}>
         <img
-          src="/assets/image11.png"
+          src={asset('assets/image11.png')}
           alt="Mountain landscape"
           className={styles.aboutAsideImage}
         />
