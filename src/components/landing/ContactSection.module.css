@@ -1,0 +1,97 @@
+.section {
+  position: relative;
+  padding: 170px 48px 150px;
+  text-align: center;
+  overflow: hidden;
+}
+
+.glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 900px;
+  height: 900px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 90, 54, 0.11) 0%, rgba(255, 90, 54, 0) 60%);
+  pointer-events: none;
+}
+
+.content {
+  position: relative;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 28px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(56px, 8vw, 128px);
+  line-height: 0.94;
+  letter-spacing: -0.035em;
+  margin: 0 0 48px;
+}
+
+.titleDot {
+  color: var(--accent);
+}
+
+.ctas {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.ctaPrimary {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 19px;
+  color: var(--bg);
+  background: var(--ink);
+  padding: 18px 38px;
+  text-decoration: none;
+}
+
+.ctaSecondary {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 19px;
+  color: var(--ink);
+  border: 1px solid var(--hair-strong);
+  padding: 18px 38px;
+  text-decoration: none;
+}
+
+.ctaSecondary:hover {
+  border-color: var(--ink);
+}
+
+.socials {
+  display: flex;
+  justify-content: center;
+  gap: 36px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.social {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--meta);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.social:hover {
+  color: var(--accent);
+}

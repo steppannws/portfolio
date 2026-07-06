@@ -1,0 +1,102 @@
+.section {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 90px 48px;
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 70px;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .section {
+    grid-template-columns: 1fr;
+  }
+}
+
+.portrait {
+  position: relative;
+  will-change: transform;
+}
+
+.portraitImage {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: 14% 30%;
+  border: 1px solid var(--hair);
+  box-shadow: 14px 14px 0 var(--shadow);
+}
+
+.badge {
+  position: absolute;
+  bottom: 22px;
+  left: 22px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--badge);
+  backdrop-filter: blur(6px);
+  border: 1px solid var(--hair);
+  padding: 9px 16px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 22px;
+}
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(40px, 4.4vw, 64px);
+  line-height: 1;
+  letter-spacing: -0.025em;
+  margin: 0 0 28px;
+}
+
+.paragraph {
+  font-size: 20px;
+  line-height: 1.65;
+  color: var(--muted);
+  margin: 0 0 18px;
+  max-width: 560px;
+}
+
+.paragraphLast {
+  margin-bottom: 40px;
+}
+
+.stats {
+  display: flex;
+  gap: 48px;
+  border-top: 1px solid var(--hair);
+  padding-top: 32px;
+}
+
+.statValue {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 44px;
+  color: var(--ink);
+  line-height: 1;
+}
+
+.statValueAccent {
+  color: var(--accent);
+}
+
+.statLabel {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-top: 6px;
+}
