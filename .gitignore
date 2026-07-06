@@ -20,3 +20,6 @@ docs/superpowers/
 
 # Logs
 *.log
+
+# TypeScript build info
+*.tsbuildinfo

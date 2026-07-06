@@ -1,1 +1,0 @@
-{"root":["./src/main.tsx","./src/vite-env.d.ts","./src/hooks/usecursor.ts","./src/hooks/usedeckcontroller.test.tsx","./src/hooks/usedeckcontroller.ts","./src/hooks/useparallax.ts","./src/hooks/usereveal.ts","./src/hooks/usetheme.test.tsx","./src/hooks/usetheme.ts","./src/test/setup.ts"],"errors":true,"version":"5.9.3"}
