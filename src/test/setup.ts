@@ -7,8 +7,7 @@ class ResizeObserverStub {
 }
 
 if (!('ResizeObserver' in globalThis)) {
-  // @ts-expect-error -- jsdom has no ResizeObserver; stub is enough for our tests
-  globalThis.ResizeObserver = ResizeObserverStub;
+  globalThis.ResizeObserver = ResizeObserverStub as unknown as typeof ResizeObserver;
 }
 
 // jsdom has no matchMedia; components call it on mount (useTheme, useCursor,
