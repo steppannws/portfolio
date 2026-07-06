@@ -9,14 +9,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: { ecmaVersion: 'latest', sourceType: 'module' },
   plugins: ['react-hooks'],
-  ignorePatterns: [
-    'dist',
-    'legacy',
-    'playwright-report',
-    'test-results',
-    '*.config.ts',
-    '*.config.js',
-  ],
+  ignorePatterns: ['dist', 'playwright-report', 'test-results', '*.config.ts', '*.config.js'],
   rules: {
     '@typescript-eslint/no-explicit-any': 'error',
   },

@@ -15,5 +15,8 @@ dist/
 playwright-report/
 test-results/
 
+# Local planning docs (not part of the published repo)
+docs/superpowers/
+
 # Logs
 *.log
