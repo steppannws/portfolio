@@ -1,36 +1,47 @@
 # Stepan Nikulenko — Portfolio
 
-Personal portfolio: an interactive landing page and a presentation deck, built as self-contained streaming **Design Components** (`.dc.html`). No build step — open the HTML files directly in a browser.
+Personal portfolio: an interactive landing page and a 13-slide presentation
+deck. Vite + React + TypeScript, plain CSS Modules over design tokens, tested
+with Vitest and Playwright, deployed to GitHub Pages via Actions.
 
-## Contents
+**Live:** https://steppannws.github.io/portfolio/
 
-| File | What it is |
-|------|-----------|
-| `Landing.dc.html` | Interactive landing page — Three.js particle hero, custom cursor, parallax, light/dark theme toggle |
-| `Portfolio.dc.html` | 13-slide presentation deck (projects, about, contact) |
-| `deck-stage.js` | Slide-deck runtime used by the deck |
-| `support.js` | Design Component runtime |
-| `assets/` | App screenshots, portrait, project imagery |
+## Pages
 
-## Running locally
+| Entry | What it is |
+|-------|-----------|
+| `index.html` → `/` | Landing — Three.js particle hero, custom cursor, parallax, light/dark theme |
+| `deck.html` → `/deck.html` | 13-slide deck — keyboard nav (arrows/Home/End), hash-linkable slides, scale-to-fit 1920×1080 stage |
 
-No dependencies or build. Just serve the folder with any static server, e.g.:
+## Development
 
 ```bash
-npx serve .
-# or
-python3 -m http.server 8000
+npm install
+npm run dev        # dev server
+npm test           # unit tests (Vitest)
+npm run test:e2e   # smoke tests (Playwright; needs `npx playwright install chromium` once)
+npm run lint       # ESLint
+npm run build      # production build → dist/
 ```
 
-Then open `http://localhost:8000/Landing.dc.html`.
+## Architecture notes
 
-Opening the files with `file://` also works, but a local server avoids browser restrictions on some assets.
-
-## Stack
-
-- Vanilla HTML + inline styles (Design Component format)
-- [Three.js](https://threejs.org/) for the hero particle field
-- Fonts: Space Grotesk, Instrument Sans, Space Mono (Google Fonts)
+- **Two static entries, no router** — the landing and the deck are separate
+  Vite HTML entries; there's no SPA navigation between them.
+- **Design tokens** (`src/styles/tokens.css`) — all colors are CSS custom
+  properties switched by `data-theme` on `<html>`; components never hardcode
+  theme colors. The deck is dark-only by design and uses its own literal
+  palette.
+- **Logic lives in hooks** (`src/hooks/`) — `useTheme` (persistence +
+  OS-preference default) and `useDeckController` (slide index, keyboard nav,
+  hash sync, scale-to-fit) are the only stateful logic, and both are
+  unit-tested. Components stay presentational.
+- **8 landing project cards** — 4 bespoke + 4 data-driven via one
+  `SimpleProjectCard`. **8 deck project slides** — all data-driven via one
+  `ProjectSlide`.
+- **Three.js is an npm dep**, lazy-loaded so it doesn't block first paint;
+  WebGL context loss falls back to a static gradient; `prefers-reduced-motion`
+  renders a single static frame.
 
 ## Author
 
