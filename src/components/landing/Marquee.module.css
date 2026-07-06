@@ -1,0 +1,29 @@
+.band {
+  overflow: hidden;
+  padding: 20px 0;
+  background: var(--band);
+  transition: background 0.4s;
+}
+
+.track {
+  display: flex;
+  width: max-content;
+  animation: marquee 36s linear infinite;
+}
+
+.group {
+  display: flex;
+  align-items: center;
+  gap: 38px;
+  padding-right: 38px;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--band-text);
+  white-space: nowrap;
+}
+
+.sep {
+  color: var(--accent);
+}

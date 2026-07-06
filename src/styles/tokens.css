@@ -1,0 +1,56 @@
+:root {
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Instrument Sans', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  --accent: #ff5a36;
+}
+
+:root[data-theme='light'] {
+  --bg: #f1ede4;
+  --ink: #141412;
+  --card: #faf8f2;
+  --inner: #f1ede4;
+  --win: #ffffff;
+  --muted: #504c42;
+  --meta: #6e6a61;
+  --faint: #8a8578;
+  --sep: #b8b2a2;
+  --hair: rgba(20, 20, 18, 0.2);
+  --hair-soft: rgba(20, 20, 18, 0.16);
+  --hair-strong: rgba(20, 20, 18, 0.32);
+  --word: rgba(20, 20, 18, 0.05);
+  --shadow: rgba(20, 20, 18, 0.12);
+  --accent-soft: #d14a28;
+  --green: #1f7a4d;
+  --green-bd: rgba(31, 122, 77, 0.45);
+  --band: #141412;
+  --band-text: #d8d2c4;
+  --nav1: rgba(241, 237, 228, 0.92);
+  --nav2: rgba(241, 237, 228, 0);
+  --badge: rgba(241, 237, 228, 0.85);
+}
+
+:root[data-theme='dark'] {
+  --bg: #0a0a0c;
+  --ink: #f3f1ec;
+  --card: #141418;
+  --inner: #0e0e11;
+  --win: #1a1a1e;
+  --muted: #a9a9b0;
+  --meta: #9a9aa2;
+  --faint: #8a8a92;
+  --sep: #4a4a52;
+  --hair: rgba(255, 255, 255, 0.14);
+  --hair-soft: rgba(255, 255, 255, 0.09);
+  --hair-strong: rgba(255, 255, 255, 0.25);
+  --word: rgba(243, 241, 236, 0.05);
+  --shadow: rgba(0, 0, 0, 0.45);
+  --accent-soft: #ff7a5c;
+  --green: #7ed9a0;
+  --green-bd: rgba(126, 217, 160, 0.3);
+  --band: #f1ede4;
+  --band-text: #35322b;
+  --nav1: rgba(10, 10, 12, 0.88);
+  --nav2: rgba(10, 10, 12, 0);
+  --badge: rgba(10, 10, 12, 0.6);
+}
