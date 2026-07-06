@@ -573,13 +573,11 @@ describe('useTheme', () => {
     document.documentElement.removeAttribute('data-theme');
     vi.stubGlobal(
       'matchMedia',
-      vi
-        .fn()
-        .mockReturnValue({
-          matches: false,
-          addEventListener: vi.fn(),
-          removeEventListener: vi.fn(),
-        })
+      vi.fn().mockReturnValue({
+        matches: false,
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+      })
     );
   });
 
