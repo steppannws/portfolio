@@ -64,3 +64,17 @@
   background: var(--green);
   animation: blink 2s infinite;
 }
+
+@media (max-width: 720px) {
+  .header {
+    padding: 14px 20px;
+  }
+
+  .links {
+    gap: 16px;
+  }
+
+  .available {
+    display: none;
+  }
+}

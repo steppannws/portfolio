@@ -63,3 +63,21 @@
 .imageBottom {
   transform: translateY(46px);
 }
+
+@media (max-width: 900px) {
+  .media {
+    position: static;
+    margin-top: 28px;
+    justify-content: center;
+    transform: rotate(-4deg);
+  }
+
+  .imageTop,
+  .imageBottom {
+    width: min(190px, 42%);
+  }
+
+  .imageBottom {
+    transform: translateY(24px);
+  }
+}

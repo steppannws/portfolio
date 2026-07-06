@@ -1,4 +1,6 @@
 .card {
+  grid-column: span var(--card-span);
+  min-height: var(--card-min-h, auto);
   background: var(--card);
   border: 1px solid var(--hair);
   padding: 44px;
@@ -17,4 +19,12 @@
   border-color: var(--ink);
   transform: translate(-3px, -3px);
   box-shadow: 8px 8px 0 var(--accent);
+}
+
+@media (max-width: 900px) {
+  .card {
+    grid-column: 1 / -1;
+    min-height: auto;
+    padding: 28px;
+  }
 }

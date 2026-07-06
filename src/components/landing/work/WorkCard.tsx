@@ -5,16 +5,20 @@ interface WorkCardProps {
   span: number;
   minHeight?: number;
   children: ReactNode;
-  style?: CSSProperties;
 }
 
-export function WorkCard({ span, minHeight, children, style }: WorkCardProps) {
+export function WorkCard({ span, minHeight, children }: WorkCardProps) {
   return (
     <div
       data-reveal="1"
       data-cursor-card
       className={styles.card}
-      style={{ gridColumn: `span ${span}`, minHeight, ...style }}
+      style={
+        {
+          '--card-span': span,
+          '--card-min-h': minHeight ? `${minHeight}px` : 'auto',
+        } as CSSProperties
+      }
     >
       {children}
     </div>
