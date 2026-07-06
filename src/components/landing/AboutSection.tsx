@@ -24,9 +24,9 @@ export function AboutSection() {
       <div data-reveal="1">
         <div className={styles.eyebrow}>02 — About</div>
         <h2 className={styles.title}>
-          I lead as well
+          Hands-on,
           <br />
-          as build.
+          from code to team.
         </h2>
         <p className={styles.paragraph}>
           It started with the first computer my father brought home — which I took apart, piece by

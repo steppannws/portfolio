@@ -11,7 +11,9 @@ describe('App', () => {
     render(<App />);
     expect(screen.getByRole('link', { name: 'Work' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Work.' })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /I lead as well as build/ })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: /Hands-on, from code to team/ })
+    ).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: /great together/ })).toBeInTheDocument();
     expect(screen.getByText('© 2026 STEPAN NIKULENKO')).toBeInTheDocument();
   });
