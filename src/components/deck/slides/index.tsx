@@ -21,6 +21,8 @@ const PROJECT_LABELS = [
   'Aeromexico',
   'Guía Arqui',
   'Humber',
+  'Carrera Aérea',
+  'Dakar',
 ];
 
 export const SLIDES: SlideEntry[] = [

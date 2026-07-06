@@ -45,4 +45,22 @@ export const COMPACT_PROJECTS: CompactProject[] = [
       'Freight & merchants for truck drivers — precise GSM-network tracking via native SDK.',
     image: { src: asset('assets/image9.png'), alt: 'Humber' },
   },
+  {
+    span: 6,
+    minHeight: 260,
+    date: '2013',
+    title: 'Carrera Aérea · Disney',
+    description:
+      'Air-racing mini game for Disney — Adobe AIR & ActionScript 3, when cross-platform game tech was still young.',
+    image: { src: asset('assets/game-carrera.jpg'), alt: 'Carrera Aérea gameplay' },
+  },
+  {
+    span: 6,
+    minHeight: 260,
+    date: '2010',
+    title: 'Personal Taxi Dakar',
+    description:
+      '3D rally game with deep car customization — built when Adobe AIR made cross-platform 3D games a novelty.',
+    image: { src: asset('assets/game-dakar.jpg'), alt: 'Personal Taxi Dakar customization screen' },
+  },
 ];

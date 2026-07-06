@@ -9,6 +9,8 @@ const WORK_LIST = [
   { name: 'Aeromexico', date: '2017 — 2018' },
   { name: 'Guía Arqui Buenos Aires', date: '2016' },
   { name: 'Humber', date: '2016 — 2017' },
+  { name: 'Carrera Aérea · Disney', date: '2013' },
+  { name: 'Personal Taxi Dakar', date: '2010' },
 ];
 
 export function DividerSlide() {
@@ -16,7 +18,7 @@ export function DividerSlide() {
     <div className={`${styles.slide} ${styles.dividerSlide}`}>
       <div className={styles.dividerHeader}>
         <div className={styles.dividerKicker}>Selected Work</div>
-        <div className={styles.dividerMeta}>2016 — 2026 · Eight projects</div>
+        <div className={styles.dividerMeta}>2010 — 2026 · Ten projects</div>
       </div>
       <h2 className={styles.dividerTitle}>
         Selected

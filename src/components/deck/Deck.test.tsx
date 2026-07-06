@@ -14,6 +14,6 @@ describe('Deck', () => {
       window.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
     });
     expect(screen.getByRole('heading', { name: 'Me, in a nutshell.' })).toBeInTheDocument();
-    expect(screen.getByText('2 / 13')).toBeInTheDocument();
+    expect(screen.getByText('2 / 15')).toBeInTheDocument();
   });
 });

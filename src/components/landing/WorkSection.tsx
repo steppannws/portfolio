@@ -20,7 +20,7 @@ export function WorkSection() {
           <div className={styles.eyebrow}>01 — Selected Work</div>
           <h2 className={styles.title}>Work.</h2>
         </div>
-        <div className={styles.meta}>2016 — 2026 · Eight projects</div>
+        <div className={styles.meta}>2010 — 2026 · Ten projects</div>
       </div>
       <div className={styles.grid}>
         <GoalsetterCard />

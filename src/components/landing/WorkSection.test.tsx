@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { WorkSection } from './WorkSection';
 
 describe('WorkSection', () => {
-  it('renders all eight project cards', () => {
+  it('renders all ten project cards', () => {
     render(<WorkSection />);
     const titles = [
       'Goalsetter',
@@ -14,6 +14,8 @@ describe('WorkSection', () => {
       'Aeromexico',
       'Guía Arqui Buenos Aires',
       'Humber',
+      'Carrera Aérea · Disney',
+      'Personal Taxi Dakar',
     ];
     titles.forEach((title) => {
       expect(screen.getByRole('heading', { name: title })).toBeInTheDocument();

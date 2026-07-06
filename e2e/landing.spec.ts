@@ -12,5 +12,5 @@ test('landing renders hero, sections, and toggles theme', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Light' })).toBeVisible();
 
   const workCards = page.locator('#work h3');
-  await expect(workCards).toHaveCount(8);
+  await expect(workCards).toHaveCount(10);
 });

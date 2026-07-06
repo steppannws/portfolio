@@ -235,4 +235,50 @@ export const PROJECT_SLIDES: ProjectSlideProps[] = [
       />
     ),
   },
+  {
+    date: '2013',
+    role: 'Game Developer · Disney',
+    title: 'Carrera Aérea',
+    description:
+      'An air-racing mini game built for Disney — 3D gameplay delivered with Adobe AIR, back when cross-platform game tech was still young.',
+    points: [
+      '3D air-race gameplay — altimeter, lives, collectibles and score HUD',
+      'Built with Adobe AIR & ActionScript 3',
+      'Shipped for Disney in 2013, ahead of the cross-platform wave',
+    ],
+    tags: ['Adobe AIR', 'ActionScript 3', 'Game Dev'],
+    media: (
+      <img
+        src={asset('assets/game-carrera.jpg')}
+        alt="Carrera Aérea gameplay"
+        className={styles.mediaImage}
+      />
+    ),
+  },
+  {
+    date: '2010',
+    role: 'Game Developer',
+    title: (
+      <>
+        Personal Taxi
+        <br />
+        Dakar
+      </>
+    ),
+    description:
+      'A 3D Dakar rally game with deep vehicle customization — built in 2010, when Adobe AIR made cross-platform 3D games a novelty.',
+    points: [
+      'Full 3D vehicle customization — paint, body, wheels, accessories, spoilers',
+      'Adobe AIR & ActionScript 3 — cutting-edge cross-platform tech at the time',
+      'Complete game experience designed and programmed end to end',
+    ],
+    tags: ['Adobe AIR', 'ActionScript 3', '3D'],
+    media: (
+      <img
+        src={asset('assets/game-dakar.jpg')}
+        alt="Personal Taxi Dakar customization screen"
+        className={styles.mediaImage}
+      />
+    ),
+  },
 ];
