@@ -1,0 +1,20 @@
+.card {
+  background: var(--card);
+  border: 1px solid var(--hair);
+  padding: 44px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition:
+    border-color 0.25s,
+    transform 0.25s,
+    box-shadow 0.25s,
+    background 0.4s;
+}
+
+.card:hover {
+  border-color: var(--ink);
+  transform: translate(-3px, -3px);
+  box-shadow: 8px 8px 0 var(--accent);
+}
