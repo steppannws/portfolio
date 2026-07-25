@@ -10,7 +10,7 @@ with Vitest and Playwright, deployed to GitHub Pages via Actions.
 
 | Entry                      | What it is                                                                                         |
 | -------------------------- | -------------------------------------------------------------------------------------------------- |
-| `index.html` → `/`         | Landing — Three.js particle hero, custom cursor, parallax, light/dark theme                        |
+| `index.html` → `/`         | Landing — editorial one-pager: paper/band alternating sections, oversized display type, light/dark |
 | `deck.html` → `/deck.html` | 13-slide deck — keyboard nav (arrows/Home/End), hash-linkable slides, scale-to-fit 1920×1080 stage |
 
 ## Development
@@ -28,20 +28,29 @@ npm run build      # production build → dist/
 
 - **Two static entries, no router** — the landing and the deck are separate
   Vite HTML entries; there's no SPA navigation between them.
-- **Design tokens** (`src/styles/tokens.css`) — all colors are CSS custom
-  properties switched by `data-theme` on `<html>`; components never hardcode
-  theme colors. The deck is dark-only by design and uses its own literal
-  palette.
+- **Two surfaces, not a colour palette** (`src/styles/tokens.css`) — the landing
+  alternates between two paper stocks: `paper` (default) and `band`
+  (`data-surface="band"` on a section). Components only ever read the neutral
+  tokens `--bg`, `--ink`, `--muted`, `--faint`, `--hair`, so a section inverts
+  by switching stock. `data-theme` on `<html>` swaps which stock is dark, so the
+  alternating rhythm survives in both themes. The deck is dark-only and uses its
+  own literal palette.
+- **Shared editorial primitives** live in `src/styles/global.css` as global
+  classes — `.shell` (12-column measure), `.grid12`, `.eyebrow` (numbered
+  section rule), `.display`, `.serif` (the one italic counterpoint, used twice
+  on the page), `.chip`. Section CSS Modules compose on top.
 - **Logic lives in hooks** (`src/hooks/`) — `useTheme` (persistence +
-  OS-preference default) and `useDeckController` (slide index, keyboard nav,
-  hash sync, scale-to-fit) are the only stateful logic, and both are
-  unit-tested. Components stay presentational.
-- **8 landing project cards** — 4 bespoke + 4 data-driven via one
-  `SimpleProjectCard`. **8 deck project slides** — all data-driven via one
-  `ProjectSlide`.
-- **Three.js is an npm dep**, lazy-loaded so it doesn't block first paint;
-  WebGL context loss falls back to a static gradient; `prefers-reduced-motion`
-  renders a single static frame.
+  OS-preference default), `useReveal` (in-view fade) and `useDeckController`
+  (slide index, keyboard nav, hash sync, scale-to-fit). Components stay
+  presentational.
+- **Work is two-tier** — 4 flagships via `FlagshipProject` (text column on the
+  grid + a visual that bleeds off the page edge for imagery, `bleed={false}` for
+  text-based visuals) and 6 archive rows via `WorkIndex`, driven by
+  `src/data/compactProjects.ts`. **8 deck project slides** — all data-driven via
+  one `ProjectSlide`.
+- **No canvas, no custom cursor** — the landing is type, rules and imagery; the
+  only motion is the skill marquee and a 10px in-view fade, both disabled under
+  `prefers-reduced-motion`.
 
 ## Author
 

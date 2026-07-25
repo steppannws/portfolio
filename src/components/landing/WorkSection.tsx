@@ -1,35 +1,88 @@
-import { useParallax } from '../../hooks/useParallax';
-import { GoalsetterCard } from './work/GoalsetterCard';
-import { ClassroomCard } from './work/ClassroomCard';
-import { TydeeCard } from './work/TydeeCard';
-import { AceHardwareCard } from './work/AceHardwareCard';
-import { SimpleProjectCard } from './work/SimpleProjectCard';
-import { COMPACT_PROJECTS } from '../../data/compactProjects';
+import { FlagshipProject } from './work/FlagshipProject';
+import { GoalsetterVisual } from './work/GoalsetterVisual';
+import { ClassroomVisual } from './work/ClassroomVisual';
+import { TydeeVisual } from './work/TydeeVisual';
+import { AceVisual } from './work/AceVisual';
+import { WorkIndex } from './work/WorkIndex';
 import styles from './WorkSection.module.css';
 
 export function WorkSection() {
-  const wordRef = useParallax<HTMLDivElement>(0.14, 'position');
-
   return (
-    <section id="work" className={styles.section}>
-      <div ref={wordRef} className={styles.word}>
-        WORK
-      </div>
-      <div data-reveal="1" className={styles.header}>
-        <div>
-          <div className={styles.eyebrow}>01 — Selected Work</div>
-          <h2 className={styles.title}>Work.</h2>
+    <section id="work">
+      <div data-surface="paper" className={styles.flagships}>
+        <div className="shell">
+          <header data-reveal="1" className={styles.header}>
+            <div className="eyebrow">
+              <span className="num">01</span>
+              Selected work
+            </div>
+            <div className={styles.headerRow}>
+              <h2 className={`display ${styles.title}`}>Ten projects, fifteen years.</h2>
+              <p className={styles.headerNote}>
+                Four flagships below — fintech, edtech, a startup of my own — then the archive.
+              </p>
+            </div>
+          </header>
+
+          <FlagshipProject
+            index="01"
+            years="2021 — 2026"
+            kind="FinTech · Flagship"
+            title="Goalsetter"
+            blurb="Banking and investing for the next generation. Four years on the flagship React Native app — from engineer to technical lead. 100K+ downloads."
+            tags={['React Native', 'TypeScript', 'Technical Lead']}
+          >
+            <GoalsetterVisual />
+          </FlagshipProject>
+
+          <FlagshipProject
+            index="02"
+            years="2025 — 2026"
+            kind="EdTech · Full-Stack"
+            title="Goalsetter Classroom"
+            blurb="Web apps and microservices bringing financial literacy into schools — plus AI agents, local-LLM tools and agentic workflows powering internal delivery."
+            tags={['TypeScript', 'Microservices', 'PostgreSQL']}
+            flip
+            bleed={false}
+          >
+            <ClassroomVisual />
+          </FlagshipProject>
+
+          <FlagshipProject
+            index="03"
+            years="Startup"
+            kind="Founder"
+            title="Tydee"
+            blurb="Multi-tenant platform for cleaning companies — web, admin and mobile. 200+ businesses, 10K+ jobs managed."
+            tags={['Node.js', 'React', 'Multi-tenant']}
+            link={{ label: 'tydee.io ↗', href: 'https://www.tydee.io/' }}
+            bleed={false}
+          >
+            <TydeeVisual />
+          </FlagshipProject>
+
+          <FlagshipProject
+            index="04"
+            years="2021"
+            kind="Retail · Lead"
+            title="Ace Hardware Rewards"
+            blurb="Rewards app built on the React Native starter I architected — performance profiling, analytics, engineering oversight."
+            tags={['React Native', 'Performance', 'Analytics']}
+            flip
+          >
+            <AceVisual />
+          </FlagshipProject>
         </div>
-        <div className={styles.meta}>2010 — 2026 · Ten projects</div>
       </div>
-      <div className={styles.grid}>
-        <GoalsetterCard />
-        <ClassroomCard />
-        <TydeeCard />
-        <AceHardwareCard />
-        {COMPACT_PROJECTS.map((project) => (
-          <SimpleProjectCard key={project.title} {...project} />
-        ))}
+
+      <div data-surface="band" className={styles.archive}>
+        <div className="shell">
+          <header data-reveal="1" className={styles.archiveHeader}>
+            <div className="eyebrow">Archive</div>
+            <p className={styles.archiveNote}>2010 — 2021 · six earlier products and games</p>
+          </header>
+          <WorkIndex />
+        </div>
       </div>
     </section>
   );

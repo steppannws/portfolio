@@ -1,47 +1,37 @@
-.wordmarkBand {
-  overflow: hidden;
-  padding: 70px 0 10px;
-}
-
-.wordmark {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(64px, 11vw, 172px);
-  line-height: 0.85;
-  letter-spacing: -0.04em;
-  text-align: center;
-  white-space: nowrap;
-  color: var(--word);
-  user-select: none;
-  pointer-events: none;
-}
-
 .footer {
+  padding-block: 24px;
   border-top: 1px solid var(--hair);
-  padding: 28px 48px;
+}
+
+.inner {
   display: flex;
+  align-items: baseline;
   justify-content: space-between;
-  align-items: center;
+  gap: 16px;
   flex-wrap: wrap;
-  gap: 12px;
+}
+
+.note,
+.deckLink {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .note {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.14em;
   color: var(--faint);
 }
 
 .deckLink {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.14em;
-  color: var(--meta);
+  color: var(--ink);
   text-decoration: none;
+  border-bottom: 1px solid var(--surface-accent);
+  padding-bottom: 3px;
   transition: color 0.2s;
 }
 
-.deckLink:hover {
-  color: var(--accent);
+.deckLink:hover,
+.deckLink:focus-visible {
+  color: var(--surface-accent);
 }

@@ -1,0 +1,123 @@
+/* text column locked to the grid, visual bleeding off the outer edge */
+.block {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--col-gap);
+  align-items: center;
+  border-top: 1px solid var(--hair);
+  padding-block: clamp(48px, 6vw, 96px);
+}
+
+.text {
+  grid-column: 1 / span 4;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.visual {
+  grid-column: 6 / -1;
+  margin-right: calc(-1 * var(--gutter));
+  min-width: 0;
+}
+
+.flip .text {
+  grid-column: 9 / -1;
+  order: 2;
+}
+
+.flip .visual {
+  grid-column: 1 / span 7;
+  margin-right: 0;
+  margin-left: calc(-1 * var(--gutter));
+  order: 1;
+}
+
+.noBleed .visual,
+.noBleed.flip .visual {
+  margin-inline: 0;
+}
+
+/* outlined numeral, the only decorative type in the section */
+.index {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(64px, 7vw, 108px);
+  line-height: 0.8;
+  letter-spacing: -0.05em;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--hair-strong);
+  margin-bottom: clamp(16px, 2vw, 28px);
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.meta > span:first-child {
+  color: var(--surface-accent);
+}
+
+.title {
+  font-size: clamp(34px, 3.4vw, 54px);
+  line-height: 0.94;
+  margin: 14px 0 0;
+}
+
+.blurb {
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 16px 0 0;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.link {
+  margin-top: 22px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--surface-accent);
+  padding-bottom: 3px;
+  transition: color 0.2s;
+}
+
+.link:hover {
+  color: var(--surface-accent);
+}
+
+@media (max-width: 1000px) {
+  .block {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .text,
+  .flip .text {
+    grid-column: 1 / -1;
+    order: 1;
+  }
+
+  .visual,
+  .flip .visual {
+    grid-column: 1 / -1;
+    order: 2;
+    margin-inline: calc(-1 * var(--gutter));
+  }
+}

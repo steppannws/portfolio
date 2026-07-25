@@ -1,6 +1,5 @@
 import { useTheme } from './hooks/useTheme';
 import { useReveal } from './hooks/useReveal';
-import { CustomCursor } from './components/shared/CustomCursor';
 import { Nav } from './components/landing/Nav';
 import { Hero } from './components/landing/Hero';
 import { Marquee } from './components/landing/Marquee';
@@ -15,9 +14,8 @@ export function App() {
 
   return (
     <div ref={revealRef}>
-      <CustomCursor />
       <Nav theme={theme} onToggleTheme={toggleTheme} />
-      <Hero theme={theme} />
+      <Hero />
       <Marquee />
       <WorkSection />
       <AboutSection />

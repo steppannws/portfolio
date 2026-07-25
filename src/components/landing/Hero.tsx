@@ -1,71 +1,52 @@
-import { Suspense, lazy, useEffect, useRef } from 'react';
-import type { ThemeMode } from '../../hooks/useTheme';
-import { useParallax } from '../../hooks/useParallax';
+import { asset } from '../../lib/asset';
 import styles from './Hero.module.css';
 
-const ParticleField = lazy(() =>
-  import('./ParticleField').then((m) => ({ default: m.ParticleField }))
-);
+const META = [
+  { label: 'Role', value: 'Technical Lead' },
+  { label: 'Focus', value: 'React Native · Node.js · AI tooling' },
+  { label: 'Based', value: 'Buenos Aires, AR — Remote' },
+  { label: 'Status', value: 'Open to work', live: true },
+];
 
-const STATS = ['React Native', 'Node.js', '15+ years', 'Buenos Aires based · Remote'];
-
-interface HeroProps {
-  theme: ThemeMode;
-}
-
-export function Hero({ theme }: HeroProps) {
-  const mouseRef = useRef({ x: 0, y: 0 });
-  const scrollRef = useRef(0);
-  const glowRef = useRef<HTMLDivElement>(null);
-  const heroContentRef = useParallax<HTMLDivElement>(0.32, 'scroll', 620);
-
-  useEffect(() => {
-    const onPointerMove = (e: PointerEvent) => {
-      mouseRef.current = {
-        x: (e.clientX / window.innerWidth) * 2 - 1,
-        y: (e.clientY / window.innerHeight) * 2 - 1,
-      };
-      const glow = glowRef.current;
-      if (glow) glow.style.transform = `translate(${e.clientX - 300}px, ${e.clientY - 300}px)`;
-    };
-    const onScroll = () => {
-      scrollRef.current = window.scrollY;
-    };
-    window.addEventListener('pointermove', onPointerMove);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => {
-      window.removeEventListener('pointermove', onPointerMove);
-      window.removeEventListener('scroll', onScroll);
-    };
-  }, []);
-
+export function Hero() {
   return (
-    <section id="top" className={styles.hero}>
-      <Suspense fallback={<div className={styles.canvasFallback} />}>
-        <ParticleField mouseRef={mouseRef} scrollRef={scrollRef} theme={theme} />
-      </Suspense>
-      <div ref={glowRef} className={styles.glow} />
-      <div ref={heroContentRef} className={styles.content}>
-        <div className={styles.kicker}>Hi, I&apos;m</div>
-        <h1 className={styles.title}>
-          Stepan
-          <br />
-          Nikulenko
-          <span className={styles.titleDot}>.</span>
-        </h1>
-        <p className={styles.subtitle}>Hands-on software engineer &amp; technical leader.</p>
-        <div className={styles.stats}>
-          {STATS.map((stat, i) => (
-            <span key={stat}>
-              {i > 0 && <span className={styles.statSep}>/ </span>}
-              {stat}
-            </span>
-          ))}
+    <section id="top" data-surface="paper" className={styles.hero}>
+      <div className={`shell ${styles.inner}`}>
+        <div className={styles.type}>
+          <h1 className={`display ${styles.name}`}>
+            Stepan
+            <br />
+            Nikulenko
+          </h1>
+          <p className={styles.role}>
+            Mobile <span className="serif">&amp;</span> full-stack engineer, fifteen years
+            hands-on&nbsp;— shipping fintech and edtech products end to end.
+          </p>
+        </div>
+        <div className={styles.portrait}>
+          <img
+            src={asset('assets/image6-light.png')}
+            alt="Stepan Nikulenko"
+            className={`${styles.portraitImage} ${styles.portraitDark}`}
+          />
+          <img
+            src={asset('assets/image6-light.png')}
+            alt="Stepan Nikulenko"
+            className={`${styles.portraitImage} ${styles.portraitLight}`}
+          />
         </div>
       </div>
-      <a href="#work" className={styles.scrollHint}>
-        Scroll ↓
-      </a>
+      <div className={`shell ${styles.metaStrip}`}>
+        {META.map((item) => (
+          <div key={item.label} className={styles.metaCell}>
+            <span className={styles.metaLabel}>{item.label}</span>
+            <span className={styles.metaValue}>
+              {item.live && <span className={styles.live} />}
+              {item.value}
+            </span>
+          </div>
+        ))}
+      </div>
     </section>
   );
 }

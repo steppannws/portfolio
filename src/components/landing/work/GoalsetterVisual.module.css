@@ -1,0 +1,24 @@
+/* three shots on a stepped baseline — no rotation, no drop shadows */
+.row {
+  display: flex;
+  align-items: stretch;
+  gap: clamp(10px, 1.4vw, 22px);
+  height: clamp(300px, 34vw, 520px);
+}
+
+.shot {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  background: var(--fill);
+}
+
+.shot:nth-child(1) {
+  margin-top: clamp(18px, 3vw, 46px);
+}
+
+.shot:nth-child(3) {
+  margin-top: clamp(9px, 1.5vw, 23px);
+}

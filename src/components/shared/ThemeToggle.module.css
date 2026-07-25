@@ -1,19 +1,21 @@
 .button {
   font-family: var(--font-mono);
   font-size: 12px;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--meta);
+  color: color-mix(in oklab, var(--paper-ink) 60%, var(--paper));
   background: transparent;
-  border: 1px solid var(--hair-strong);
-  padding: 8px 16px;
+  border: 0;
+  border-bottom: 1px solid var(--hair);
+  padding: 0 0 2px;
   cursor: pointer;
   transition:
     color 0.2s,
     border-color 0.2s;
 }
 
-.button:hover {
-  color: var(--ink);
-  border-color: var(--ink);
+.button:hover,
+.button:focus-visible {
+  color: var(--paper-ink);
+  border-bottom-color: var(--paper-ink);
 }
