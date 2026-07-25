@@ -1,0 +1,8 @@
+.image {
+  display: block;
+  width: 100%;
+  height: clamp(260px, 30vw, 460px);
+  object-fit: cover;
+  object-position: center 35%;
+  background: var(--fill);
+}

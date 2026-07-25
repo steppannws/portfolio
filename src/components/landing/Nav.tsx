@@ -2,6 +2,12 @@ import type { ThemeMode } from '../../hooks/useTheme';
 import { ThemeToggle } from '../shared/ThemeToggle';
 import styles from './Nav.module.css';
 
+const LINKS = [
+  { label: 'Work', href: '#work' },
+  { label: 'About', href: '#about' },
+  { label: 'Contact', href: '#contact' },
+];
+
 interface NavProps {
   theme: ThemeMode;
   onToggleTheme: () => void;
@@ -10,25 +16,19 @@ interface NavProps {
 export function Nav({ theme, onToggleTheme }: NavProps) {
   return (
     <header className={styles.header}>
-      <a href="#top" className={styles.logo}>
-        SN<span className={styles.logoDot}>.</span>
-      </a>
-      <nav className={styles.links}>
-        <a href="#work" className={styles.link}>
-          Work
+      <div className={`shell ${styles.inner}`}>
+        <a href="#top" className={styles.logo}>
+          Stepan Nikulenko
         </a>
-        <a href="#about" className={styles.link}>
-          About
-        </a>
-        <a href="#contact" className={styles.link}>
-          Contact
-        </a>
-        <ThemeToggle theme={theme} onToggle={onToggleTheme} />
-        <span className={styles.available}>
-          <span className={styles.availableDot} />
-          Available
-        </span>
-      </nav>
+        <nav className={styles.links}>
+          {LINKS.map((link) => (
+            <a key={link.href} href={link.href} className={styles.link}>
+              {link.label}
+            </a>
+          ))}
+          <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+        </nav>
+      </div>
     </header>
   );
 }

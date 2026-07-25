@@ -2,17 +2,14 @@ import styles from './Footer.module.css';
 
 export function Footer() {
   return (
-    <>
-      <div className={styles.wordmarkBand}>
-        <div className={styles.wordmark}>STEPAN NIKULENKO</div>
-      </div>
-      <footer className={styles.footer}>
-        <span className={styles.note}>© 2026 STEPAN NIKULENKO</span>
+    <footer data-surface="band" className={styles.footer}>
+      <div className={`shell ${styles.inner}`}>
+        <span className={styles.note}>© 2026 Stepan Nikulenko</span>
         <a href={`${import.meta.env.BASE_URL}deck.html`} className={styles.deckLink}>
-          FULL PORTFOLIO DECK →
+          Full portfolio deck →
         </a>
-        <span className={styles.note}>REMOTE — BUENOS AIRES, ARGENTINA</span>
-      </footer>
-    </>
+        <span className={styles.note}>Remote — Buenos Aires, Argentina</span>
+      </div>
+    </footer>
   );
 }

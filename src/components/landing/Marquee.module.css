@@ -1,29 +1,44 @@
+/* full-bleed band of oversized caps, alternating solid and outlined */
 .band {
   overflow: hidden;
-  padding: 20px 0;
-  background: var(--band);
-  transition: background 0.4s;
+  padding-block: clamp(18px, 2.6vw, 34px);
 }
 
 .track {
   display: flex;
   width: max-content;
-  animation: marquee 36s linear infinite;
+  animation: marquee 64s linear infinite;
 }
 
 .group {
   display: flex;
-  align-items: center;
-  gap: 38px;
-  padding-right: 38px;
-  font-family: var(--font-mono);
-  font-size: 15px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--band-text);
+  align-items: baseline;
+  gap: clamp(28px, 3vw, 52px);
+  padding-right: clamp(28px, 3vw, 52px);
   white-space: nowrap;
 }
 
-.sep {
-  color: var(--accent);
+.item,
+.itemOutline {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(34px, 4.6vw, 72px);
+  letter-spacing: -0.035em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.item {
+  color: var(--ink);
+}
+
+.itemOutline {
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in oklab, var(--ink) 55%, var(--bg));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    animation: none;
+  }
 }

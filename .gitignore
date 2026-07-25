@@ -7,9 +7,16 @@ Thumbs.db
 
 # Dependencies
 node_modules/
+.venv/
 
 # Build output
 dist/
+.vite/
+
+# Local scratch (background-removal experiments)
+remove_bg.swift
+test-bg.js
+temp_test*.png
 
 # Test artifacts
 playwright-report/

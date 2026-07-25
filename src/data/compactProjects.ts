@@ -1,8 +1,7 @@
 import { asset } from '../lib/asset';
 
+/** Archive projects — rendered as index rows, newest first. */
 export interface CompactProject {
-  span: number;
-  minHeight: number;
   date: string;
   title: string;
   description: string;
@@ -11,8 +10,6 @@ export interface CompactProject {
 
 export const COMPACT_PROJECTS: CompactProject[] = [
   {
-    span: 6,
-    minHeight: 300,
     date: '2018 — 2021',
     title: 'Club Premier',
     description:
@@ -20,8 +17,6 @@ export const COMPACT_PROJECTS: CompactProject[] = [
     image: { src: asset('assets/image4.png'), alt: 'Club Premier' },
   },
   {
-    span: 6,
-    minHeight: 300,
     date: '2017 — 2018',
     title: 'Aeromexico',
     description:
@@ -29,38 +24,27 @@ export const COMPACT_PROJECTS: CompactProject[] = [
     image: { src: asset('assets/image7.png'), alt: 'Aeromexico' },
   },
   {
-    span: 6,
-    minHeight: 260,
-    date: '2016',
-    title: 'Guía Arqui Buenos Aires',
-    description: 'Architecture guide to Buenos Aires — Google Maps & custom media carousel.',
-    image: { src: asset('assets/image10.png'), alt: 'Guía Arqui' },
-  },
-  {
-    span: 6,
-    minHeight: 260,
     date: '2016 — 2017',
     title: 'Humber',
-    description:
-      'Freight & merchants for truck drivers — precise GSM-network tracking via native SDK.',
+    description: 'Freight and merchants for truck drivers — GSM-network tracking via native SDK.',
     image: { src: asset('assets/image9.png'), alt: 'Humber' },
   },
   {
-    span: 6,
-    minHeight: 260,
+    date: '2016',
+    title: 'Guía Arqui Buenos Aires',
+    description: 'Architecture guide to Buenos Aires — Google Maps and a custom media carousel.',
+    image: { src: asset('assets/image10.png'), alt: 'Guía Arqui' },
+  },
+  {
     date: '2013',
     title: 'Carrera Aérea · Disney',
-    description:
-      'Air-racing mini game for Disney — Adobe AIR & ActionScript 3, when cross-platform game tech was still young.',
+    description: 'Air-racing mini game for Disney — Adobe AIR and ActionScript 3.',
     image: { src: asset('assets/game-carrera.jpg'), alt: 'Carrera Aérea gameplay' },
   },
   {
-    span: 6,
-    minHeight: 260,
     date: '2010',
     title: 'Personal Taxi Dakar',
-    description:
-      '3D rally game with deep car customization — built when Adobe AIR made cross-platform 3D games a novelty.',
+    description: '3D rally game with deep car customization, built on Adobe AIR.',
     image: { src: asset('assets/game-dakar.jpg'), alt: 'Personal Taxi Dakar customization screen' },
   },
 ];

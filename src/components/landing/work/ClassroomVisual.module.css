@@ -1,0 +1,62 @@
+/* spec-sheet texture: hairline rows, mono column heads, no boxes */
+.sheet {
+  border-top: 1px solid var(--hair);
+}
+
+.head,
+.row {
+  display: grid;
+  grid-template-columns: 1.1fr 0.8fr 1.2fr;
+  gap: var(--col-gap);
+  align-items: baseline;
+  border-bottom: 1px solid var(--hair);
+}
+
+.head {
+  padding-block: 10px;
+}
+
+.row {
+  padding-block: clamp(16px, 1.8vw, 26px);
+}
+
+.headCell {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(20px, 1.9vw, 30px);
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+
+.note {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--surface-accent);
+}
+
+.detail {
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+@media (max-width: 640px) {
+  .head {
+    display: none;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}

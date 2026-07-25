@@ -35,7 +35,7 @@ export function CoverSlide() {
       </div>
       <div className={styles.coverPortrait}>
         <img
-          src={asset('assets/image6.png')}
+          src={asset('assets/image6-light.png')}
           alt="Stepan Nikulenko"
           className={styles.coverPortraitImage}
         />
