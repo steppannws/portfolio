@@ -33,7 +33,7 @@ export function AboutSlide() {
         />
         <div>
           <div className={styles.asideLabel}>Beyond code</div>
-          <div className={styles.asideValue}>Nature · Music · Life</div>
+          <div className={styles.asideValue}>Nature · Music · Sports · Life</div>
         </div>
       </div>
     </div>
