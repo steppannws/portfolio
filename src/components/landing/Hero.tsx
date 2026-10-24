@@ -14,9 +14,8 @@ export function Hero() {
       <div className={`shell ${styles.inner}`}>
         <div className={styles.type}>
           <h1 className={`display ${styles.name}`}>
-            Stepan
-            <br />
-            Nikulenko
+            <span className={styles.nameBack}>Stepan</span>{' '}
+            <span className={styles.nameFront}>Nikulenko</span>
           </h1>
           <p className={styles.role}>
             Mobile <span className="serif">&amp;</span> full-stack engineer, fifteen years
