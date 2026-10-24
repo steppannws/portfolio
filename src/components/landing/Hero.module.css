@@ -1,3 +1,30 @@
+/* keyframes live here so CSS modules scope them with the classes that use them */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/*
+ * Rises out of an edge at the line's bottom. The bottom clip tracks the
+ * translate, and the negative end insets leave room for descenders and shadows.
+ */
+@keyframes mask-rise {
+  from {
+    transform: translateY(100%);
+    clip-path: inset(-100% -100% 100% -100%);
+  }
+  to {
+    transform: none;
+    clip-path: inset(-100% -100% -100% -100%);
+  }
+}
+
 .hero {
   min-height: 100svh;
   display: flex;
@@ -40,7 +67,7 @@
 .nameFront {
   display: block;
   position: relative;
-  animation: rise 0.7s 0.05s both;
+  animation: mask-rise 0.9s 0.05s var(--ease-out) both;
 }
 
 .nameBack {
@@ -49,6 +76,7 @@
 
 .nameFront {
   z-index: 2;
+  animation-delay: 0.15s;
   /* lifts the name off the portrait where they overlap */
   text-shadow: 0 6px 28px rgba(0, 0, 0, 0.55);
 }
@@ -61,7 +89,7 @@
   color: var(--muted);
   position: relative;
   z-index: 2;
-  animation: rise 0.7s 0.16s both;
+  animation: rise 0.7s 0.35s var(--ease-out) both;
 }
 
 .role :global(.serif) {
@@ -82,7 +110,6 @@
   margin-right: calc(-1 * var(--gutter));
   align-self: stretch;
   display: flex;
-  animation: rise 0.8s 0.1s both;
 }
 
 .portraitImage {
@@ -99,7 +126,6 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   border-top: 1px solid var(--hair);
-  animation: rise 0.7s 0.26s both;
 }
 
 .metaCell {
@@ -138,6 +164,18 @@
   flex: none;
   border-radius: 50%;
   background: #22c55e;
+  position: relative;
+}
+
+/* soft static ring that marks the status as live */
+.live::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  opacity: 0.3;
+  transform: scale(2);
 }
 
 @media (max-width: 1000px) {

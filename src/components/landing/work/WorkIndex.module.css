@@ -23,11 +23,17 @@
 .row {
   position: relative;
   padding-block: clamp(20px, 2.4vw, 34px);
-  transition: padding-left 0.3s cubic-bezier(0.22, 0.7, 0.2, 1);
 }
 
-.row:hover {
-  padding-left: 14px;
+/* hover nudge moves the text with transform so the grid never re-lays out */
+.num,
+.title,
+.note {
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.row:hover :is(.num, .title, .note) {
+  transform: translateX(14px);
 }
 
 .num {
@@ -75,8 +81,8 @@
   transform: translate(12px, -50%);
   pointer-events: none;
   transition:
-    opacity 0.28s,
-    transform 0.28s cubic-bezier(0.22, 0.7, 0.2, 1);
+    opacity var(--dur-fast),
+    transform var(--dur-fast) var(--ease-out);
 }
 
 .row:hover .thumb {
@@ -101,8 +107,8 @@
     gap: 6px 12px;
   }
 
-  .row:hover {
-    padding-left: 0;
+  .row:hover :is(.num, .title, .note) {
+    transform: none;
   }
 
   .num {
