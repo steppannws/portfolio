@@ -160,19 +160,19 @@
 }
 
 @media (max-width: 560px) {
-  /* phones: name only, the portrait would crowd it */
-  .inner {
-    grid-template-columns: 1fr;
-    align-items: start;
-    gap: 28px;
-  }
-
+  /* phones: name spans the full width, portrait stays layered behind it */
   .type {
     grid-column: 1 / -1;
   }
 
   .portrait {
-    display: none;
+    grid-column: 5 / -1;
+  }
+
+  /* the tagline crosses the portrait here, so lift it like the name */
+  .role {
+    color: var(--ink);
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
   }
 
   .metaStrip {
