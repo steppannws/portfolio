@@ -1,100 +1,12 @@
-/* product surface, monochrome — no macOS traffic lights, no shadow */
-.window {
-  border: 1px solid var(--hair-strong);
-  background: var(--fill);
-}
-
-.bar {
+/* full App Store frames side by side — uncropped, each carries its own caption */
+.row {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 18px;
-  border-bottom: 1px solid var(--hair);
+  align-items: flex-start;
+  gap: clamp(10px, 1.4vw, 22px);
 }
 
-.url,
-.barMeta {
-  font-family: var(--font-mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  color: var(--faint);
-}
-
-.body {
-  padding: clamp(16px, 2vw, 28px) clamp(18px, 2.2vw, 30px) clamp(20px, 2.4vw, 32px);
-}
-
-.jobRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 16px;
-  padding-block: 14px;
-  border-bottom: 1px solid var(--hair);
-}
-
-.jobName,
-.jobNameDone {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(16px, 1.5vw, 21px);
-  letter-spacing: -0.015em;
-}
-
-.jobName {
-  color: var(--ink);
-}
-
-.jobNameDone {
-  color: var(--faint);
-  text-decoration: line-through;
-  text-decoration-thickness: 1px;
-}
-
-.status,
-.statusDone {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-.status {
-  color: var(--surface-accent);
-}
-
-.statusDone {
-  color: var(--faint);
-}
-
-.revenueRow {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 16px;
-  padding-top: 20px;
-}
-
-.revenueLabel {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--faint);
-}
-
-.revenueValue {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(22px, 2.2vw, 34px);
-  letter-spacing: -0.03em;
-  color: var(--ink);
-}
-
-.delta {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.08em;
-  color: var(--faint);
+.shot {
+  flex: 1;
+  min-width: 0;
+  height: auto;
 }

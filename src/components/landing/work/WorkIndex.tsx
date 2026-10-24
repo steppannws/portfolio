@@ -18,7 +18,7 @@ export function WorkIndex() {
           <p className={styles.note}>{project.description}</p>
           <span className={styles.year}>{project.date}</span>
           <img
-            src={project.image.src}
+            src={project.image}
             alt=""
             aria-hidden="true"
             loading="lazy"

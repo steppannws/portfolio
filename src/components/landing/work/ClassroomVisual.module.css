@@ -1,3 +1,17 @@
+/* transparent product mockups above the sheet */
+.shots {
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(12px, 2vw, 32px);
+  margin-bottom: clamp(24px, 3vw, 44px);
+}
+
+.shot {
+  flex: 1;
+  min-width: 0;
+  height: auto;
+}
+
 /* spec-sheet texture: hairline rows, mono column heads, no boxes */
 .sheet {
   border-top: 1px solid var(--hair);

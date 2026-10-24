@@ -3,21 +3,21 @@ import { render, screen } from '@testing-library/react';
 import { SLIDES } from './index';
 
 describe('deck slides', () => {
-  it('has 15 slides in the expected order', () => {
-    expect(SLIDES).toHaveLength(15);
-    expect(SLIDES[0].label).toBe('Cover');
-    expect(SLIDES[14].label).toBe('Contact');
+  it('has 16 slides in the expected order', () => {
+    expect(SLIDES).toHaveLength(16);
+    render(SLIDES[15]);
+    expect(screen.getByRole('heading', { name: /Let's build/ })).toBeInTheDocument();
   });
 
   it('every slide renders without crashing', () => {
     SLIDES.forEach((slide) => {
-      const { unmount } = render(slide.element);
+      const { unmount } = render(slide);
       unmount();
     });
   });
 
   it('cover slide shows the name', () => {
-    render(SLIDES[0].element);
+    render(SLIDES[0]);
     expect(screen.getByRole('heading', { name: /Stepan Nikulenko/ })).toBeInTheDocument();
   });
 });

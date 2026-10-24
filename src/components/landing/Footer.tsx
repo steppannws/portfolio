@@ -1,3 +1,4 @@
+import { asset } from '../../lib/asset';
 import styles from './Footer.module.css';
 
 export function Footer() {
@@ -5,7 +6,7 @@ export function Footer() {
     <footer data-surface="band" className={styles.footer}>
       <div className={`shell ${styles.inner}`}>
         <span className={styles.note}>© 2026 Stepan Nikulenko</span>
-        <a href={`${import.meta.env.BASE_URL}deck.html`} className={styles.deckLink}>
+        <a href={asset('deck.html')} className={styles.deckLink}>
           Full portfolio deck →
         </a>
         <span className={styles.note}>Remote — Buenos Aires, Argentina</span>

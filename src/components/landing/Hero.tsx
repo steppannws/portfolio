@@ -27,12 +27,7 @@ export function Hero() {
           <img
             src={asset('assets/image6-light.png')}
             alt="Stepan Nikulenko"
-            className={`${styles.portraitImage} ${styles.portraitDark}`}
-          />
-          <img
-            src={asset('assets/image6-light.png')}
-            alt="Stepan Nikulenko"
-            className={`${styles.portraitImage} ${styles.portraitLight}`}
+            className={styles.portraitImage}
           />
         </div>
       </div>

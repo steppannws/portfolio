@@ -9,8 +9,8 @@ const LINKS = [
 ];
 
 interface NavProps {
-  theme: ThemeMode;
-  onToggleTheme: () => void;
+  theme?: ThemeMode;
+  onToggleTheme?: () => void;
 }
 
 export function Nav({ theme, onToggleTheme }: NavProps) {
@@ -26,7 +26,7 @@ export function Nav({ theme, onToggleTheme }: NavProps) {
               {link.label}
             </a>
           ))}
-          <ThemeToggle theme={theme} onToggle={onToggleTheme} />
+          {theme && onToggleTheme && <ThemeToggle theme={theme} onToggle={onToggleTheme} />}
         </nav>
       </div>
     </header>

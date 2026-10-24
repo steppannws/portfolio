@@ -10,8 +10,8 @@ if (!('ResizeObserver' in globalThis)) {
   globalThis.ResizeObserver = ResizeObserverStub as unknown as typeof ResizeObserver;
 }
 
-// jsdom has no matchMedia; components call it on mount (useTheme, useCursor,
-// ParticleField). Default stub: no media query matches.
+// jsdom has no matchMedia; useTheme calls it on mount. Default stub: no media
+// query matches.
 if (!window.matchMedia) {
   window.matchMedia = (query: string): MediaQueryList =>
     ({

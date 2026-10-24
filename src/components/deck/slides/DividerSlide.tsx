@@ -3,7 +3,7 @@ import styles from './slides.module.css';
 const WORK_LIST = [
   { name: 'Goalsetter — Invest & Bank', date: '2021 — 2026' },
   { name: 'Goalsetter Classroom', date: '2025 — 2026' },
-  { name: 'Tydee', date: 'Startup · Founder' },
+  { name: 'Tydee', date: 'Startup · Co-founder' },
   { name: 'Ace Hardware Rewards', date: '2021' },
   { name: 'Club Premier', date: '2018 — 2021' },
   { name: 'Aeromexico', date: '2017 — 2018' },

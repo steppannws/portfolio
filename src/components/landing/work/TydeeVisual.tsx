@@ -1,32 +1,24 @@
+import { asset } from '../../../lib/asset';
 import styles from './TydeeVisual.module.css';
 
-const JOBS = [
-  { name: 'Green Valley Offices', status: 'Scheduled', done: false },
-  { name: 'Marina Bay Condos', status: 'Scheduled', done: false },
-  { name: 'Willow Creek Spa', status: 'Completed', done: true },
+const SHOTS = [
+  { src: 'assets/tydee-app-01-hero.png', alt: 'Tydee app overview' },
+  { src: 'assets/tydee-app-03-jobs-map.png', alt: 'Tydee jobs map' },
+  { src: 'assets/tydee-app-05-revenue.png', alt: 'Tydee revenue' },
 ];
 
 export function TydeeVisual() {
   return (
-    <div className={styles.window}>
-      <div className={styles.bar}>
-        <span className={styles.url}>app.tydee.io/dashboard</span>
-        <span className={styles.barMeta}>Admin</span>
-      </div>
-      <div className={styles.body}>
-        {JOBS.map((job) => (
-          <div key={job.name} className={styles.jobRow}>
-            <span className={job.done ? styles.jobNameDone : styles.jobName}>{job.name}</span>
-            <span className={job.done ? styles.statusDone : styles.status}>{job.status}</span>
-          </div>
-        ))}
-        <div className={styles.revenueRow}>
-          <span className={styles.revenueLabel}>Monthly revenue</span>
-          <span className={styles.revenueValue}>
-            $24,580 <span className={styles.delta}>+18%</span>
-          </span>
-        </div>
-      </div>
+    <div className={styles.row}>
+      {SHOTS.map((shot) => (
+        <img
+          key={shot.src}
+          src={asset(shot.src)}
+          alt={shot.alt}
+          loading="lazy"
+          className={styles.shot}
+        />
+      ))}
     </div>
   );
 }
