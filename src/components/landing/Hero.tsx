@@ -1,5 +1,9 @@
+import { useEffect, useRef, useState } from 'react';
 import { asset } from '../../lib/asset';
 import styles from './Hero.module.css';
+
+// fonts swap in fine late, so never hold the page on them longer than this
+const MAX_FONT_WAIT_MS = 4000;
 
 const META = [
   { label: 'Role', value: 'Technical Lead' },
@@ -9,8 +13,35 @@ const META = [
 ];
 
 export function Hero() {
+  const portraitRef = useRef<HTMLImageElement>(null);
+  const [ready, setReady] = useState(false);
+
+  // wait for the portrait and webfonts so the entrance plays once on finished content
+  useEffect(() => {
+    let live = true;
+    // decode() settles on load or error, so the portrait wait cannot hang
+    const portrait = portraitRef.current?.decode?.().catch(() => {});
+    const fonts = Promise.race([
+      document.fonts?.ready,
+      new Promise((resolve) => setTimeout(resolve, MAX_FONT_WAIT_MS)),
+    ]);
+    Promise.all([portrait, fonts]).then(() => {
+      if (!live) return;
+      setReady(true);
+      // the loader lives in index.html so it paints before any JS arrives
+      document.getElementById('boot-loader')?.classList.add('done');
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
+
   return (
-    <section id="top" data-surface="paper" className={styles.hero}>
+    <section
+      id="top"
+      data-surface="paper"
+      className={`${styles.hero} ${ready ? '' : styles.loading}`}
+    >
       <div className={`shell ${styles.inner}`}>
         <div className={styles.type}>
           <h1 className={`display ${styles.name}`}>
@@ -24,7 +55,8 @@ export function Hero() {
         </div>
         <div className={styles.portrait}>
           <img
-            src={asset('assets/image6-light.png')}
+            ref={portraitRef}
+            src={asset('assets/image6-light.webp')}
             alt="Stepan Nikulenko"
             className={styles.portraitImage}
           />

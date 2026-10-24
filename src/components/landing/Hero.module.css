@@ -25,6 +25,13 @@
   }
 }
 
+/* hold the entrance on its first frame until the boot loader (index.html) lifts */
+.loading .nameBack,
+.loading .nameFront,
+.loading .role {
+  animation-play-state: paused;
+}
+
 .hero {
   min-height: 100svh;
   display: flex;
