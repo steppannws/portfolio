@@ -14,12 +14,13 @@
   grid-template-columns: repeat(12, minmax(0, 1fr));
   gap: var(--col-gap);
   align-items: end;
-  padding-bottom: clamp(28px, 4vh, 56px);
 }
 
+/* only the text keeps a gap above the strip; the portrait sits on its rule */
 .type {
   grid-column: 1 / span 7;
   align-self: end;
+  padding-bottom: clamp(28px, 4vh, 56px);
 }
 
 .name {
@@ -62,7 +63,7 @@
   height: 100%;
   min-height: 46vh;
   object-fit: cover;
-  object-position: 0% 26%;
+  object-position: 0% 100%;
   filter: grayscale(1) contrast(1.08);
 }
 
@@ -123,21 +124,12 @@
     gap: 28px;
   }
 
-  .type,
-  .portrait {
+  .type {
     grid-column: 1 / -1;
   }
 
-  /* full-bleed on mobile */
   .portrait {
-    order: -1;
-    margin-inline: calc(-1 * var(--gutter));
-  }
-
-  .portraitImage {
-    min-height: 0;
-    aspect-ratio: 16 / 10;
-    object-position: 22% 20%;
+    display: none;
   }
 
   .metaStrip {
