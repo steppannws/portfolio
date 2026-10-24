@@ -1,6 +1,6 @@
 # Stepan Nikulenko — Portfolio
 
-Personal portfolio: an interactive landing page and a 13-slide presentation
+Personal portfolio: an interactive landing page and a 16-slide presentation
 deck. Vite + React + TypeScript, plain CSS Modules over design tokens, tested
 with Vitest and Playwright, deployed to GitHub Pages via Actions.
 
@@ -10,8 +10,8 @@ with Vitest and Playwright, deployed to GitHub Pages via Actions.
 
 | Entry                      | What it is                                                                                         |
 | -------------------------- | -------------------------------------------------------------------------------------------------- |
-| `index.html` → `/`         | Landing — editorial one-pager: paper/band alternating sections, oversized display type, light/dark |
-| `deck.html` → `/deck.html` | 13-slide deck — keyboard nav (arrows/Home/End), hash-linkable slides, scale-to-fit 1920×1080 stage |
+| `index.html` → `/`         | Landing — editorial one-pager: paper/band alternating sections, oversized display type, dark-only  |
+| `deck.html` → `/deck.html` | 16-slide deck — keyboard nav (arrows/Home/End), hash-linkable slides, scale-to-fit 1920×1080 stage |
 
 ## Development
 
@@ -40,14 +40,15 @@ npm run build      # production build → dist/
   section rule), `.display`, `.serif` (the one italic counterpoint, used twice
   on the page), `.chip`. Section CSS Modules compose on top.
 - **Logic lives in hooks** (`src/hooks/`) — `useTheme` (persistence +
-  OS-preference default), `useReveal` (in-view fade) and `useDeckController`
+  OS-preference default; currently unused — the landing is pinned dark in
+  `index.html`), `useReveal` (in-view fade) and `useDeckController`
   (slide index, keyboard nav, hash sync, scale-to-fit). Components stay
   presentational.
 - **Work is two-tier** — 4 flagships via `FlagshipProject` (text column on the
   grid + a visual that bleeds off the page edge for imagery, `bleed={false}` for
   text-based visuals) and 6 archive rows via `WorkIndex`, driven by
-  `src/data/compactProjects.ts`. **8 deck project slides** — all data-driven via
-  one `ProjectSlide`.
+  `src/data/compactProjects.ts`. **10 deck project slides** — all data-driven via
+  one `ProjectSlide`, plus a Tydee mobile gallery slide.
 - **No canvas, no custom cursor** — the landing is type, rules and imagery; the
   only motion is the skill marquee and a 10px in-view fade, both disabled under
   `prefers-reduced-motion`.

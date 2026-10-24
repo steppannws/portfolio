@@ -1,3 +1,4 @@
+import { asset } from '../../../lib/asset';
 import styles from './ClassroomVisual.module.css';
 
 const ROWS = [
@@ -7,21 +8,39 @@ const ROWS = [
   { name: 'Agent tooling', note: 'Internal', detail: 'Local-LLM delivery workflows' },
 ];
 
+const SHOTS = [
+  { src: 'assets/classroom-hero.png', alt: 'Goalsetter Classroom student app on laptop and phone' },
+  { src: 'assets/classroom-dashboard.png', alt: 'Goalsetter Classroom educator dashboard' },
+];
+
 export function ClassroomVisual() {
   return (
-    <div className={styles.sheet}>
-      <div className={styles.head}>
-        <span className={styles.headCell}>Integration</span>
-        <span className={styles.headCell}>Scope</span>
-        <span className={styles.headCell}>What it does</span>
+    <div>
+      <div className={styles.shots}>
+        {SHOTS.map((shot) => (
+          <img
+            key={shot.src}
+            src={asset(shot.src)}
+            alt={shot.alt}
+            loading="lazy"
+            className={styles.shot}
+          />
+        ))}
       </div>
-      {ROWS.map((row) => (
-        <div key={row.name} className={styles.row}>
-          <span className={styles.name}>{row.name}</span>
-          <span className={styles.note}>{row.note}</span>
-          <span className={styles.detail}>{row.detail}</span>
+      <div className={styles.sheet}>
+        <div className={styles.head}>
+          <span className={styles.headCell}>Integration</span>
+          <span className={styles.headCell}>Scope</span>
+          <span className={styles.headCell}>What it does</span>
         </div>
-      ))}
+        {ROWS.map((row) => (
+          <div key={row.name} className={styles.row}>
+            <span className={styles.name}>{row.name}</span>
+            <span className={styles.note}>{row.note}</span>
+            <span className={styles.detail}>{row.detail}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

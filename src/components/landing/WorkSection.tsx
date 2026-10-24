@@ -51,10 +51,10 @@ export function WorkSection() {
           <FlagshipProject
             index="03"
             years="Startup"
-            kind="Founder"
+            kind="Co-founder"
             title="Tydee"
-            blurb="Multi-tenant platform for cleaning companies — web, admin and mobile. 200+ businesses, 10K+ jobs managed."
-            tags={['Node.js', 'React', 'Multi-tenant']}
+            blurb="Multi-tenant platform for cleaning companies — web, admin and mobile. Co-founded and built end to end: scheduling, crew clock-in, revenue tracking and client messaging in one place."
+            tags={['Node.js', 'React', 'React Native', 'Multi-tenant']}
             link={{ label: 'tydee.io ↗', href: 'https://www.tydee.io/' }}
             bleed={false}
           >

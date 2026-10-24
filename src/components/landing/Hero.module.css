@@ -66,22 +66,6 @@
   filter: grayscale(1) contrast(1.08);
 }
 
-.portraitDark {
-  display: block;
-}
-
-.portraitLight {
-  display: none;
-}
-
-:global(:root[data-theme='light']) .portraitDark {
-  display: none;
-}
-
-:global(:root[data-theme='light']) .portraitLight {
-  display: block;
-}
-
 /* four-cell data strip on a rule, the only mono block above the fold */
 .metaStrip {
   display: grid;

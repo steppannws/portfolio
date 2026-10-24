@@ -2,15 +2,6 @@ import type { ProjectSlideProps } from './ProjectSlide';
 import styles from './slides.module.css';
 import { asset } from '../../../lib/asset';
 
-function Placeholder({ label, phone = false }: { label: string; phone?: boolean }) {
-  return (
-    <div className={phone ? styles.placeholderPhone : styles.placeholderCol}>
-      <span className={styles.placeholderLabel}>{label}</span>
-      <span className={styles.placeholderHint}>Drop screenshot</span>
-    </div>
-  );
-}
-
 export const PROJECT_SLIDES: ProjectSlideProps[] = [
   {
     date: '2021 — 2026',
@@ -28,17 +19,17 @@ export const PROJECT_SLIDES: ProjectSlideProps[] = [
     media: (
       <>
         <img
-          src={asset('assets/gs1.png')}
+          src={asset('assets/gs1.jpg')}
           alt="Goalsetter dashboard"
           className={`${styles.mediaImageThird} ${styles.raiseSlight}`}
         />
         <img
-          src={asset('assets/gs3.png')}
+          src={asset('assets/gs3.jpg')}
           alt="Goalsetter investing"
           className={styles.mediaImageThird}
         />
         <img
-          src={asset('assets/gs4.png')}
+          src={asset('assets/gs4.jpg')}
           alt="Goalsetter goals"
           className={`${styles.mediaImageThird} ${styles.dropSlight}`}
         />
@@ -65,52 +56,45 @@ export const PROJECT_SLIDES: ProjectSlideProps[] = [
     ],
     tags: ['Node.js', 'PostgreSQL', 'React · Vite · Redux', 'REST APIs'],
     media: (
-      <div className={styles.lmsPanel}>
-        <div className={styles.lmsPanelLabel}>LMS Integrations</div>
-        <div className={styles.lmsRows}>
-          {[
-            { name: 'Canvas', tag: 'LMS' },
-            { name: 'Brightspace', tag: 'LMS' },
-            { name: 'LTI · LTIAAS', tag: 'Standard' },
-          ].map((row) => (
-            <div key={row.name} className={styles.lmsRow}>
-              <span className={styles.lmsRowName}>{row.name}</span>
-              <span className={styles.lmsRowTag}>{row.tag}</span>
-            </div>
-          ))}
-        </div>
-        <div className={styles.lmsArrow}>↓</div>
-        <div className={styles.lmsTarget}>Goalsetter Classroom</div>
-        <div className={styles.lmsDividerLine} />
-        <div className={styles.lmsPanelLabel}>AI-Augmented Delivery</div>
-        <div className={styles.pills}>
-          {['Claude Code', 'Cursor', 'MCP Servers', 'Local-LLM Tools'].map((tool) => (
-            <span key={tool} className={styles.pill}>
-              {tool}
-            </span>
-          ))}
-        </div>
+      <div className={styles.mediaColumn}>
+        <img
+          src={asset('assets/classroom-hero.png')}
+          alt="Goalsetter Classroom student app on laptop and phone"
+          className={styles.mediaImage}
+        />
+        <img
+          src={asset('assets/classroom-dashboard.png')}
+          alt="Goalsetter Classroom educator dashboard"
+          className={styles.mediaImage}
+        />
       </div>
     ),
   },
   {
     date: 'Startup',
-    role: 'Founder · Full-Stack',
+    role: 'Co-founder · Full-Stack',
     title: 'Tydee',
     description:
-      'My own startup — a multi-tenant platform that helps cleaning companies manage their work, employees and clients.',
+      'A startup I co-founded — a multi-tenant platform that helps cleaning companies manage their work, employees and clients.',
     points: [
       'Multi-tenant SaaS across three surfaces — customer web, admin console & mobile app',
       'Manage jobs, scheduling, teams and client relationships in one place',
-      'Designed and built end to end as founder & full-stack engineer',
+      'Designed and built end to end as co-founder & full-stack engineer',
     ],
     tags: ['Multi-Tenant SaaS', 'Web · Admin · Mobile', 'tydee.io'],
     media: (
-      <>
-        <Placeholder label="Web" />
-        <Placeholder label="Admin" />
-        <Placeholder label="Mobile" phone />
-      </>
+      <div className={styles.mediaColumn}>
+        <img
+          src={asset('assets/tydee-web.jpg')}
+          alt="Tydee customer website"
+          className={styles.mediaImage}
+        />
+        <img
+          src={asset('assets/tydee-admin.jpg')}
+          alt="Tydee admin console calendar"
+          className={styles.mediaImage}
+        />
+      </div>
     ),
   },
   {
@@ -134,7 +118,7 @@ export const PROJECT_SLIDES: ProjectSlideProps[] = [
     tags: ['React Native', 'Performance', 'Analytics'],
     media: (
       <img
-        src={asset('assets/image8.png')}
+        src={asset('assets/image8.jpg')}
         alt="Ace Hardware Rewards screens"
         className={styles.mediaImage}
       />

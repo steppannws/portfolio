@@ -6,33 +6,16 @@ import { DividerSlide } from './DividerSlide';
 import { ProjectSlide } from './ProjectSlide';
 import { PROJECT_SLIDES } from './projects';
 import { ContactSlide } from './ContactSlide';
+import { TydeeMobileSlide } from './TydeeMobileSlide';
 
-export interface SlideEntry {
-  label: string;
-  element: ReactElement;
-}
-
-const PROJECT_LABELS = [
-  'Goalsetter',
-  'Classroom',
-  'Tydee',
-  'Ace Hardware',
-  'Club Premier',
-  'Aeromexico',
-  'Guía Arqui',
-  'Humber',
-  'Carrera Aérea',
-  'Dakar',
-];
-
-export const SLIDES: SlideEntry[] = [
-  { label: 'Cover', element: <CoverSlide /> },
-  { label: 'About', element: <AboutSlide /> },
-  { label: 'Focus', element: <FocusSlide /> },
-  { label: 'Selected Work', element: <DividerSlide /> },
-  ...PROJECT_SLIDES.map((project, i) => ({
-    label: PROJECT_LABELS[i],
-    element: <ProjectSlide {...project} />,
-  })),
-  { label: 'Contact', element: <ContactSlide /> },
+export const SLIDES: ReactElement[] = [
+  <CoverSlide key="cover" />,
+  <AboutSlide key="about" />,
+  <FocusSlide key="focus" />,
+  <DividerSlide key="divider" />,
+  ...PROJECT_SLIDES.flatMap((project, i) => {
+    const slide = <ProjectSlide key={`project-${i}`} {...project} />;
+    return project.title === 'Tydee' ? [slide, <TydeeMobileSlide key="tydee-mobile" />] : [slide];
+  }),
+  <ContactSlide key="contact" />,
 ];
