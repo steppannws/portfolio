@@ -113,30 +113,10 @@ img {
 
 /* ── motion ─────────────────────────────────────────────────────────────── */
 
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
 [data-reveal] {
   transition:
-    opacity 0.6s cubic-bezier(0.22, 0.7, 0.2, 1),
-    transform 0.6s cubic-bezier(0.22, 0.7, 0.2, 1);
+    opacity var(--dur-slow) var(--ease-out),
+    transform var(--dur-slow) var(--ease-out);
 }
 
 [data-reveal].reveal-hidden {

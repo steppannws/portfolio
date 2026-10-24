@@ -7,6 +7,11 @@
   /* one accent, used sparingly: section numbers, one rule, hover states */
   --accent: #dd4318;
 
+  /* motion: one curve and two speeds so every transition shares a rhythm */
+  --ease-out: cubic-bezier(0.22, 0.7, 0.2, 1);
+  --dur-fast: 0.28s;
+  --dur-slow: 0.6s;
+
   /* layout: 12 columns inside a max width, edge gutter scales with viewport */
   --maxw: 1560px;
   --gutter: clamp(20px, 3.4vw, 56px);

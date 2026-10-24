@@ -1,3 +1,12 @@
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 /* full-bleed band of oversized caps, alternating solid and outlined */
 .band {
   overflow: hidden;
