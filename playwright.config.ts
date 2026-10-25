@@ -5,11 +5,11 @@ export default defineConfig({
   fullyParallel: true,
   reporter: 'list',
   use: {
-    baseURL: 'http://localhost:4173/portfolio/',
+    baseURL: 'http://localhost:4173/',
   },
   webServer: {
     command: 'npm run build && npm run preview',
-    url: 'http://localhost:4173/portfolio/',
+    url: 'http://localhost:4173/',
     reuseExistingServer: !process.env.CI,
   },
 });

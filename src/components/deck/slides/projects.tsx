@@ -58,12 +58,12 @@ export const PROJECT_SLIDES: ProjectSlideProps[] = [
     media: (
       <div className={styles.mediaColumn}>
         <img
-          src={asset('assets/classroom-hero.png')}
+          src={asset('assets/classroom-hero.webp')}
           alt="Goalsetter Classroom student app on laptop and phone"
           className={styles.mediaImage}
         />
         <img
-          src={asset('assets/classroom-dashboard.png')}
+          src={asset('assets/classroom-dashboard.webp')}
           alt="Goalsetter Classroom educator dashboard"
           className={styles.mediaImage}
         />
@@ -140,13 +140,13 @@ export const PROJECT_SLIDES: ProjectSlideProps[] = [
     media: (
       <>
         <img
-          src={asset('assets/image2.png')}
+          src={asset('assets/image2.webp')}
           alt="Club Premier screen"
           className={`${styles.mediaImage} ${styles.raiseSlight}`}
           style={{ width: '44%' }}
         />
         <img
-          src={asset('assets/image4.png')}
+          src={asset('assets/image4.webp')}
           alt="Club Premier screen"
           className={`${styles.mediaImage} ${styles.dropSlight}`}
           style={{ width: '44%' }}
@@ -169,7 +169,7 @@ export const PROJECT_SLIDES: ProjectSlideProps[] = [
     tags: ['React Native', 'Web → Native Migration', 'Animations'],
     media: (
       <img
-        src={asset('assets/image7.png')}
+        src={asset('assets/image7.webp')}
         alt="Aeromexico app screens"
         className={styles.mediaImage}
       />
@@ -193,7 +193,7 @@ export const PROJECT_SLIDES: ProjectSlideProps[] = [
     tags: ['React Native', 'Google Maps'],
     media: (
       <img
-        src={asset('assets/image10.png')}
+        src={asset('assets/image10.webp')}
         alt="Guía Arqui Buenos Aires screens"
         className={styles.mediaImage}
       />
@@ -213,7 +213,7 @@ export const PROJECT_SLIDES: ProjectSlideProps[] = [
     tags: ['React Native', 'Native SDK', 'Google Maps'],
     media: (
       <img
-        src={asset('assets/image9.png')}
+        src={asset('assets/image9.webp')}
         alt="Humber app screens"
         className={styles.mediaImage}
       />

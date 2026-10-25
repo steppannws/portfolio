@@ -27,7 +27,7 @@ export function AboutSlide() {
       </div>
       <div className={styles.aboutAside}>
         <img
-          src={asset('assets/image11.png')}
+          src={asset('assets/image11.webp')}
           alt="Mountain landscape"
           className={styles.aboutAsideImage}
         />

@@ -4,7 +4,7 @@ Personal portfolio: an interactive landing page and a 16-slide presentation
 deck. Vite + React + TypeScript, plain CSS Modules over design tokens, tested
 with Vitest and Playwright, deployed to GitHub Pages via Actions.
 
-**Live:** https://steppannws.github.io/portfolio/
+**Live:** https://stepannikulenko.com/
 
 ## Pages
 
