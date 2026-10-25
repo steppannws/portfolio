@@ -1,0 +1,90 @@
+/* WebGL overlay the climber is drawn on; the page stays interactive underneath */
+.canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+}
+
+.ui {
+  position: fixed;
+  inset: 0;
+  z-index: 61;
+  pointer-events: none;
+  font-family: 'Space Mono', ui-monospace, monospace;
+}
+
+.ui > * {
+  pointer-events: auto;
+}
+
+.btn {
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border: 1px solid rgba(233, 229, 219, 0.45);
+  border-radius: 10px;
+  background: rgba(13, 13, 12, 0.6);
+  color: #e9e5db;
+  font:
+    600 18px/1 system-ui,
+    sans-serif;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  backdrop-filter: blur(4px);
+}
+
+.round {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+}
+
+.raised {
+  margin-bottom: 34px;
+}
+
+.padLeft,
+.padRight {
+  position: absolute;
+  bottom: 22px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.padLeft {
+  left: 18px;
+}
+
+.padRight {
+  right: 18px;
+  gap: 12px;
+}
+
+.close {
+  position: absolute;
+  top: 76px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+}
+
+.hint {
+  position: absolute;
+  left: 18px;
+  bottom: 18px;
+  padding: 8px 10px;
+  border: 1px solid rgba(233, 229, 219, 0.2);
+  border-radius: 6px;
+  background: #0d0d0c;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8a8780;
+}
