@@ -40,8 +40,8 @@ export function WorkSection() {
             years="2025 — 2026"
             kind="EdTech · Full-Stack"
             title="Goalsetter Classroom"
-            blurb="Web apps and microservices bringing financial literacy into schools — plus AI agents, local-LLM tools and agentic workflows powering internal delivery."
-            tags={['TypeScript', 'Microservices', 'PostgreSQL']}
+            blurb="Web apps and microservices bringing financial literacy into schools — built with agentic development and AI best practices: AI agents, MCP servers and local-LLM tools across delivery."
+            tags={['TypeScript', 'Microservices', 'Agentic Development']}
             flip
             bleed={false}
           >
@@ -53,8 +53,8 @@ export function WorkSection() {
             years="Startup"
             kind="Co-founder"
             title="Tydee"
-            blurb="Multi-tenant platform for cleaning companies — web, admin and mobile. Co-founded and built end to end: scheduling, crew clock-in, revenue tracking and client messaging in one place."
-            tags={['Node.js', 'React', 'React Native', 'Multi-tenant']}
+            blurb="Multi-tenant platform for cleaning companies — web, admin and mobile. Co-founded and built end to end with agentic development and AI best practices: scheduling, crew clock-in, revenue tracking and client messaging in one place."
+            tags={['Node.js', 'React', 'React Native', 'Agentic Development']}
             link={{ label: 'tydee.io ↗', href: 'https://www.tydee.io/' }}
             bleed={false}
           >

@@ -1,19 +1,67 @@
-# Stepan Nikulenko — Portfolio
+<a href="https://steppannws.github.io/portfolio/">
+  <img src="public/og.jpg" alt="Stepan Nikulenko — AI & full-stack engineer" width="100%" />
+</a>
 
-Personal portfolio: an interactive landing page and a 16-slide presentation
-deck. Vite + React + TypeScript, plain CSS Modules over design tokens, tested
-with Vitest and Playwright, deployed to GitHub Pages via Actions.
+# Stepan Nikulenko
 
-**Live:** https://steppannws.github.io/portfolio/
+**AI & full-stack engineer, fifteen years hands-on — building LLM-powered, agentic products end to end.**
 
-## Pages
+Technical Lead · AI · Mobile · Backend · Full-stack · Buenos Aires, AR — Remote · 🟢 Open to work
+
+**[View the site ↗](https://steppannws.github.io/portfolio/)** · **[Portfolio deck ↗](https://steppannws.github.io/portfolio/deck.html)** · **[CV (PDF) ↗](https://steppannws.github.io/portfolio/uploads/Stepan-Nikulenko-CV.pdf)**
+
+## AI & agentic development
+
+I design, build and run AI agents in real delivery — not demos.
+
+- **Agent design & implementation** — LLM-powered agents with tool use, planning and memory, wired into real systems through MCP servers.
+- **Agentic workflows** — multi-step automations that take on actual engineering work: coding, reviews, QA and internal operations.
+- **LLM integration** — model selection, prompt and context engineering, cloud APIs and local LLMs for private internal tools.
+- **AI-native delivery** — day-to-day development with Claude Code and Cursor, with custom skills, hooks and MCP servers that extend them.
+
+## What else I do
+
+|                          |                                                                                                       |
+| ------------------------ | ----------------------------------------------------------------------------------------------------- |
+| **Mobile development**   | React Native at scale, native Swift and Kotlin bridges, release pipelines and performance work.       |
+| **Backend development**  | Node.js services, PostgreSQL, microservices and the integrations that hold products together.         |
+| **Technical leadership** | Teams of up to twelve engineers — code standards, mentoring, turning requirements into shipped scope. |
+
+## Selected work
+
+|             | Project                                         |                                                                                                                                        |
+| ----------- | ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| 2021 — 2026 | **Goalsetter** · FinTech                        | Banking and investing for the next generation. Engineer → technical lead on the flagship app. 100K+ downloads.                         |
+| 2025 — 2026 | **Goalsetter Classroom** · EdTech               | Web apps and microservices bringing financial literacy into schools — built with agentic development and AI best practices.            |
+| Startup     | **[Tydee](https://www.tydee.io/)** · Co-founder | Multi-tenant platform for cleaning companies — web, admin and mobile, built end to end with agentic development and AI best practices. |
+| 2021        | **Ace Hardware Rewards** · Retail               | Rewards app on the starter I architected — performance profiling, analytics, engineering oversight.                                    |
+
+Plus six earlier products and games (2010 — 2021): Club Premier, Aeromexico, Humber, Guía Arqui, Disney, Dakar.
+
+## Contact
+
+[stepan.nikulenko@gmail.com](mailto:stepan.nikulenko@gmail.com) ·
+[LinkedIn](https://www.linkedin.com/in/stepann/) ·
+[GitHub](https://github.com/steppannws) ·
+[Stack Overflow](https://stackoverflow.com/users/6078160/stepan-nikulenko) ·
+[Behance](https://www.behance.net/stepan)
+
+---
+
+## About this repo
+
+An interactive landing page and a 16-slide presentation deck. Vite + React +
+TypeScript, plain CSS Modules over design tokens, tested with Vitest and
+Playwright, deployed to GitHub Pages via Actions.
+
+### Pages
 
 | Entry                      | What it is                                                                                         |
 | -------------------------- | -------------------------------------------------------------------------------------------------- |
 | `index.html` → `/`         | Landing — editorial one-pager: paper/band alternating sections, oversized display type, dark-only  |
 | `deck.html` → `/deck.html` | 16-slide deck — keyboard nav (arrows/Home/End), hash-linkable slides, scale-to-fit 1920×1080 stage |
 
-## Development
+### Development
 
 ```bash
 npm install
@@ -24,7 +72,7 @@ npm run lint       # ESLint
 npm run build      # production build → dist/
 ```
 
-## Architecture notes
+### Architecture notes
 
 - **Two static entries, no router** — the landing and the deck are separate
   Vite HTML entries; there's no SPA navigation between them.
@@ -52,14 +100,3 @@ npm run build      # production build → dist/
 - **No canvas, no custom cursor** — the landing is type, rules and imagery; the
   only motion is the skill marquee and a 10px in-view fade, both disabled under
   `prefers-reduced-motion`.
-
-## Author
-
-**Stepan Nikulenko** — Technical Lead · Mobile & Full-Stack Engineer
-Buenos Aires, Argentina · Remote
-
-- Email: stepan.nikulenko@gmail.com
-- LinkedIn: [in/stepann](https://www.linkedin.com/in/stepann/)
-- GitHub: [@steppannws](https://github.com/steppannws)
-- Stack Overflow: [stepan-nikulenko](https://stackoverflow.com/users/6078160/stepan-nikulenko)
-- Behance: [stepan](https://www.behance.net/stepan)
