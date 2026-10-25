@@ -29,7 +29,7 @@ function MarqueeGroup({ 'aria-hidden': ariaHidden }: { 'aria-hidden'?: boolean }
 export function Marquee() {
   return (
     <div data-surface="band" className={styles.band}>
-      <div className={styles.track}>
+      <div className={styles.track} data-climber-moving>
         <MarqueeGroup />
         <MarqueeGroup aria-hidden />
       </div>

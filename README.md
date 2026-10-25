@@ -100,3 +100,19 @@ npm run build      # production build → dist/
 - **No canvas, no custom cursor** — the landing is type, rules and imagery; the
   only motion is the skill marquee and a 10px in-view fade, both disabled under
   `prefers-reduced-motion`.
+- **Easter egg** (`src/lib/climber/`) — tap the face in the hero portrait and a
+  pixel mountaineer drops onto the surname; arrows (or an on-screen pad on
+  touch) walk, jump and drop it across the page's text and images. `engine.ts`
+  is pure physics + floor detection (unit-tested), `render.ts` draws the sprite
+  with Three.js on a transparent WebGL overlay, loaded on first use.
+
+## Author
+
+**Stepan Nikulenko** — Technical Lead · Mobile & Full-Stack Engineer
+Buenos Aires, Argentina · Remote
+
+- Email: stepan.nikulenko@gmail.com
+- LinkedIn: [in/stepann](https://www.linkedin.com/in/stepann/)
+- GitHub: [@steppannws](https://github.com/steppannws)
+- Stack Overflow: [stepan-nikulenko](https://stackoverflow.com/users/6078160/stepan-nikulenko)
+- Behance: [stepan](https://www.behance.net/stepan)
