@@ -1,14 +1,14 @@
 import styles from './slides.module.css';
 import { asset } from '../../../lib/asset';
 
-const PILLS = ['React Native', 'TypeScript', 'Node.js', 'AI-Augmented Dev'];
+const PILLS = ['AI Agents', 'Agentic Development', 'TypeScript', 'Node.js'];
 
 export function CoverSlide() {
   return (
     <div className={`${styles.slide} ${styles.coverSlide}`}>
       <div className={styles.coverText}>
         <div className={`${styles.kicker} ${styles.coverKicker}`}>
-          Technical Lead · Mobile &amp; Full-Stack
+          Technical Lead · AI &amp; Full-Stack
           <span className={styles.coverKickerRule} />
           15+ Years
         </div>
@@ -20,9 +20,9 @@ export function CoverSlide() {
             <span className={styles.accentDot}>.</span>
           </h1>
           <p className={styles.coverSubtitle}>
-            React Native technical lead and full-stack engineer — shipping fintech and edtech
-            products end to end, from native mobile apps to Node.js services and AI-augmented
-            internal tooling.
+            AI &amp; full-stack engineer and technical lead — designing AI agents and agentic
+            workflows, and shipping fintech and edtech products end to end across mobile, backend
+            and web.
           </p>
         </div>
         <div className={styles.pills}>

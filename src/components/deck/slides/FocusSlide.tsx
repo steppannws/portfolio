@@ -3,18 +3,18 @@ import styles from './slides.module.css';
 const CARDS = [
   {
     index: '01',
+    title: 'AI & Agentic',
+    body: 'AI agents, MCP servers and agentic workflows — the way I build products like Goalsetter Classroom and Tydee.',
+  },
+  {
+    index: '02',
     title: 'FinTech',
     body: "Banking, investing and rewards apps — Goalsetter's flagship, plus retail loyalty programs. Consumer money, done right.",
   },
   {
-    index: '02',
+    index: '03',
     title: 'EdTech',
     body: 'Classroom platforms and financial-literacy tools — web apps, backend services and deep LMS integrations.',
-  },
-  {
-    index: '03',
-    title: 'Full-Stack & AI',
-    body: 'Node.js services and internal tooling — including MCP servers and local-LLM agents that accelerate delivery.',
   },
 ];
 
@@ -23,9 +23,9 @@ const TOOLKIT = [
   'TypeScript',
   'Node.js',
   'PostgreSQL',
-  'React · Vite · Redux',
   'LTI · LMS',
-  'MCP · Local LLM',
+  'AI Agents · MCP',
+  'Claude Code · Local LLM',
   'CI/CD · Bitrise',
 ];
 
@@ -38,8 +38,8 @@ export function FocusSlide() {
           <h2 className={styles.focusTitle}>What I build.</h2>
         </div>
         <p className={styles.focusLede}>
-          From native mobile apps to full-stack services and AI tooling — three areas where I ship
-          real product.
+          From AI agents and agentic workflows to fintech and edtech products — three areas where I
+          ship real product.
         </p>
       </div>
       <div className={styles.focusCards}>
