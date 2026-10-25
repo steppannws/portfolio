@@ -13,7 +13,7 @@ test('landing renders hero and sections in dark mode', async ({ page }) => {
   await expect(workCards).toHaveCount(10);
 });
 
-test('tapping the face drops the climber onto the surname and the arrows drive it', async ({
+test('tapping the face drops the climber to the bottom platform and the arrows drive it', async ({
   page,
 }) => {
   await page.goto('./');
@@ -32,23 +32,18 @@ test('tapping the face drops the climber onto the surname and the arrows drive i
   const canvas = page.locator('canvas[data-climber]');
   await expect(canvas).toBeVisible();
 
-  // settles with its feet on the glyph relief of "Nikulenko" (below the raw CSS box top)
-  const surname = page
-    .getByRole('heading', { name: /Stepan Nikulenko/ })
-    .locator('span', { hasText: /^Nikulenko$/ });
+  // falls in an intro cinematic and lands on the top edge of the footer at the bottom of the page
+  const footer = page.locator('footer');
   await expect
     .poll(
       async () => {
         const feet = Number(await canvas.getAttribute('data-feet'));
-        const box = await surname.evaluate((el) => {
-          const r = el.getBoundingClientRect();
-          return { top: r.top + window.scrollY, bottom: r.bottom + window.scrollY };
-        });
-        return feet >= box.top && feet < box.top + (box.bottom - box.top) * 0.45;
+        const top = await footer.evaluate((el) => Math.round(el.getBoundingClientRect().top + window.scrollY));
+        return Math.abs(feet - top);
       },
-      { timeout: 4000 }
+      { timeout: 6000 }
     )
-    .toBe(true);
+    .toBeLessThanOrEqual(2);
 
   const landedFeet = Number(await canvas.getAttribute('data-feet'));
   const before = Number(await canvas.getAttribute('data-x'));
