@@ -19,8 +19,10 @@ export interface Npc {
   maxX: number;
   baseY: number;
   phase: number;
-  /** frames remaining before next action or respawn */
+  /** frames remaining before next ice block / dive / special action */
   timer: number;
+  /** frames remaining before next spontaneous behavior change (hop, dash, turn, swoop) */
+  actionTimer?: number;
   /** > 0 while knocked out / dying */
   stunned: number;
   /** true while flying off-screen after being killed */
@@ -36,6 +38,9 @@ export interface NpcWorld {
   clearTimer: number;
   hurtCooldown: number;
   kills: number;
+  /** countdown until next dynamic reinforcement spawn near the climber */
+  spawnCooldown: number;
+  rng: () => number;
 }
 
 export interface NpcStepEvents {
@@ -47,18 +52,22 @@ export interface NpcStepEvents {
 
 let nextNpcId = 1;
 
+const randRange = (rng: () => number, min: number, max: number) => min + rng() * (max - min);
+
 /**
- * Spawns Ice Climber NPCs across the measured page platforms:
- * - Seals (Topi) on platforms that patrol and push/drop ice blocks
- * - Polar Bears on wide section ledges
- * - Swooping mountain birds (Nitpicker) across altitude bands
+ * Spawns Ice Climber NPCs across the measured page platforms with randomized positions,
+ * speeds, directions, and action timers:
+ * - Seals (Topi) on platforms that patrol, scurry, hop, and push/kick ice blocks
+ * - Polar Bears on wide section ledges that hop-stomp, charge, and toss ice
+ * - Swooping mountain birds (Nitpicker) that patrol and dive toward the climber
  * - The summit Pterodactyl circling above the highest hero platform
  */
 export function createNpcWorld(
   floors: Surface[],
   size: number,
   viewportWidth: number,
-  baseTop: number
+  baseTop: number,
+  rng: () => number = Math.random
 ): NpcWorld {
   const npcs: Npc[] = [];
 
@@ -70,20 +79,21 @@ export function createNpcWorld(
 
   // 1. Summit Pterodactyl circling above the hero heading
   const pteroY = Math.max(56, highestTop - size * 2.1);
+  const pteroDir: 1 | -1 = rng() < 0.5 ? 1 : -1;
   npcs.push({
     id: nextNpcId++,
     kind: 'pterodactyl',
-    x: viewportWidth * 0.35,
+    x: randRange(rng, viewportWidth * 0.2, viewportWidth * 0.7),
     y: pteroY,
-    vx: 2.2,
+    vx: pteroDir * randRange(rng, 2.0, 2.6),
     vy: 0,
-    facing: 1,
+    facing: pteroDir,
     frame: 7,
     scale: 1.5,
     minX: Math.max(24, viewportWidth * 0.08),
     maxX: Math.max(160, viewportWidth * 0.92 - size * 1.5),
     baseY: pteroY,
-    phase: 0,
+    phase: randRange(rng, 0, Math.PI * 2),
     timer: 0,
     stunned: 0,
   });
@@ -95,28 +105,47 @@ export function createNpcWorld(
 
   const chosenPlatforms: Surface[] = [];
   let lastTop = -Infinity;
-  const minGap = Math.max(150, (baseTop - highestTop) / 15);
+  const baseGap = Math.max(135, (baseTop - highestTop) / 16);
   for (const p of candidatePlatforms) {
-    if (p.top - lastTop >= minGap) {
+    const gap = baseGap * randRange(rng, 0.75, 1.2);
+    if (p.top - lastTop >= gap) {
       chosenPlatforms.push(p);
       lastTop = p.top;
-      if (chosenPlatforms.length >= 14) break;
+      if (chosenPlatforms.length >= 15) break;
     }
   }
 
+  let hasSeal = false;
+  let hasBear = false;
   chosenPlatforms.forEach((p, idx) => {
     const minX = Math.max(0, p.left);
     const maxX = Math.min(viewportWidth - size, p.right - size);
     if (maxX - minX < size * 1.3) return;
-    const dir: 1 | -1 = idx % 2 === 0 ? 1 : -1;
-    const startX = dir > 0 ? minX + 8 : maxX - 8;
-    const isBear = idx % 3 === 1 && maxX - minX >= size * 2.5;
+    const dir: 1 | -1 = rng() < 0.5 ? 1 : -1;
+    const startX = randRange(
+      rng,
+      minX + Math.min(size * 0.65, (maxX - minX) * 0.25),
+      Math.max(minX + 8, maxX - Math.min(size * 0.65, (maxX - minX) * 0.25))
+    );
+    const wideEnoughForBear = maxX - minX >= size * 2.5;
+    let isBear = wideEnoughForBear && rng() < 0.38;
+    if (idx === 0 && hasSeal) isBear = wideEnoughForBear;
+    if (!hasBear && idx === chosenPlatforms.length - 1 && wideEnoughForBear) isBear = true;
+    if (!hasSeal && idx === chosenPlatforms.length - 1 && isBear && chosenPlatforms.length > 1) {
+      // keep at least one seal and one bear when multiple platforms exist
+    } else if (!hasSeal && idx === 0) {
+      isBear = false;
+    }
+    if (isBear) hasBear = true;
+    else hasSeal = true;
+
+    const speed = isBear ? randRange(rng, 0.9, 1.45) : randRange(rng, 1.2, 1.95);
     npcs.push({
       id: nextNpcId++,
       kind: isBear ? 'bear' : 'seal',
       x: startX,
       y: p.top - size,
-      vx: dir * (isBear ? 1.05 : 1.4),
+      vx: dir * speed,
       vy: 0,
       facing: dir,
       frame: isBear ? 10 : 2,
@@ -124,33 +153,38 @@ export function createNpcWorld(
       minX,
       maxX,
       baseY: p.top,
-      phase: idx * 1.3,
-      timer: 50 + (idx % 5) * 35,
+      phase: randRange(rng, 0, Math.PI * 2),
+      timer: idx === 0 ? Math.round(randRange(rng, 20, 48)) : Math.round(randRange(rng, 30, 125)),
+      actionTimer: Math.round(randRange(rng, 45, 140)),
       stunned: 0,
     });
   });
 
-  // 3. Swooping birds (Nitpicker) patrolling across 7 altitude bands
+  // 3. Swooping birds (Nitpicker) patrolling across randomized altitude bands
   const span = Math.max(600, baseTop - highestTop);
-  const ratios = [0.14, 0.26, 0.38, 0.5, 0.62, 0.74, 0.86];
-  ratios.forEach((ratio, idx) => {
-    const alt = highestTop + span * ratio;
-    const dir: 1 | -1 = idx % 2 === 0 ? -1 : 1;
+  const baseRatios = [0.12, 0.24, 0.36, 0.48, 0.6, 0.72, 0.85];
+  baseRatios.forEach((ratio) => {
+    const jitteredRatio = Math.min(0.92, Math.max(0.08, ratio + randRange(rng, -0.04, 0.04)));
+    const alt = highestTop + span * jitteredRatio;
+    const dir: 1 | -1 = rng() < 0.5 ? -1 : 1;
+    const minX = 16;
+    const maxX = Math.max(120, viewportWidth - size - 16);
     npcs.push({
       id: nextNpcId++,
       kind: 'bird',
-      x: (((idx % 4) + 1) * viewportWidth) / 5,
+      x: randRange(rng, minX, maxX),
       y: alt,
-      vx: dir * (2.2 + (idx % 3) * 0.35),
+      vx: dir * randRange(rng, 2.0, 3.4),
       vy: 0,
       facing: dir,
       frame: 5,
       scale: 0.9,
-      minX: 16,
-      maxX: Math.max(120, viewportWidth - size - 16),
+      minX,
+      maxX,
       baseY: alt,
-      phase: idx * 1.6,
-      timer: 0,
+      phase: randRange(rng, 0, Math.PI * 2),
+      timer: Math.round(randRange(rng, 40, 140)),
+      actionTimer: Math.round(randRange(rng, 50, 120)),
       stunned: 0,
     });
   });
@@ -161,6 +195,8 @@ export function createNpcWorld(
     clearTimer: 0,
     hurtCooldown: 0,
     kills: 0,
+    spawnCooldown: Math.round(randRange(rng, 140, 240)),
+    rng,
   };
 }
 
@@ -210,6 +246,7 @@ export function stepNpcs(
   attacking = false
 ): NpcStepEvents {
   const events: NpcStepEvents = {};
+  const rng = world.rng ?? Math.random;
   if (world.hurtCooldown > 0) world.hurtCooldown = Math.max(0, world.hurtCooldown - dt);
 
   const byId = new Map<number, Npc>();
@@ -218,10 +255,90 @@ export function stepNpcs(
   const toRemove = new Set<number>();
   const toAdd: Npc[] = [];
 
+  // Dynamic reinforcement spawns near the climber's current altitude
+  if (!world.summitCleared) {
+    world.spawnCooldown = (world.spawnCooldown ?? 180) - dt;
+    const activeEnemies = world.npcs.filter((n) => !n.dying && n.kind !== 'pterodactyl').length;
+    if (world.spawnCooldown <= 0 && activeEnemies < 26) {
+      world.spawnCooldown = Math.round(randRange(rng, 140, 260));
+      const fromLeft = rng() < 0.5;
+      const dir: 1 | -1 = fromLeft ? 1 : -1;
+
+      if (rng() < 0.45) {
+        // Spawn a surprise swooping bird entering near the player's height
+        const alt = Math.max(
+          90,
+          Math.min(baseTop - size * 2, state.y + randRange(rng, -size * 3.5, size * 2))
+        );
+        const minX = 16;
+        const maxX = Math.max(120, viewportWidth - size - 16);
+        toAdd.push({
+          id: nextNpcId++,
+          kind: 'bird',
+          x: fromLeft ? minX : maxX,
+          y: alt,
+          vx: dir * randRange(rng, 2.2, 3.6),
+          vy: 0,
+          facing: dir,
+          frame: 5,
+          scale: 0.9,
+          minX,
+          maxX,
+          baseY: alt,
+          phase: randRange(rng, 0, Math.PI * 2),
+          timer: Math.round(randRange(rng, 35, 110)),
+          actionTimer: Math.round(randRange(rng, 40, 100)),
+          stunned: 0,
+        });
+      } else {
+        // Spawn a seal or polar bear on a nearby platform that isn't overcrowded
+        const nearbyPlatforms = floors.filter(
+          (f) =>
+            Number.isFinite(f.left) &&
+            Number.isFinite(f.right) &&
+            f.right - f.left >= size * 2.4 &&
+            f.top > 120 &&
+            f.top < baseTop - 80 &&
+            Math.abs(f.top - (state.y + size)) < size * 8
+        );
+        if (nearbyPlatforms.length > 0) {
+          const p = nearbyPlatforms[Math.floor(rng() * nearbyPlatforms.length)];
+          const minX = Math.max(0, p.left);
+          const maxX = Math.min(viewportWidth - size, p.right - size);
+          const crowded = world.npcs.some(
+            (n) => (n.kind === 'seal' || n.kind === 'bear') && !n.dying && Math.abs(n.baseY - p.top) < 16
+          );
+          if (!crowded && maxX - minX >= size * 1.4) {
+            const isBear = maxX - minX >= size * 2.5 && rng() < 0.42;
+            const speed = isBear ? randRange(rng, 0.95, 1.55) : randRange(rng, 1.3, 2.1);
+            toAdd.push({
+              id: nextNpcId++,
+              kind: isBear ? 'bear' : 'seal',
+              x: fromLeft ? minX + 6 : maxX - 6,
+              y: p.top - size,
+              vx: dir * speed,
+              vy: 0,
+              facing: dir,
+              frame: isBear ? 10 : 2,
+              scale: isBear ? 1.12 : 1,
+              minX,
+              maxX,
+              baseY: p.top,
+              phase: randRange(rng, 0, Math.PI * 2),
+              timer: Math.round(randRange(rng, 30, 110)),
+              actionTimer: Math.round(randRange(rng, 45, 120)),
+              stunned: 0,
+            });
+          }
+        }
+      }
+    }
+  }
+
   for (const n of world.npcs) {
     n.phase += 0.08 * dt;
 
-    // Killed NPCs fly off in an upside-down arc and respawn on their ledge after a cooldown
+    // Killed NPCs fly off in an upside-down arc and respawn with randomized attributes
     if (n.dying) {
       n.x += n.vx * dt;
       n.vy = Math.min(n.vy + 0.48 * dt, 14);
@@ -230,10 +347,26 @@ export function stepNpcs(
       if (n.stunned <= 0) {
         n.dying = false;
         n.stunned = 0;
-        n.x = n.facing > 0 ? n.minX + 8 : n.maxX - 8;
+        const dir: 1 | -1 = rng() < 0.5 ? 1 : -1;
+        n.facing = dir;
+        if (n.kind === 'seal' || n.kind === 'bear') {
+          if (n.maxX - n.minX >= size * 2.5 && rng() < 0.35) {
+            n.kind = n.kind === 'seal' ? 'bear' : 'seal';
+            n.scale = n.kind === 'bear' ? 1.12 : 1;
+          }
+        }
+        n.x = dir > 0 ? n.minX + 8 : n.maxX - 8;
         n.y = n.kind === 'bird' ? n.baseY : n.baseY - size;
-        n.vx = n.facing * (n.kind === 'bird' ? 2.4 : n.kind === 'bear' ? 1.05 : 1.4);
+        const speed =
+          n.kind === 'bird'
+            ? randRange(rng, 2.0, 3.4)
+            : n.kind === 'bear'
+              ? randRange(rng, 0.95, 1.5)
+              : randRange(rng, 1.25, 2.0);
+        n.vx = dir * speed;
         n.vy = 0;
+        n.timer = Math.round(randRange(rng, 40, 140));
+        n.actionTimer = Math.round(randRange(rng, 45, 130));
       }
       continue;
     }
@@ -282,20 +415,61 @@ export function stepNpcs(
 
     if (n.kind === 'seal' || n.kind === 'bear') {
       n.x += n.vx * dt;
+      // Vertical hop physics on the platform (for bear ground-pound leaps or seal hops)
+      const groundY = n.baseY - size;
+      if (n.y < groundY || n.vy !== 0) {
+        n.vy = Math.min(n.vy + 0.45 * dt, 10);
+        n.y += n.vy * dt;
+        if (n.y >= groundY) {
+          n.y = groundY;
+          n.vy = 0;
+        }
+      }
+
       const baseFrame = n.kind === 'bear' ? 10 : 2;
       n.frame = Math.floor(n.phase * 2) % 2 === 0 ? baseFrame : baseFrame + 1;
 
-      // spawn an ice block in front of the seal/bear periodically
+      // Spontaneous randomized actions: hop, dash, or turn toward the climber
+      n.actionTimer = (n.actionTimer ?? 80) - dt;
+      if (n.actionTimer <= 0 && n.carryingId === undefined) {
+        n.actionTimer = Math.round(randRange(rng, 55, 145));
+        const roll = rng();
+        if (n.kind === 'bear' && roll < 0.42 && n.y >= groundY) {
+          // Polar bear jump-stomp + speed surge
+          n.vy = -randRange(rng, 5.4, 7.0);
+          n.vx = n.facing * randRange(rng, 1.35, 2.05);
+        } else if (n.kind === 'seal' && roll < 0.3 && n.y >= groundY) {
+          // Little seal hop
+          n.vy = -randRange(rng, 4.0, 5.2);
+        } else if (roll < 0.65) {
+          // Sudden direction reversal or turn toward the player if nearby
+          const nearPlayerY = Math.abs(state.y - n.y) < size * 2.5;
+          const dir: 1 | -1 = nearPlayerY
+            ? state.x >= n.x
+              ? 1
+              : -1
+            : (-n.facing as 1 | -1);
+          n.facing = dir;
+          const baseSpeed = n.kind === 'bear' ? randRange(rng, 0.95, 1.6) : randRange(rng, 1.25, 2.2);
+          n.vx = dir * baseSpeed;
+        } else {
+          // Speed dash along current direction
+          const dashSpeed = n.kind === 'bear' ? randRange(rng, 1.5, 2.2) : randRange(rng, 1.9, 2.75);
+          n.vx = n.facing * dashSpeed;
+        }
+      }
+
+      // Spawn an ice block in front of the seal/bear at randomized intervals
       if (n.carryingId === undefined) {
         n.timer -= dt;
-        if (n.timer <= 0 && n.x > n.minX + size && n.x < n.maxX - size) {
+        if (n.timer <= 0 && n.x > n.minX + size * 0.6 && n.x < n.maxX - size * 0.6) {
           const iceId = nextNpcId++;
           const iceX = n.x + n.facing * (size * 0.72);
           toAdd.push({
             id: iceId,
             kind: 'ice',
             x: iceX,
-            y: n.y,
+            y: groundY,
             vx: n.vx,
             vy: 0,
             facing: n.facing,
@@ -305,22 +479,22 @@ export function stepNpcs(
             maxX: viewportWidth,
             baseY: n.baseY,
             phase: 0,
-            timer: 80,
+            timer: Math.round(randRange(rng, 45, 105)),
             stunned: 0,
           });
           n.carryingId = iceId;
-          n.timer = 210;
+          n.timer = Math.round(randRange(rng, 120, 230));
         }
       } else {
         const block = byId.get(n.carryingId);
         if (!block || block.timer <= 0 || block.dying) {
           if (block && !block.dying) {
-            block.vx = n.facing * 2.6;
+            block.vx = n.facing * randRange(rng, 2.2, 3.6);
           }
           n.carryingId = undefined;
         } else {
           block.x = n.x + n.facing * (size * 0.72);
-          block.y = n.y;
+          block.y = groundY;
           block.vx = n.vx;
           block.timer -= dt;
         }
@@ -375,6 +549,31 @@ export function stepNpcs(
     }
 
     if (n.kind === 'bird') {
+      // Spontaneous bird behaviors: dive toward player altitude, reverse, or speed up
+      n.actionTimer = (n.actionTimer ?? 70) - dt;
+      if (n.actionTimer <= 0) {
+        n.actionTimer = Math.round(randRange(rng, 45, 115));
+        const vertDist = state.y - n.baseY;
+        if (Math.abs(vertDist) < size * 8 && rng() < 0.65) {
+          // Swoop toward the climber's altitude and direction
+          n.baseY = Math.max(
+            90,
+            Math.min(baseTop - size * 2, n.baseY + Math.sign(vertDist) * randRange(rng, 28, 72))
+          );
+          const dir: 1 | -1 = state.x >= n.x ? 1 : -1;
+          n.facing = dir;
+          n.vx = dir * randRange(rng, 2.5, 3.8);
+        } else {
+          // Random altitude drift and speed change
+          n.baseY = Math.max(
+            90,
+            Math.min(baseTop - size * 2, n.baseY + randRange(rng, -55, 55))
+          );
+          if (rng() < 0.35) n.facing = (-n.facing) as 1 | -1;
+          n.vx = n.facing * randRange(rng, 2.0, 3.4);
+        }
+      }
+
       n.x += n.vx * dt;
       if (n.x >= n.maxX) {
         n.x = n.maxX;
@@ -385,7 +584,7 @@ export function stepNpcs(
         n.vx = Math.abs(n.vx);
         n.facing = 1;
       }
-      n.y = n.baseY + Math.sin(n.phase * 1.1) * 44;
+      n.y = n.baseY + Math.sin(n.phase * 1.25) * 46;
       n.frame = Math.floor(n.phase * 2.4) % 2 === 0 ? 5 : 6;
     }
   }
