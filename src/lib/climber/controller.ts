@@ -19,12 +19,12 @@ interface MovingTrack {
 }
 
 const SPRITE = 16;
-const FRAMES = 9;
+const FRAMES = 12;
 const SURFACE_REFRESH_MS = 500;
 // keep the climber inside this band of the viewport by scrolling the page
 const FOLLOW_BAND = [0.3, 0.7];
 
-// 16×16 sprites: [0..1] mountaineer, [2..3] seal (Topi), [4] ice block, [5..6] bird, [7..8] summit pterodactyl
+// 16×16 sprites: [0..1] mountaineer, [2..3] seal (Topi), [4] ice block, [5..6] bird, [7..8] summit pterodactyl, [9] hammer swing, [10..11] polar bear
 const SPRITE_FRAMES: string[][] = [
   // 0: mountaineer standing
   [
@@ -197,6 +197,63 @@ const SPRITE_FRAMES: string[][] = [
     '................',
     '................',
   ],
+  // 9: mountaineer hammer swing forward
+  [
+    '.....KKKK.......',
+    '....KHHHHK......',
+    '...KHHHHHHK.....',
+    '...KHFFFFHK.....',
+    '...KHFKFKHK.....',
+    '...KHFFFFHK.KKKK',
+    '....KFFFFK..KGGK',
+    '...KPPPPPPK.KGGK',
+    '..KPPPPPPPPKKKKK',
+    '.KPPPPPPPPPPBBBB',
+    '.KMKPPPPPPPPKMK.',
+    '..KPKKKKKKPK....',
+    '..KPPPPPPPPK....',
+    '...KKKKKKKK.....',
+    '..KKK....KKK....',
+    '.KKKK....KKKK...',
+  ],
+  // 10: polar bear (Ice Climber glasses & shorts) walk frame A
+  [
+    '...KKK....KKK...',
+    '..KPPPKKKKPPPK..',
+    '..KPPPPPPPPPPK..',
+    '.KPPKKKKKKKKPPK.',
+    '.KPPKHHHHHHKPPK.',
+    '.KPPPPPPPPPPPPK.',
+    '..KPPPPPPPKKPK..',
+    '..KPPPPPPPPPPK..',
+    '.KPPPPPPPPPPPPK.',
+    '.KPPPPPPPPPPPPK.',
+    '..KHHHHHHHHHHK..',
+    '..KHHHHHHHHHHK..',
+    '..KPPPK..KPPPK..',
+    '..KPPPK..KPPPK..',
+    '..KKKK....KKKK..',
+    '................',
+  ],
+  // 11: polar bear walk frame B
+  [
+    '...KKK....KKK...',
+    '..KPPPKKKKPPPK..',
+    '..KPPPPPPPPPPK..',
+    '.KPPKKKKKKKKPPK.',
+    '.KPPKHHHHHHKPPK.',
+    '.KPPPPPPPPPPPPK.',
+    '..KPPPPPPPKKPK..',
+    '..KPPPPPPPPPPK..',
+    '.KPPPPPPPPPPPPK.',
+    '.KPPPPPPPPPPPPK.',
+    '..KHHHHHHHHHHK..',
+    '..KHHHHHHHHHHK..',
+    '...KPPPKKPPPK...',
+    '...KPPPKKPPPK...',
+    '...KKKK..KKKK...',
+    '................',
+  ],
 ];
 
 const PALETTE: Record<string, string> = {
@@ -310,9 +367,14 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
   };
   const input: Input = { left: false, right: false, jump: false, jumpHeld: false, drop: false };
   let jumpQueue = 0;
+  let attackTimer = 0;
   const triggerJump = () => {
     if (intro || npcWorld?.summitCleared) return;
     jumpQueue = Math.min(jumpQueue + 1, 2);
+  };
+  const triggerAttack = () => {
+    if (intro || npcWorld?.summitCleared) return;
+    attackTimer = 16;
   };
 
   const renderer = createRenderer(drawSheet(), FRAMES, size);
@@ -320,7 +382,7 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
   renderer.canvas.setAttribute('data-climber', '');
   document.body.append(renderer.canvas);
   renderer.burst(spawnX + size / 2, spawnY + size / 2, 'pop');
-  const ui = buildUi(input, triggerJump, () => toggle({ anchor, pageX, pageY }));
+  const ui = buildUi(input, triggerJump, triggerAttack, () => toggle({ anchor, pageX, pageY }));
 
   // the page follows the climber frame by frame, so smooth scrolling would lag behind
   const html = document.documentElement;
@@ -336,6 +398,8 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
       if (!e.repeat) triggerJump();
     } else if (e.key === 'ArrowDown') {
       if (!intro) input.drop = !e.repeat;
+    } else if (e.key === ' ' || e.key === 'x' || e.key === 'X' || e.key === 'z' || e.key === 'Z' || e.key === 'f' || e.key === 'F' || e.key === 'Enter') {
+      if (!e.repeat) triggerAttack();
     } else return;
     e.preventDefault();
   };
@@ -450,9 +514,14 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
           size,
           window.innerWidth,
           baseTop,
-          dt
+          dt,
+          attackTimer > 0
         );
         if (events.shattered) renderer.burst(events.shattered.x, events.shattered.y, 'ice');
+        if (events.npcKilled) {
+          renderer.burst(events.npcKilled.x, events.npcKilled.y, 'pop');
+          renderer.burst(events.npcKilled.x, events.npcKilled.y, 'jump');
+        }
         if (events.playerDied) {
           renderer.burst(events.playerDied.x, events.playerDied.y, 'pop');
           renderer.burst(events.playerDied.x, events.playerDied.y, 'ice');
@@ -462,6 +531,7 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
           state.onGround = false;
           state.jumpsLeft = 0;
           state.dropping = baseTop - 1;
+          attackTimer = 0;
           intro = true;
         }
         if (events.summitGrabbed) {
@@ -470,12 +540,18 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
         }
       }
 
+      if (attackTimer > 0) attackTimer = Math.max(0, attackTimer - dt);
       input.jump = input.drop = false;
       follow(false);
     }
 
     const walking = state.onGround && (input.left || input.right);
-    const pose = !state.onGround || (walking && Math.floor(state.steps / 6) % 2 === 1) ? 1 : 0;
+    const pose =
+      attackTimer > 0
+        ? 9
+        : !state.onGround || (walking && Math.floor(state.steps / 6) % 2 === 1)
+          ? 1
+          : 0;
     renderer.draw(state, window.scrollX, window.scrollY, pose, dt, intro, npcWorld?.npcs);
     // page-space position and NPC count, readable by tests and tooling
     renderer.canvas.dataset.x = String(Math.round(state.x));
@@ -501,7 +577,12 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
 }
 
 /** Touch pad on coarse pointers, a key hint otherwise, and an exit button always. */
-function buildUi(input: Input, onJump: () => void, onExit: () => void): HTMLElement {
+function buildUi(
+  input: Input,
+  onJump: () => void,
+  onAttack: () => void,
+  onExit: () => void
+): HTMLElement {
   const root = document.createElement('div');
   root.className = styles.ui;
   root.setAttribute('data-climber-ignore', '');
@@ -542,6 +623,11 @@ function buildUi(input: Input, onJump: () => void, onExit: () => void): HTMLElem
     );
     const actions = document.createElement('div');
     actions.className = styles.padRight;
+    const attack = button('🔨', 'Hammer attack', styles.round);
+    attack.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      onAttack();
+    });
     const drop = button('▼', 'Drop down', styles.round);
     drop.addEventListener('pointerdown', () => (input.drop = true));
     const jump = hold(
@@ -554,12 +640,12 @@ function buildUi(input: Input, onJump: () => void, onExit: () => void): HTMLElem
         input.jumpHeld = false;
       }
     );
-    actions.append(drop, jump);
+    actions.append(attack, drop, jump);
     root.append(pad, actions);
   } else {
     const hint = document.createElement('div');
     hint.className = styles.hint;
-    hint.textContent = '← → walk · ↑↑ double jump · ↓ drop · esc exit';
+    hint.textContent = '← → walk · ↑↑ double jump · space hammer · ↓ drop · esc exit';
     root.append(hint);
   }
 

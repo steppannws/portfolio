@@ -216,7 +216,7 @@ describe('collectSurfaces', () => {
 });
 
 describe('npcs', () => {
-  it('spawns seals, birds and the summit pterodactyl, pushes ice blocks, and clears the summit on grab', () => {
+  it('spawns seals, polar bears, birds and the summit pterodactyl, allows killing NPCs, and clears the summit on grab', () => {
     const floors: Surface[] = [
       { left: 50, right: 550, top: 220 },
       { left: 40, right: 860, top: 650 },
@@ -226,6 +226,7 @@ describe('npcs', () => {
     const world = createNpcWorld(floors, SIZE, VIEW, 1800);
     expect(world.npcs.some((n) => n.kind === 'pterodactyl')).toBe(true);
     expect(world.npcs.some((n) => n.kind === 'seal')).toBe(true);
+    expect(world.npcs.some((n) => n.kind === 'bear')).toBe(true);
     expect(world.npcs.some((n) => n.kind === 'bird')).toBe(true);
 
     // advance until the first seal spawns an ice block
@@ -237,9 +238,34 @@ describe('npcs', () => {
     expect(ice).toBeDefined();
     expect(iceBlockSurfaces(world, SIZE).length).toBeGreaterThan(0);
 
-    // colliding with an ice block triggers 1-life death (playerDied)
+    // colliding with an ice block without attacking triggers 1-life death (playerDied)
     const hitEvents = stepNpcs(world, spawn(ice.x, ice.y), floors, SIZE, VIEW, 1800, 1);
     expect(hitEvents.playerDied).toBeDefined();
+
+    // swinging the hammer kills a platform enemy in front of the climber
+    const bear = world.npcs.find((n) => n.kind === 'bear')!;
+    const attacker: State = {
+      ...spawn(bear.x - SIZE * 0.4, bear.y),
+      facing: 1,
+      onGround: true,
+    };
+    const killEvents = stepNpcs(world, attacker, floors, SIZE, VIEW, 1800, 1, true);
+    expect(killEvents.npcKilled).toBeDefined();
+    expect(bear.dying).toBe(true);
+    expect(world.kills).toBe(1);
+
+    // stomping an active seal from above also kills it and bounces the player upward
+    const seal = world.npcs.find((n) => n.kind === 'seal' && !n.dying)!;
+    const stomper: State = {
+      ...spawn(seal.x, seal.y - SIZE * 0.5),
+      vy: 6,
+      onGround: false,
+    };
+    const stompEvents = stepNpcs(world, stomper, floors, SIZE, VIEW, 1800, 1, false);
+    expect(stompEvents.npcKilled).toBeDefined();
+    expect(seal.dying).toBe(true);
+    expect(stomper.vy).toBeLessThan(0);
+    expect(world.kills).toBe(2);
 
     // jump onto the summit pterodactyl and verify the climber latches on
     const ptero = world.npcs.find((n) => n.kind === 'pterodactyl')!;
