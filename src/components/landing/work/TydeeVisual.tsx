@@ -2,9 +2,9 @@ import { asset } from '../../../lib/asset';
 import styles from './TydeeVisual.module.css';
 
 const SHOTS = [
-  { src: 'assets/tydee-app-01-hero.png', alt: 'Tydee app overview' },
-  { src: 'assets/tydee-app-03-jobs-map.png', alt: 'Tydee jobs map' },
-  { src: 'assets/tydee-app-05-revenue.png', alt: 'Tydee revenue' },
+  { src: 'assets/tydee-app-01-hero.webp', alt: 'Tydee app overview' },
+  { src: 'assets/tydee-app-03-jobs-map.webp', alt: 'Tydee jobs map' },
+  { src: 'assets/tydee-app-05-revenue.webp', alt: 'Tydee revenue' },
 ];
 
 export function TydeeVisual() {

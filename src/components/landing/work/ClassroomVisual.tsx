@@ -9,8 +9,8 @@ const ROWS = [
 ];
 
 const SHOTS = [
-  { src: 'assets/classroom-hero.png', alt: 'Goalsetter Classroom student app on laptop and phone' },
-  { src: 'assets/classroom-dashboard.png', alt: 'Goalsetter Classroom educator dashboard' },
+  { src: 'assets/classroom-hero.webp', alt: 'Goalsetter Classroom student app on laptop and phone' },
+  { src: 'assets/classroom-dashboard.webp', alt: 'Goalsetter Classroom educator dashboard' },
 ];
 
 export function ClassroomVisual() {

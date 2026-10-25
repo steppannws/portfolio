@@ -2,20 +2,20 @@ import styles from './AboutSection.module.css';
 
 const CAPABILITIES = [
   {
-    title: 'Mobile engineering',
+    title: 'AI development',
+    body: 'LLM-powered features, AI agents, MCP servers and agentic workflows — built for real delivery, not demos.',
+  },
+  {
+    title: 'Mobile development',
     body: 'React Native at scale, native Swift and Kotlin bridges, release pipelines and performance work.',
   },
   {
-    title: 'Platform & backend',
+    title: 'Backend development',
     body: 'Node.js services, PostgreSQL, microservices and the integrations that hold products together.',
   },
   {
     title: 'Technical leadership',
     body: 'Teams of up to twelve engineers — code standards, mentoring, turning requirements into shipped scope.',
-  },
-  {
-    title: 'AI tooling',
-    body: 'Local LLMs, MCP servers and agentic workflows built to speed up real delivery, not demos.',
   },
 ];
 
@@ -43,7 +43,7 @@ export function AboutSection() {
             <p className={styles.paragraph}>
               It started with the first computer my father brought home — which I took apart, piece
               by piece. Fifteen years later I’m shipping fintech and edtech products end to end:
-              native mobile apps, Node.js services, and AI-augmented internal tooling.
+              LLM agents and agentic workflows, native mobile apps, and Node.js services.
             </p>
             <p className={styles.paragraph}>
               As technical lead at Goalsetter and lead developer at MediaMonks I’ve guided teams of

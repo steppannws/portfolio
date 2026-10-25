@@ -14,26 +14,26 @@ export const COMPACT_PROJECTS: CompactProject[] = [
     title: 'Club Premier',
     description:
       "Aeromexico's loyalty platform — native SDK bridges (Lotame, SAS CI360, ThreatMetrix).",
-    image: asset('assets/image4.png'),
+    image: asset('assets/image4.webp'),
   },
   {
     date: '2017 — 2018',
     title: 'Aeromexico',
     description:
       'Legacy React web migrated to a performant native app — team of 12, tight deadlines.',
-    image: asset('assets/image7.png'),
+    image: asset('assets/image7.webp'),
   },
   {
     date: '2016 — 2017',
     title: 'Humber',
     description: 'Freight and merchants for truck drivers — GSM-network tracking via native SDK.',
-    image: asset('assets/image9.png'),
+    image: asset('assets/image9.webp'),
   },
   {
     date: '2016',
     title: 'Guía Arqui Buenos Aires',
     description: 'Architecture guide to Buenos Aires — Google Maps and a custom media carousel.',
-    image: asset('assets/image10.png'),
+    image: asset('assets/image10.webp'),
   },
   {
     date: '2013',

@@ -26,7 +26,7 @@ export function TydeeMobileSlide() {
         {SHOTS.map((shot) => (
           <img
             key={shot.file}
-            src={asset(`assets/tydee-app-${shot.file}.png`)}
+            src={asset(`assets/tydee-app-${shot.file}.webp`)}
             alt={shot.alt}
             className={styles.galleryImage}
           />

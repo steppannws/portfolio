@@ -10,7 +10,7 @@ const FIELDS = [
 export function ContactSlide() {
   return (
     <div className={`${styles.slide} ${styles.contactSlide}`}>
-      <img src={asset('assets/image11.png')} alt="" className={styles.contactBackdrop} />
+      <img src={asset('assets/image11.webp')} alt="" className={styles.contactBackdrop} />
       <div className={styles.contactScrim} />
       <div className={styles.contactContent}>
         <div>
