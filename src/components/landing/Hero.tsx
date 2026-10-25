@@ -7,7 +7,7 @@ const MAX_FONT_WAIT_MS = 4000;
 
 const META = [
   { label: 'Role', value: 'Technical Lead' },
-  { label: 'Focus', value: 'React Native · Node.js · AI tooling' },
+  { label: 'Focus', value: 'AI · Mobile · Backend · Full-stack' },
   { label: 'Based', value: 'Buenos Aires, AR — Remote' },
   { label: 'Status', value: 'Open to work', live: true },
 ];
@@ -49,8 +49,8 @@ export function Hero() {
             <span className={styles.nameFront}>Nikulenko</span>
           </h1>
           <p className={styles.role}>
-            Mobile <span className="serif">&amp;</span> full-stack engineer, fifteen years
-            hands-on&nbsp;— shipping fintech and edtech products end to end.
+            AI <span className="serif">&amp;</span> full-stack engineer, fifteen years
+            hands-on&nbsp;— building LLM-powered, agentic products end to end.
           </p>
         </div>
         <div className={styles.portrait}>
