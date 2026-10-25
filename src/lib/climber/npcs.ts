@@ -1,4 +1,4 @@
-import { JUMP, type State, type Surface } from './engine';
+import type { State, Surface } from './engine';
 
 export type NpcKind = 'seal' | 'ice' | 'bird' | 'pterodactyl';
 
@@ -35,8 +35,7 @@ export interface NpcWorld {
 }
 
 export interface NpcStepEvents {
-  stomped?: { x: number; y: number };
-  bumped?: { x: number; y: number };
+  playerDied?: { x: number; y: number };
   shattered?: { x: number; y: number };
   summitGrabbed?: { x: number; y: number };
 }
@@ -368,7 +367,7 @@ export function stepNpcs(
   const pCenterX = state.x + size / 2;
 
   for (const n of world.npcs) {
-    if (n.stunned > 0 || n.kind === 'ice') continue;
+    if (n.stunned > 0) continue;
 
     if (n.kind === 'pterodactyl') {
       const w = size * n.scale;
@@ -385,28 +384,23 @@ export function stepNpcs(
       continue;
     }
 
-    const nLeft = n.x + size * 0.18;
-    const nRight = n.x + size * 0.82;
-    const nTop = n.y + size * 0.2;
+    if (world.hurtCooldown > 0) continue;
+
+    const inset = n.kind === 'ice' ? 0.22 : 0.18;
+    const topInset = n.kind === 'ice' ? 0.25 : 0.2;
+    const nLeft = n.x + size * inset;
+    const nRight = n.x + size * (1 - inset);
+    const nTop = n.y + size * topInset;
     const nBottom = n.y + size;
 
     if (pRight > nLeft && pLeft < nRight && pBottom > nTop && pTop < nBottom) {
-      // Stomp from above: bounce the player upward and stun the seal/bird
-      if (state.vy > 0 && pBottom - state.vy * dt <= nTop + size * 0.45) {
-        state.vy = JUMP * 0.92;
-        state.onGround = false;
-        state.jumpsLeft = 1;
-        n.stunned = 120;
-        events.stomped = { x: n.x + size / 2, y: nTop };
-      } else if (world.hurtCooldown <= 0) {
-        // Side bump: playful arcade knockback
-        const pushDir = pCenterX < n.x + size / 2 ? -1 : 1;
-        state.vx = pushDir * 4.2;
-        state.vy = -5.5;
-        state.onGround = false;
-        world.hurtCooldown = 45;
-        events.bumped = { x: pCenterX, y: state.y + size / 2 };
+      // 1-life rule: colliding with any seal, bird, or ice block sends the player back to the bottom
+      events.playerDied = { x: pCenterX, y: state.y + size / 2 };
+      world.hurtCooldown = 60;
+      if (n.kind === 'ice') {
+        world.npcs = world.npcs.filter((item) => item.id !== n.id);
       }
+      break;
     }
   }
 

@@ -233,8 +233,13 @@ describe('npcs', () => {
     for (let i = 0; i < 70; i++) {
       stepNpcs(world, player, floors, SIZE, VIEW, 1800, 1);
     }
-    expect(world.npcs.some((n) => n.kind === 'ice')).toBe(true);
+    const ice = world.npcs.find((n) => n.kind === 'ice')!;
+    expect(ice).toBeDefined();
     expect(iceBlockSurfaces(world, SIZE).length).toBeGreaterThan(0);
+
+    // colliding with an ice block triggers 1-life death (playerDied)
+    const hitEvents = stepNpcs(world, spawn(ice.x, ice.y), floors, SIZE, VIEW, 1800, 1);
+    expect(hitEvents.playerDied).toBeDefined();
 
     // jump onto the summit pterodactyl and verify the climber latches on
     const ptero = world.npcs.find((n) => n.kind === 'pterodactyl')!;

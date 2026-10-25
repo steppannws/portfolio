@@ -1,5 +1,5 @@
 import { collectSurfaces, spawn, step, type Input, type State, type Surface } from './engine';
-import { createNpcWorld, iceBlockSurfaces, stepNpcs, type NpcWorld } from './npcs';
+import { createNpcWorld, stepNpcs, type NpcWorld } from './npcs';
 import { createRenderer } from './render';
 import styles from './climber.module.css';
 
@@ -427,10 +427,6 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
         }
       }
 
-      if (npcWorld) {
-        dynamicFloors.push(...iceBlockSurfaces(npcWorld, size));
-      }
-
       const floors = dynamicFloors.length > 0 ? [...dynamicFloors, ...staticFloors] : staticFloors;
       if (!npcWorld?.summitCleared) {
         if (jumpQueue > 0) {
@@ -446,18 +442,28 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
       }
 
       if (npcWorld) {
+        const baseTop = getBaseTop();
         const events = stepNpcs(
           npcWorld,
           state,
           floors,
           size,
           window.innerWidth,
-          getBaseTop(),
+          baseTop,
           dt
         );
-        if (events.stomped) renderer.burst(events.stomped.x, events.stomped.y, 'jump');
-        if (events.bumped) renderer.burst(events.bumped.x, events.bumped.y, 'pop');
         if (events.shattered) renderer.burst(events.shattered.x, events.shattered.y, 'ice');
+        if (events.playerDied) {
+          renderer.burst(events.playerDied.x, events.playerDied.y, 'pop');
+          renderer.burst(events.playerDied.x, events.playerDied.y, 'ice');
+          // 1-life penalty: send the climber plunging back down to the lowest platform
+          state.vx = 0;
+          state.vy = INTRO_POP_VY;
+          state.onGround = false;
+          state.jumpsLeft = 0;
+          state.dropping = baseTop - 1;
+          intro = true;
+        }
         if (events.summitGrabbed) {
           renderer.burst(events.summitGrabbed.x, events.summitGrabbed.y, 'summit');
           showSummitBanner(ui);
