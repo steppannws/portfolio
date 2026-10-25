@@ -2,8 +2,8 @@ import styles from './AboutSection.module.css';
 
 const CAPABILITIES = [
   {
-    title: 'AI development',
-    body: 'LLM-powered features, AI agents, MCP servers and agentic workflows — built for real delivery, not demos.',
+    title: 'AI & agentic development',
+    body: 'Designing and shipping AI agents end to end — LLM integration, tool use, MCP servers, context engineering and agentic workflows in real delivery.',
   },
   {
     title: 'Mobile development',
@@ -42,8 +42,9 @@ export function AboutSection() {
           <div data-reveal="1" className={styles.prose}>
             <p className={styles.paragraph}>
               It started with the first computer my father brought home — which I took apart, piece
-              by piece. Fifteen years later I’m shipping fintech and edtech products end to end:
-              LLM agents and agentic workflows, native mobile apps, and Node.js services.
+              by piece. Fifteen years later I design and implement AI agents and agentic systems,
+              and ship fintech and edtech products end to end — native mobile apps and Node.js
+              services included.
             </p>
             <p className={styles.paragraph}>
               As technical lead at Goalsetter and lead developer at MediaMonks I’ve guided teams of

@@ -52,7 +52,7 @@ export const PROJECT_SLIDES: ProjectSlideProps[] = [
       'Web apps & backend microservices in Node.js, TypeScript & PostgreSQL',
       'RESTful APIs architected for scalability, performance & maintainability',
       'Frontend in React, Vite, Redux & styled-components',
-      'AI-augmented delivery — Claude Code & Cursor, plus MCP servers and local-LLM internal tools',
+      'Built with agentic development & AI best practices — Claude Code & Cursor, MCP servers and local-LLM internal tools',
     ],
     tags: ['Node.js', 'PostgreSQL', 'React · Vite · Redux', 'REST APIs'],
     media: (
@@ -80,6 +80,7 @@ export const PROJECT_SLIDES: ProjectSlideProps[] = [
       'Multi-tenant SaaS across three surfaces — customer web, admin console & mobile app',
       'Manage jobs, scheduling, teams and client relationships in one place',
       'Designed and built end to end as co-founder & full-stack engineer',
+      'Built with agentic development & AI best practices across web, admin and mobile',
     ],
     tags: ['Multi-Tenant SaaS', 'Web · Admin · Mobile', 'tydee.io'],
     media: (
