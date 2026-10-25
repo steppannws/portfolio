@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { collectSurfaces, spawn, step, type Input, type State, type Surface } from './engine';
+import { createNpcWorld, iceBlockSurfaces, stepNpcs } from './npcs';
 
 const SIZE = 64;
 const VIEW = 1000;
@@ -211,5 +212,44 @@ describe('collectSurfaces', () => {
       { left: 0, right: 800, top: 500 },
       { left: -Infinity, right: Infinity, top: 2000 },
     ]);
+  });
+});
+
+describe('npcs', () => {
+  it('spawns seals, birds and the summit pterodactyl, pushes ice blocks, and clears the summit on grab', () => {
+    const floors: Surface[] = [
+      { left: 50, right: 550, top: 220 },
+      { left: 40, right: 860, top: 650 },
+      { left: 60, right: 900, top: 1200 },
+      { left: -Infinity, right: Infinity, top: 1800 },
+    ];
+    const world = createNpcWorld(floors, SIZE, VIEW, 1800);
+    expect(world.npcs.some((n) => n.kind === 'pterodactyl')).toBe(true);
+    expect(world.npcs.some((n) => n.kind === 'seal')).toBe(true);
+    expect(world.npcs.some((n) => n.kind === 'bird')).toBe(true);
+
+    // advance until the first seal spawns an ice block
+    const player = spawn(100, 1800 - SIZE);
+    for (let i = 0; i < 70; i++) {
+      stepNpcs(world, player, floors, SIZE, VIEW, 1800, 1);
+    }
+    expect(world.npcs.some((n) => n.kind === 'ice')).toBe(true);
+    expect(iceBlockSurfaces(world, SIZE).length).toBeGreaterThan(0);
+
+    // jump onto the summit pterodactyl and verify the climber latches on
+    const ptero = world.npcs.find((n) => n.kind === 'pterodactyl')!;
+    const climberAtSummit: State = {
+      ...spawn(ptero.x, ptero.y + 8),
+      vy: -4,
+      onGround: false,
+    };
+    const events = stepNpcs(world, climberAtSummit, floors, SIZE, VIEW, 1800, 1);
+    expect(world.summitCleared).toBe(true);
+    expect(events.summitGrabbed).toBeDefined();
+
+    // subsequent frames carry the climber along with the pterodactyl
+    const beforeX = climberAtSummit.x;
+    stepNpcs(world, climberAtSummit, floors, SIZE, VIEW, 1800, 1);
+    expect(climberAtSummit.x).not.toBe(beforeX);
   });
 });

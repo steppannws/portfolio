@@ -1,4 +1,5 @@
 import { collectSurfaces, spawn, step, type Input, type State, type Surface } from './engine';
+import { createNpcWorld, iceBlockSurfaces, stepNpcs, type NpcWorld } from './npcs';
 import { createRenderer } from './render';
 import styles from './climber.module.css';
 
@@ -18,30 +19,186 @@ interface MovingTrack {
 }
 
 const SPRITE = 16;
-const FRAMES = 2;
+const FRAMES = 9;
 const SURFACE_REFRESH_MS = 500;
 // keep the climber inside this band of the viewport by scrolling the page
 const FOLLOW_BAND = [0.3, 0.7];
 
-// 16×16 mountaineer, two frames (standing, legs apart). Palette B: cream parka, orange hood.
-const PIXELS = [
-  '......KKKK......',
-  '.....KHHHHK.....',
-  '....KHHHHHHK....',
-  '....KHFFFFHK.KKK',
-  '....KHFKFKHK.KGK',
-  '....KHFFFFHK.KKK',
-  '.....KFFFFK...B.',
-  '....KPPPPPPK..B.',
-  '...KPPPPPPPPK.B.',
-  '.KPPPPPPPPPPPKB.',
-  '.KMKPPPPPPPPKMK.',
-  '...KPKKKKKKPK...',
-  '...KPPPPPPPPK...',
-  '....KKKKKKKK....',
-  ['....KKK..KKK....', '...KKK....KKK...'],
-  ['...KKKK..KKKK...', '..KKKK....KKKK..'],
+// 16×16 sprites: [0..1] mountaineer, [2..3] seal (Topi), [4] ice block, [5..6] bird, [7..8] summit pterodactyl
+const SPRITE_FRAMES: string[][] = [
+  // 0: mountaineer standing
+  [
+    '......KKKK......',
+    '.....KHHHHK.....',
+    '....KHHHHHHK....',
+    '....KHFFFFHK.KKK',
+    '....KHFKFKHK.KGK',
+    '....KHFFFFHK.KKK',
+    '.....KFFFFK...B.',
+    '....KPPPPPPK..B.',
+    '...KPPPPPPPPK.B.',
+    '.KPPPPPPPPPPPKB.',
+    '.KMKPPPPPPPPKMK.',
+    '...KPKKKKKKPK...',
+    '...KPPPPPPPPK...',
+    '....KKKKKKKK....',
+    '....KKK..KKK....',
+    '...KKKK..KKKK...',
+  ],
+  // 1: mountaineer stride / jump
+  [
+    '......KKKK......',
+    '.....KHHHHK.....',
+    '....KHHHHHHK....',
+    '....KHFFFFHK.KKK',
+    '....KHFKFKHK.KGK',
+    '....KHFFFFHK.KKK',
+    '.....KFFFFK...B.',
+    '....KPPPPPPK..B.',
+    '...KPPPPPPPPK.B.',
+    '.KPPPPPPPPPPPKB.',
+    '.KMKPPPPPPPPKMK.',
+    '...KPKKKKKKPK...',
+    '...KPPPPPPPPK...',
+    '....KKKKKKKK....',
+    '...KKK....KKK...',
+    '..KKKK....KKKK..',
+  ],
+  // 2: seal (Topi) waddle frame A
+  [
+    '................',
+    '................',
+    '................',
+    '................',
+    '.....KKKKKK.....',
+    '...KKSSSSSSKK...',
+    '..KSSSSSSSKFSK..',
+    '.KSSSSSSSSKKKKH.',
+    '.KSSSSSSSSSSSSK.',
+    'KSSSSSSSSSSSSSK.',
+    'KSSPPPPPPPPSSSK.',
+    'KSPPPPPPPPPPPPK.',
+    '.KKKKKKKKKKKKKK.',
+    '..KKK......KKK..',
+    '.KKKK......KKKK.',
+    '................',
+  ],
+  // 3: seal (Topi) waddle frame B
+  [
+    '................',
+    '................',
+    '................',
+    '................',
+    '.....KKKKKK.....',
+    '...KKSSSSSSKK...',
+    '..KSSSSSSSKFSK..',
+    '.KSSSSSSSSKKKKH.',
+    '.KSSSSSSSSSSSSK.',
+    'KSSSSSSSSSSSSSK.',
+    'KSSPPPPPPPPSSSK.',
+    'KSPPPPPPPPPPPPK.',
+    '.KKKKKKKKKKKKKK.',
+    '....KKK..KKK....',
+    '...KKKK..KKKK...',
+    '................',
+  ],
+  // 4: ice block
+  [
+    '................',
+    '................',
+    '..KKKKKKKKKKKK..',
+    '.KIIIIIIIIIIIIK.',
+    '.KIPPPPPPPPPPII.',
+    '.KIPIIIIIIIIIIK.',
+    '.KIPIIPPPPIIIIK.',
+    '.KIPIIPSSSSIIIK.',
+    '.KIIIISSSSSSIIK.',
+    '.KIIIISSIIIIIIK.',
+    '.KIIIIIIIIIIISK.',
+    '.KISSSSSSSSSSSK.',
+    '.KSSSSSSSSSSSSK.',
+    '..KKKKKKKKKKKK..',
+    '................',
+    '................',
+  ],
+  // 5: swooping bird (wings up)
+  [
+    '................',
+    '..KK........KK..',
+    '.KYYK......KYYK.',
+    '.KYYYK....KYYYK.',
+    '..KYYYK..KYYYK..',
+    '...KYYYKKYYYK...',
+    '....KYYYYYYK....',
+    '...KYYYYYKFKK...',
+    '...KYYYYYYYYHHH.',
+    '....KYYYYYYK....',
+    '.....KKKKKK.....',
+    '....K.K..K.K....',
+    '................',
+    '................',
+    '................',
+    '................',
+  ],
+  // 6: swooping bird (wings down)
+  [
+    '................',
+    '................',
+    '................',
+    '................',
+    '....KKKKKKKK....',
+    '...KYYYYYKFKK...',
+    '..KYYYYYYYYYHHH.',
+    '.KYYYYYYYYYYK...',
+    '.KYYKYYYYYYKYYK.',
+    'KYYK..KKKK..KYYK',
+    'KK....K..K....KK',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+  ],
+  // 7: summit pterodactyl (wings high)
+  [
+    'KK............KK',
+    'KHK..........KHK',
+    'KHHK...KK...KHHK',
+    '.KHHK.KHHK.KHHK.',
+    '..KHHKHHHHKHHK..',
+    '...KHHHHHHHHK...',
+    '..KHHHHHHHHKFHHH',
+    '.KHHHHHHHHHHKKKK',
+    '....KHHHHHHK....',
+    '.....KKKKKK.....',
+    '.....K....K.....',
+    '....KK....KK....',
+    '................',
+    '................',
+    '................',
+    '................',
+  ],
+  // 8: summit pterodactyl (wings swept)
+  [
+    '................',
+    '.......KK.......',
+    '......KHHK......',
+    '....KKHHHHKK....',
+    '..KKHHHHHHHHKK..',
+    '.KHHHHHHHHHHKFHH',
+    'KHHHHHHHHHHHHKKK',
+    'KHHK.KHHHHK.KHHK',
+    'KK....KKKK....KK',
+    '.....K....K.....',
+    '....KK....KK....',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+  ],
 ];
+
 const PALETTE: Record<string, string> = {
   K: '#141413',
   H: '#dd4318',
@@ -50,6 +207,9 @@ const PALETTE: Record<string, string> = {
   F: '#e9e5db',
   B: '#8a5a2b',
   G: '#9a978f',
+  S: '#58b4ff',
+  I: '#9be0ff',
+  Y: '#f4b942',
 };
 
 function drawSheet(): HTMLCanvasElement {
@@ -58,8 +218,8 @@ function drawSheet(): HTMLCanvasElement {
   sheet.height = SPRITE;
   const ctx = sheet.getContext('2d')!;
   for (let frame = 0; frame < FRAMES; frame++) {
-    PIXELS.forEach((row, y) => {
-      const line = Array.isArray(row) ? row[frame] : row;
+    const rows = SPRITE_FRAMES[frame];
+    rows.forEach((line, y) => {
       for (let x = 0; x < SPRITE; x++) {
         const colour = PALETTE[line[x]];
         if (!colour) continue;
@@ -142,6 +302,7 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
 
   // Ice Climber intro: pop out of the portrait face and plummet all the way to the bottom platform
   let intro = true;
+  let npcWorld: NpcWorld | null = null;
   let state: State = {
     ...spawn(spawnX, spawnY),
     vy: INTRO_POP_VY,
@@ -150,7 +311,7 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
   const input: Input = { left: false, right: false, jump: false, jumpHeld: false, drop: false };
   let jumpQueue = 0;
   const triggerJump = () => {
-    if (intro) return;
+    if (intro || npcWorld?.summitCleared) return;
     jumpQueue = Math.min(jumpQueue + 1, 2);
   };
 
@@ -234,6 +395,7 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
         state.dropping = null;
         intro = false;
         measure();
+        npcWorld = createNpcWorld(staticFloors, size, window.innerWidth, baseTop);
         renderer.burst(state.x + size / 2, baseTop, 'land');
       }
       input.jump = input.drop = false;
@@ -265,27 +427,54 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
         }
       }
 
-      if (jumpQueue > 0) {
-        input.jump = true;
-        jumpQueue -= 1;
+      if (npcWorld) {
+        dynamicFloors.push(...iceBlockSurfaces(npcWorld, size));
       }
-      const wasAirborne = !state.onGround;
-      const prevJumpsLeft = state.jumpsLeft;
+
       const floors = dynamicFloors.length > 0 ? [...dynamicFloors, ...staticFloors] : staticFloors;
-      state = step(state, input, floors, size, window.innerWidth, dt);
-      if (wasAirborne && state.jumpsLeft < prevJumpsLeft) {
-        renderer.burst(state.x + size / 2, state.y + size, 'jump');
+      if (!npcWorld?.summitCleared) {
+        if (jumpQueue > 0) {
+          input.jump = true;
+          jumpQueue -= 1;
+        }
+        const wasAirborne = !state.onGround;
+        const prevJumpsLeft = state.jumpsLeft;
+        state = step(state, input, floors, size, window.innerWidth, dt);
+        if (wasAirborne && state.jumpsLeft < prevJumpsLeft) {
+          renderer.burst(state.x + size / 2, state.y + size, 'jump');
+        }
       }
+
+      if (npcWorld) {
+        const events = stepNpcs(
+          npcWorld,
+          state,
+          floors,
+          size,
+          window.innerWidth,
+          getBaseTop(),
+          dt
+        );
+        if (events.stomped) renderer.burst(events.stomped.x, events.stomped.y, 'jump');
+        if (events.bumped) renderer.burst(events.bumped.x, events.bumped.y, 'pop');
+        if (events.shattered) renderer.burst(events.shattered.x, events.shattered.y, 'ice');
+        if (events.summitGrabbed) {
+          renderer.burst(events.summitGrabbed.x, events.summitGrabbed.y, 'summit');
+          showSummitBanner(ui);
+        }
+      }
+
       input.jump = input.drop = false;
       follow(false);
     }
 
     const walking = state.onGround && (input.left || input.right);
     const pose = !state.onGround || (walking && Math.floor(state.steps / 6) % 2 === 1) ? 1 : 0;
-    renderer.draw(state, window.scrollX, window.scrollY, pose, dt, intro);
-    // page-space position, readable by tests and tooling
+    renderer.draw(state, window.scrollX, window.scrollY, pose, dt, intro, npcWorld?.npcs);
+    // page-space position and NPC count, readable by tests and tooling
     renderer.canvas.dataset.x = String(Math.round(state.x));
     renderer.canvas.dataset.feet = String(Math.round(state.y + size));
+    renderer.canvas.dataset.npcs = String(npcWorld?.npcs.length ?? 0);
 
     raf = requestAnimationFrame(frame);
   };
@@ -374,4 +563,12 @@ function buildUi(input: Input, onJump: () => void, onExit: () => void): HTMLElem
 
   document.body.append(root);
   return root;
+}
+
+function showSummitBanner(ui: HTMLElement): void {
+  if (ui.querySelector(`.${styles.banner}`)) return;
+  const banner = document.createElement('div');
+  banner.className = styles.banner;
+  banner.textContent = '★ Summit Reached · Bonus Stage Clear ★';
+  ui.append(banner);
 }

@@ -10,11 +10,20 @@ import {
   WebGLRenderer,
 } from 'three';
 import type { State } from './engine';
+import type { Npc } from './npcs';
 
 export interface Renderer {
   canvas: HTMLCanvasElement;
-  burst(x: number, y: number, kind: 'pop' | 'land' | 'jump'): void;
-  draw(state: State, scrollX: number, scrollY: number, frame: number, dt?: number, intro?: boolean): void;
+  burst(x: number, y: number, kind: 'pop' | 'land' | 'jump' | 'ice' | 'summit'): void;
+  draw(
+    state: State,
+    scrollX: number,
+    scrollY: number,
+    frame: number,
+    dt?: number,
+    intro?: boolean,
+    npcs?: Npc[]
+  ): void;
   dispose(): void;
 }
 
@@ -44,22 +53,31 @@ export function createRenderer(sheet: HTMLCanvasElement, frames: number, size: n
   const scene = new Scene();
   const camera = new OrthographicCamera(0, 1, 0, -1, -10, 10);
 
-  const texture = new CanvasTexture(sheet);
-  texture.magFilter = NearestFilter;
-  texture.minFilter = NearestFilter;
-  texture.generateMipmaps = false;
-  texture.colorSpace = SRGBColorSpace;
-  texture.repeat.set(1 / frames, 1);
+  const frameTextures: CanvasTexture[] = [];
+  const frameMaterials: MeshBasicMaterial[] = [];
+  for (let i = 0; i < frames; i++) {
+    const tex = new CanvasTexture(sheet);
+    tex.magFilter = NearestFilter;
+    tex.minFilter = NearestFilter;
+    tex.generateMipmaps = false;
+    tex.colorSpace = SRGBColorSpace;
+    tex.repeat.set(1 / frames, 1);
+    tex.offset.x = i / frames;
+    frameTextures.push(tex);
+    frameMaterials.push(new MeshBasicMaterial({ map: tex, transparent: true }));
+  }
 
-  const material = new MeshBasicMaterial({ map: texture, transparent: true });
   const geometry = new PlaneGeometry(size, size);
-  const mesh = new Mesh(geometry, material);
+  const mesh = new Mesh(geometry, frameMaterials[0]);
   mesh.position.z = 1;
   scene.add(mesh);
 
+  // pool of NPC meshes rendered from the shared sprite sheet
+  const npcMeshes: Mesh<PlaneGeometry, MeshBasicMaterial>[] = [];
+
   // two motion-trail ghost sprites visible during the high-speed intro descent
   const trailMaterials = [0.34, 0.16].map(
-    (opacity) => new MeshBasicMaterial({ map: texture, transparent: true, opacity })
+    (opacity) => new MeshBasicMaterial({ map: frameTextures[1] ?? frameTextures[0], transparent: true, opacity })
   );
   const trails = trailMaterials.map((mat) => {
     const m = new Mesh(geometry, mat);
@@ -92,7 +110,7 @@ export function createRenderer(sheet: HTMLCanvasElement, frames: number, size: n
     particles.push({ mesh: pMesh, x, y, vx, vy, gravity, life, maxLife: life, w, h });
   };
 
-  const burst = (x: number, y: number, kind: 'pop' | 'land' | 'jump') => {
+  const burst = (x: number, y: number, kind: 'pop' | 'land' | 'jump' | 'ice' | 'summit') => {
     const px = Math.max(3, Math.round(size / 14));
     if (kind === 'pop') {
       const count = 10;
@@ -126,6 +144,20 @@ export function createRenderer(sheet: HTMLCanvasElement, frames: number, size: n
         const side = i - 2.5;
         spawnParticle(x + side * 4, y, side * 0.9, 1.2 + (i % 2) * 0.6, 0.1, 14, px, px, 0xe9e5db);
       }
+    } else if (kind === 'ice') {
+      for (let i = 0; i < 8; i++) {
+        const angle = (i / 8) * Math.PI * 2;
+        const speed = 2 + (i % 2) * 1.3;
+        const color = i % 2 === 0 ? 0x62b6ff : 0xe9e5db;
+        spawnParticle(x, y, Math.cos(angle) * speed, Math.sin(angle) * speed - 1.2, 0.25, 18, px, px, color);
+      }
+    } else if (kind === 'summit') {
+      for (let i = 0; i < 20; i++) {
+        const angle = (i / 20) * Math.PI * 2;
+        const speed = 3 + (i % 4) * 1.4;
+        const color = i % 3 === 0 ? 0xdd4318 : i % 3 === 1 ? 0x62b6ff : 0xe9e5db;
+        spawnParticle(x, y, Math.cos(angle) * speed, Math.sin(angle) * speed - 2, 0.15, 34, px, px, color);
+      }
     }
   };
 
@@ -141,8 +173,8 @@ export function createRenderer(sheet: HTMLCanvasElement, frames: number, size: n
   return {
     canvas,
     burst,
-    draw(state, scrollX, scrollY, frame, dt = 1, intro = false) {
-      texture.offset.x = frame / frames;
+    draw(state, scrollX, scrollY, frame, dt = 1, intro = false, npcs = []) {
+      mesh.material = frameMaterials[frame] ?? frameMaterials[0];
       // whole pixels keep the nearest-filtered sprite crisp
       const x = Math.round(state.x - scrollX) + size / 2;
       const y = Math.round(state.y - scrollY) + size / 2;
@@ -154,6 +186,29 @@ export function createRenderer(sheet: HTMLCanvasElement, frames: number, size: n
       const sx = 1 + squash * 0.2;
       mesh.position.set(x, -(y + (1 - sy) * (size / 2)), 1);
       mesh.scale.set(state.facing * sx, sy, 1);
+
+      // sync NPC mesh pool with active NPCs
+      while (npcMeshes.length < npcs.length) {
+        const nm = new Mesh(geometry, frameMaterials[0]);
+        nm.position.z = 0.8;
+        scene.add(nm);
+        npcMeshes.push(nm);
+      }
+      for (let i = 0; i < npcMeshes.length; i++) {
+        const nm = npcMeshes[i];
+        const n = npcs[i];
+        if (!n) {
+          nm.visible = false;
+          continue;
+        }
+        nm.visible = n.stunned <= 0 || Math.floor(n.stunned / 3) % 2 === 0;
+        nm.material = frameMaterials[n.frame] ?? frameMaterials[0];
+        const nx = Math.round(n.x - scrollX) + size / 2;
+        const ny = Math.round(n.y - scrollY) + size / 2;
+        const flipY = n.stunned > 0 ? -1 : 1;
+        nm.position.set(nx, -(ny + (1 - n.scale) * (size / 2)), n.kind === 'pterodactyl' ? 1.2 : 0.8);
+        nm.scale.set(n.facing * n.scale, flipY * n.scale, 1);
+      }
 
       // afterimage trail and wind streaks during the fast intro fall
       const showTrail = intro && state.vy > 14;
@@ -212,11 +267,13 @@ export function createRenderer(sheet: HTMLCanvasElement, frames: number, size: n
         p.mesh.material.dispose();
       }
       particles.length = 0;
+      for (const nm of npcMeshes) scene.remove(nm);
+      npcMeshes.length = 0;
       for (const mat of trailMaterials) mat.dispose();
+      for (const mat of frameMaterials) mat.dispose();
+      for (const tex of frameTextures) tex.dispose();
       unitGeo.dispose();
-      texture.dispose();
       geometry.dispose();
-      material.dispose();
       renderer.dispose();
       canvas.remove();
     },
