@@ -284,3 +284,82 @@
     border-top: 1px solid var(--hair);
   }
 }
+
+/* greeting that pops up once the cameo has finished walking in */
+.cameoSpeech {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 10px);
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--ink);
+  color: var(--bg);
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  /* NES style: pops on and off in a single frame, so no easing and no fade */
+  animation: cameo-speech step-end forwards;
+}
+
+.cameoSpeech::after {
+  content: '';
+  position: absolute;
+  right: 18px;
+  top: 100%;
+  border: 6px solid transparent;
+  border-top-color: var(--ink);
+}
+
+@keyframes cameo-speech {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* magic vanish: pixel sparkles burst out of the spot the cameo stood on, stepped like the rest of the NES bits */
+.poof {
+  position: absolute;
+  right: 4%;
+  bottom: 0;
+  width: 48px;
+  height: 48px;
+  pointer-events: none;
+}
+
+@media (min-width: 701px) {
+  .poof {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+.poof i {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  margin: -3px;
+  background: #f4b942;
+  animation: poof-spark 0.7s steps(5) both;
+}
+
+.poof i:nth-child(3n + 1) {
+  background: #dd4318;
+}
+
+.poof i:nth-child(3n + 2) {
+  background: #e9e5db;
+}
+
+@keyframes poof-spark {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(var(--dx), var(--dy)) scale(0);
+  }
+}

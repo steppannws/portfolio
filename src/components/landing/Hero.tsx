@@ -41,6 +41,34 @@ const KONAMI = [
   'a',
 ];
 const CAMEO_AFTER_MS = 4000;
+// the cameo's speech bubble cycles through these; first one waits for the walk-in to finish
+const CAMEO_WALK_MS = 3600;
+// he stands quietly for a beat after walking in, before the first message
+const CAMEO_QUIET_MS = 3000;
+const CAMEO_FIRST_MS = CAMEO_WALK_MS + CAMEO_QUIET_MS;
+const CAMEO_POOF_MS = 700;
+// [dx, dy] in px: where each sparkle of the vanishing puff flies to
+const POOF_SPARKS = [
+  [-34, -30],
+  [0, -44],
+  [34, -30],
+  [-44, 0],
+  [44, 0],
+  [-30, 22],
+  [0, 30],
+  [30, 22],
+];
+// show: how long the bubble stays up; gap: silence before the next one (the last gap builds the goodbye)
+const CAMEO_MESSAGES = [
+  { text: 'Hey visitor, up for a climb?', show: 3500, gap: 1500 },
+  { text: 'Tap me. I climb mountains and scale systems.', show: 5000, gap: 2500 },
+  { text: 'Fifteen years in, still learning, still helping systems scale.', show: 6500, gap: 5000 },
+  {
+    text: 'Ok, cool, I’m leaving you for now. Touch my nose if you wanna play.',
+    show: 6500,
+    gap: 0,
+  },
+];
 let consoleNoted = false;
 
 export function Hero() {
@@ -50,12 +78,26 @@ export function Hero() {
   // the climber peeks over the surname after a beat, until the game has been started once
   const [cameo, setCameo] = useState(false);
   const [played, setPlayed] = useState(false);
+  // one past the last message the cameo vanishes in a puff, then he is gone for good
+  const [messageIndex, setMessageIndex] = useState(0);
 
   const launch = (pageX: number, pageY: number) => {
     if (!surnameRef.current) return;
     setPlayed(true);
     void toggleClimber({ anchor: surnameRef.current, pageX, pageY });
   };
+
+  useEffect(() => {
+    if (!cameo || played || messageIndex > CAMEO_MESSAGES.length) return;
+    const wait =
+      messageIndex === CAMEO_MESSAGES.length
+        ? CAMEO_POOF_MS
+        : (messageIndex === 0 ? CAMEO_FIRST_MS : 0) +
+          CAMEO_MESSAGES[messageIndex].show +
+          CAMEO_MESSAGES[messageIndex].gap;
+    const timer = setTimeout(() => setMessageIndex((i) => i + 1), wait);
+    return () => clearTimeout(timer);
+  }, [cameo, played, messageIndex]);
 
   // easter egg lures: the cameo for visitors, a console note and Konami for devs
   useEffect(() => {
@@ -154,7 +196,7 @@ export function Hero() {
               launch(event.pageX, event.pageY);
             }}
           />
-          {cameo && !played && (
+          {cameo && !played && messageIndex < CAMEO_MESSAGES.length && (
             <button
               type="button"
               className={styles.cameo}
@@ -165,7 +207,27 @@ export function Hero() {
               }}
             >
               <Cameo />
+              <span
+                key={messageIndex}
+                className={styles.cameoSpeech}
+                style={{
+                  animationDuration: `${CAMEO_MESSAGES[messageIndex].show}ms`,
+                  animationDelay: messageIndex === 0 ? `${CAMEO_FIRST_MS}ms` : '0ms',
+                }}
+              >
+                {CAMEO_MESSAGES[messageIndex].text}
+              </span>
             </button>
+          )}
+          {cameo && !played && messageIndex === CAMEO_MESSAGES.length && (
+            <span className={styles.poof} aria-hidden="true">
+              {POOF_SPARKS.map(([dx, dy], i) => (
+                <i
+                  key={i}
+                  style={{ '--dx': `${dx}px`, '--dy': `${dy}px` } as React.CSSProperties}
+                />
+              ))}
+            </span>
           )}
         </div>
       </div>

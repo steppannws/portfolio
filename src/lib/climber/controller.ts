@@ -22,6 +22,7 @@ const SPRITE = 16;
 const FRAMES = 12;
 const SURFACE_REFRESH_MS = 500;
 // keep the climber inside this band of the viewport by scrolling the page
+const GREETING_MS = 3500;
 const FOLLOW_BAND = [0.3, 0.7];
 
 // 16×16 sprites: [0..1] mountaineer, [2..3] bug, [4] ice block, [5..6] moth, [7..8] summit wyrm, [9] hammer swing, [10..11] ice golem
@@ -384,6 +385,11 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
   renderer.burst(spawnX + size / 2, spawnY + size / 2, 'pop');
   const ui = buildUi(input, triggerJump, triggerAttack, () => toggle({ anchor, pageX, pageY }));
 
+  const greeting = document.createElement('div');
+  greeting.className = styles.speech;
+  greeting.textContent = 'Hey visitor, how’s it going?';
+  let greetingHide = 0;
+
   // the page follows the climber frame by frame, so smooth scrolling would lag behind
   const html = document.documentElement;
   const prevScrollBehavior = html.style.scrollBehavior;
@@ -391,12 +397,13 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
 
   const onKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') return toggle({ anchor, pageX, pageY });
-    if (e.key === 'ArrowLeft') input.left = true;
-    else if (e.key === 'ArrowRight') input.right = true;
-    else if (e.key === 'ArrowUp') {
+    const key = e.key.toLowerCase();
+    if (e.key === 'ArrowLeft' || key === 'a') input.left = true;
+    else if (e.key === 'ArrowRight' || key === 'd') input.right = true;
+    else if (e.key === 'ArrowUp' || key === 'w') {
       input.jumpHeld = true;
       if (!e.repeat) triggerJump();
-    } else if (e.key === 'ArrowDown') {
+    } else if (e.key === 'ArrowDown' || key === 's') {
       if (!intro) input.drop = !e.repeat;
     } else if (
       e.key === ' ' ||
@@ -413,9 +420,10 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
     e.preventDefault();
   };
   const onKeyUp = (e: KeyboardEvent) => {
-    if (e.key === 'ArrowLeft') input.left = false;
-    if (e.key === 'ArrowRight') input.right = false;
-    if (e.key === 'ArrowUp') input.jumpHeld = false;
+    const key = e.key.toLowerCase();
+    if (e.key === 'ArrowLeft' || key === 'a') input.left = false;
+    if (e.key === 'ArrowRight' || key === 'd') input.right = false;
+    if (e.key === 'ArrowUp' || key === 'w') input.jumpHeld = false;
   };
   const onBlur = () => {
     input.left = input.right = false;
@@ -467,6 +475,11 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
         state.jumpsLeft = 1;
         state.dropping = null;
         intro = false;
+        // greet only after the first landing, not during the fall or on respawns
+        if (!greetingHide) {
+          ui.append(greeting);
+          greetingHide = window.setTimeout(() => greeting.remove(), GREETING_MS);
+        }
         measure();
         npcWorld = createNpcWorld(staticFloors, size, window.innerWidth, baseTop);
         renderer.burst(state.x + size / 2, baseTop, 'land');
@@ -562,6 +575,10 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
           ? 1
           : 0;
     renderer.draw(state, window.scrollX, window.scrollY, pose, dt, intro, npcWorld?.npcs);
+    if (greeting.isConnected) {
+      greeting.style.left = `${state.x - window.scrollX + size / 2}px`;
+      greeting.style.top = `${state.y - window.scrollY}px`;
+    }
     // page-space position and NPC count, readable by tests and tooling
     renderer.canvas.dataset.x = String(Math.round(state.x));
     renderer.canvas.dataset.feet = String(Math.round(state.y + size));
@@ -573,6 +590,7 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
 
   return () => {
     cancelAnimationFrame(raf);
+    window.clearTimeout(greetingHide);
     window.clearInterval(refresh);
     window.removeEventListener('keydown', onKeyDown);
     window.removeEventListener('keyup', onKeyUp);
@@ -654,7 +672,8 @@ function buildUi(
   } else {
     const hint = document.createElement('div');
     hint.className = styles.hint;
-    hint.textContent = '← → walk · ↑↑ double jump · space hammer · ↓ drop · esc exit';
+    hint.textContent =
+      '← → / A D walk · ↑↑ / W W double jump · space hammer · ↓ / S drop · esc exit';
     root.append(hint);
   }
 
