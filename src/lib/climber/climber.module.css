@@ -107,16 +107,20 @@
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
 }
 
-/* speech bubble that follows the climber's head */
+/* speech bubble that follows the climber's head; dark with a shadow so it reads on the light page */
 .speech {
   position: absolute;
   transform: translate(-50%, calc(-100% - 10px));
+  width: max-content;
+  max-width: 240px;
   padding: 8px 12px;
   border-radius: 8px;
-  background: #e9e5db;
-  color: #0d0d0c;
+  background: #0d0d0c;
+  color: #e9e5db;
   font-size: 12px;
-  white-space: nowrap;
+  line-height: 1.4;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
   pointer-events: none;
 }
 
@@ -127,5 +131,5 @@
   top: 100%;
   margin-left: -6px;
   border: 6px solid transparent;
-  border-top-color: #e9e5db;
+  border-top-color: #0d0d0c;
 }

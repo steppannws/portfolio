@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { asset } from '../../lib/asset';
 import { toggleClimber } from '../../lib/climber';
 import { Cameo } from './Cameo';
+import { lure } from '../../lib/cameoLure';
 import styles from './Hero.module.css';
 
 // fonts swap in fine late, so never hold the page on them longer than this
@@ -46,6 +47,7 @@ const CAMEO_WALK_MS = 3600;
 // he stands quietly for a beat after walking in, before the first message
 const CAMEO_QUIET_MS = 3000;
 const CAMEO_FIRST_MS = CAMEO_WALK_MS + CAMEO_QUIET_MS;
+const CAMEO_LEAP_MS = 800;
 const CAMEO_POOF_MS = 700;
 // [dx, dy] in px: where each sparkle of the vanishing puff flies to
 const POOF_SPARKS = [
@@ -78,26 +80,38 @@ export function Hero() {
   // the climber peeks over the surname after a beat, until the game has been started once
   const [cameo, setCameo] = useState(false);
   const [played, setPlayed] = useState(false);
-  // one past the last message the cameo vanishes in a puff, then he is gone for good
+  // one past the last message he leaps, the one after that he vanishes in a puff, then he is gone for good
   const [messageIndex, setMessageIndex] = useState(0);
+
+  // the pickaxe starts on his left, swaps sides now and then with a new line, and is on his right for the leap
+  const [flipped, setFlipped] = useState(true);
 
   const launch = (pageX: number, pageY: number) => {
     if (!surnameRef.current) return;
     setPlayed(true);
+    lure.engaged = true;
     void toggleClimber({ anchor: surnameRef.current, pageX, pageY });
   };
 
   useEffect(() => {
-    if (!cameo || played || messageIndex > CAMEO_MESSAGES.length) return;
+    if (!cameo || played || messageIndex > CAMEO_MESSAGES.length + 1) return;
     const wait =
-      messageIndex === CAMEO_MESSAGES.length
+      messageIndex === CAMEO_MESSAGES.length + 1
         ? CAMEO_POOF_MS
-        : (messageIndex === 0 ? CAMEO_FIRST_MS : 0) +
-          CAMEO_MESSAGES[messageIndex].show +
-          CAMEO_MESSAGES[messageIndex].gap;
+        : messageIndex === CAMEO_MESSAGES.length
+          ? CAMEO_LEAP_MS
+          : (messageIndex === 0 ? CAMEO_FIRST_MS : 0) +
+            CAMEO_MESSAGES[messageIndex].show +
+            CAMEO_MESSAGES[messageIndex].gap;
     const timer = setTimeout(() => setMessageIndex((i) => i + 1), wait);
     return () => clearTimeout(timer);
   }, [cameo, played, messageIndex]);
+
+  // sporadic: he only turns when a new line pops up, and not every time
+  useEffect(() => {
+    if (messageIndex === CAMEO_MESSAGES.length) setFlipped(false);
+    else if (messageIndex > 0 && Math.random() < 0.5) setFlipped((f) => !f);
+  }, [messageIndex]);
 
   // easter egg lures: the cameo for visitors, a console note and Konami for devs
   useEffect(() => {
@@ -111,7 +125,13 @@ export function Hero() {
       );
     };
 
-    const timer = setTimeout(() => setCameo(true), CAMEO_AFTER_MS);
+    lure.launch = launch;
+    const timer = setTimeout(() => {
+      setCameo(true);
+      // only counts as seen if the hero is still on screen when he walks in
+      const { top, bottom } = img.getBoundingClientRect();
+      if (bottom > 0 && top < window.innerHeight) lure.engaged = true;
+    }, CAMEO_AFTER_MS);
 
     const w = window as unknown as { climb?: () => void };
     w.climb = launchFromFace;
@@ -196,10 +216,12 @@ export function Hero() {
               launch(event.pageX, event.pageY);
             }}
           />
-          {cameo && !played && messageIndex < CAMEO_MESSAGES.length && (
+          {cameo && !played && messageIndex <= CAMEO_MESSAGES.length && (
             <button
               type="button"
-              className={styles.cameo}
+              className={`${styles.cameo} ${flipped ? styles.flipped : ''} ${
+                messageIndex === CAMEO_MESSAGES.length ? styles.leap : ''
+              }`}
               aria-label="Start the climbing game"
               onClick={(event) => {
                 const rect = event.currentTarget.getBoundingClientRect();
@@ -207,19 +229,21 @@ export function Hero() {
               }}
             >
               <Cameo />
-              <span
-                key={messageIndex}
-                className={styles.cameoSpeech}
-                style={{
-                  animationDuration: `${CAMEO_MESSAGES[messageIndex].show}ms`,
-                  animationDelay: messageIndex === 0 ? `${CAMEO_FIRST_MS}ms` : '0ms',
-                }}
-              >
-                {CAMEO_MESSAGES[messageIndex].text}
-              </span>
+              {messageIndex < CAMEO_MESSAGES.length && (
+                <span
+                  key={messageIndex}
+                  className={styles.cameoSpeech}
+                  style={{
+                    animationDuration: `${CAMEO_MESSAGES[messageIndex].show}ms`,
+                    animationDelay: messageIndex === 0 ? `${CAMEO_FIRST_MS}ms` : '0ms',
+                  }}
+                >
+                  {CAMEO_MESSAGES[messageIndex].text}
+                </span>
+              )}
             </button>
           )}
-          {cameo && !played && messageIndex === CAMEO_MESSAGES.length && (
+          {cameo && !played && messageIndex === CAMEO_MESSAGES.length + 1 && (
             <span className={styles.poof} aria-hidden="true">
               {POOF_SPARKS.map(([dx, dy], i) => (
                 <i

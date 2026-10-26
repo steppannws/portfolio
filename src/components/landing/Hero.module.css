@@ -111,12 +111,9 @@
  */
 .portrait {
   position: relative;
-  /* clips the cameo while he is still off-screen */
-  overflow: hidden;
   /* starts under the name's right end so the two overlap */
   grid-column: 5 / -1;
   grid-row: 1;
-  z-index: 1;
   margin-right: calc(-1 * var(--gutter));
   align-self: stretch;
   display: flex;
@@ -134,6 +131,8 @@
 /* easter-egg cameo: the climber walks in along the rule the portrait stands on; a tap starts the game */
 .cameo {
   position: absolute;
+  /* above the tagline and name, so the speech bubble is never covered; the portrait has no z-index of its own so this isn't trapped in its context */
+  z-index: 3;
   right: 4%;
   bottom: 0;
   /* same size as the playable climber (controller.ts: 16px sprite × 4, × 3 under 700px) */
@@ -150,12 +149,54 @@
   width: 100%;
 }
 
+/* mirrored on the x axis; only the sprite, so the speech bubble stays readable */
+.flipped svg {
+  transform: scaleX(-1);
+}
+
+/* goodbye: crouch, jump, double jump mid-air, drifting a hair to the right (~5% of the jump height), and vanish at the top; the puff takes over there */
+.leap {
+  transform-origin: 50% 100%;
+  animation: cameo-leap 0.8s both;
+}
+
+@keyframes cameo-leap {
+  0% {
+    transform: none;
+    animation-timing-function: ease-out;
+  }
+  15% {
+    transform: scale(1.14, 0.8);
+    animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  45% {
+    transform: translate(3px, -96px) scale(0.92, 1.1);
+    animation-timing-function: cubic-bezier(0.6, 0, 0.9, 0.5);
+  }
+  62% {
+    transform: translate(5px, -62px);
+    animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  100% {
+    transform: translate(7px, -144px) scale(0.92, 1.1);
+  }
+}
+
 /* two frames stacked; the stride frame shows on alternate steps, then he stands still */
 .cameo svg + svg {
   position: absolute;
   inset: 0;
   opacity: 0;
   animation: cameo-stride 0.6s steps(1) 6;
+}
+
+/* the footer's second chance: same walk-in, twice as fast */
+.cameoFast {
+  animation-duration: 1.8s;
+}
+
+.cameoFast svg + svg {
+  animation-duration: 0.3s;
 }
 
 @media (min-width: 701px) {
@@ -322,8 +363,9 @@
 /* magic vanish: pixel sparkles burst out of the spot the cameo stood on, stepped like the rest of the NES bits */
 .poof {
   position: absolute;
-  right: 4%;
-  bottom: 0;
+  /* where the jump peaks: 7px right of and 144px above the cameo's spot */
+  right: calc(4% - 7px);
+  bottom: 144px;
   width: 48px;
   height: 48px;
   pointer-events: none;
