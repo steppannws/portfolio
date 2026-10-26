@@ -1,6 +1,14 @@
 .footer {
   padding-block: 24px;
   border-top: 1px solid var(--hair);
+  position: relative;
+  /* clips the cameo while he is still off-screen */
+  overflow-x: clip;
+}
+
+/* stands on the footer's top rule */
+.cameo {
+  bottom: 100%;
 }
 
 .inner {

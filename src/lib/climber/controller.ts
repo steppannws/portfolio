@@ -22,9 +22,10 @@ const SPRITE = 16;
 const FRAMES = 12;
 const SURFACE_REFRESH_MS = 500;
 // keep the climber inside this band of the viewport by scrolling the page
+const GREETING_MS = 6000;
 const FOLLOW_BAND = [0.3, 0.7];
 
-// 16×16 sprites: [0..1] mountaineer, [2..3] seal (Topi), [4] ice block, [5..6] bird, [7..8] summit pterodactyl, [9] hammer swing, [10..11] polar bear
+// 16×16 sprites: [0..1] mountaineer, [2..3] bug, [4] ice block, [5..6] moth, [7..8] summit wyrm, [9] hammer swing, [10..11] ice golem
 const SPRITE_FRAMES: string[][] = [
   // 0: mountaineer standing
   [
@@ -64,42 +65,42 @@ const SPRITE_FRAMES: string[][] = [
     '...KKK....KKK...',
     '..KKKK....KKKK..',
   ],
-  // 2: seal (Topi) waddle frame A
+  // 2: bug waddle frame A
   [
     '................',
     '................',
     '................',
-    '................',
-    '.....KKKKKK.....',
-    '...KKSSSSSSKK...',
-    '..KSSSSSSSKFSK..',
-    '.KSSSSSSSSKKKKH.',
-    '.KSSSSSSSSSSSSK.',
-    'KSSSSSSSSSSSSSK.',
-    'KSSPPPPPPPPSSSK.',
-    'KSPPPPPPPPPPPPK.',
-    '.KKKKKKKKKKKKKK.',
-    '..KKK......KKK..',
-    '.KKKK......KKKK.',
+    '..............K.',
+    '.............KK.',
+    '....KKKKKK..KK..',
+    '..KKHHHPPHKKKKK.',
+    '.KHHHPPHHHKFFKK.',
+    '.KHPPHHHHHKKKKK.',
+    'KHHHHHHPPHHHKK..',
+    'KHHPPHHHHHHHK...',
+    '.KHHHHHHHHHKK...',
+    '..KKKKKKKKKK....',
+    '.K.K..K..K..K...',
+    'K..K..K..K...K..',
     '................',
   ],
-  // 3: seal (Topi) waddle frame B
+  // 3: bug waddle frame B
   [
     '................',
     '................',
     '................',
-    '................',
-    '.....KKKKKK.....',
-    '...KKSSSSSSKK...',
-    '..KSSSSSSSKFSK..',
-    '.KSSSSSSSSKKKKH.',
-    '.KSSSSSSSSSSSSK.',
-    'KSSSSSSSSSSSSSK.',
-    'KSSPPPPPPPPSSSK.',
-    'KSPPPPPPPPPPPPK.',
-    '.KKKKKKKKKKKKKK.',
-    '....KKK..KKK....',
-    '...KKKK..KKKK...',
+    '..............K.',
+    '.............KK.',
+    '....KKKKKK..KK..',
+    '..KKHHHPPHKKKKK.',
+    '.KHHHPPHHHKFFKK.',
+    '.KHPPHHHHHKKKKK.',
+    'KHHHHHHPPHHHKK..',
+    'KHHPPHHHHHHHK...',
+    '.KHHHHHHHHHKK...',
+    '..KKKKKKKKKK....',
+    '..K.K.K..K.K....',
+    '..K.K.K..K.K....',
     '................',
   ],
   // 4: ice block
@@ -121,56 +122,56 @@ const SPRITE_FRAMES: string[][] = [
     '................',
     '................',
   ],
-  // 5: swooping bird (wings up)
+  // 5: moth (wings up)
   [
     '................',
-    '..KK........KK..',
-    '.KYYK......KYYK.',
-    '.KYYYK....KYYYK.',
-    '..KYYYK..KYYYK..',
+    '.KK..........KK.',
+    'KYYK........KYYK',
+    'KYYYK..KK.KKYYYK',
+    '.KYYYKKKKKKYYYK.',
+    '..KYYYKKKKYYYK..',
     '...KYYYKKYYYK...',
-    '....KYYYYYYK....',
-    '...KYYYYYKFKK...',
-    '...KYYYYYYYYHHH.',
-    '....KYYYYYYK....',
-    '.....KKKKKK.....',
-    '....K.K..K.K....',
+    '....KKKKKKKK.K..',
+    '.....KKKKKKKKH..',
+    '......KKKKKK.H..',
+    '.......KKKK.....',
+    '.......K..K.....',
     '................',
     '................',
     '................',
     '................',
   ],
-  // 6: swooping bird (wings down)
+  // 6: moth (wings down)
   [
     '................',
     '................',
     '................',
-    '................',
-    '....KKKKKKKK....',
-    '...KYYYYYKFKK...',
-    '..KYYYYYYYYYHHH.',
-    '.KYYYYYYYYYYK...',
-    '.KYYKYYYYYYKYYK.',
-    'KYYK..KKKK..KYYK',
-    'KK....K..K....KK',
+    '.....KKKK.K.....',
+    '..KKKKKKKKKK.K..',
+    '.KYYYYKKKKYYYK..',
+    'KYYYYYKKKKYYYYK.',
+    'KYYYYKKKKKKYYYYK',
+    '.KYYK.KKKKK.KYK.',
+    '..KK...KKKKKH.K.',
+    '........KKKK.H..',
     '................',
     '................',
     '................',
     '................',
     '................',
   ],
-  // 7: summit pterodactyl (wings high)
+  // 7: summit wyrm (wings high)
   [
     'KK............KK',
     'KHK..........KHK',
-    'KHHK...KK...KHHK',
-    '.KHHK.KHHK.KHHK.',
-    '..KHHKHHHHKHHK..',
+    'KHHK...K.K..KHHK',
+    '.KHHK.KHHHKKHHK.',
+    '..KHHKHHHHHKHK..',
     '...KHHHHHHHHK...',
-    '..KHHHHHHHHKFHHH',
-    '.KHHHHHHHHHHKKKK',
-    '....KHHHHHHK....',
-    '.....KKKKKK.....',
+    '..KHHHHHHHFFKK..',
+    '.KHHHHHHHHKKHHK.',
+    '....KHHHHHHKK...',
+    '.....KKKKKKK....',
     '.....K....K.....',
     '....KK....KK....',
     '................',
@@ -178,15 +179,15 @@ const SPRITE_FRAMES: string[][] = [
     '................',
     '................',
   ],
-  // 8: summit pterodactyl (wings swept)
+  // 8: summit wyrm (wings swept)
   [
     '................',
-    '.......KK.......',
-    '......KHHK......',
-    '....KKHHHHKK....',
+    '.......K.K......',
+    '......KHHHK.....',
+    '....KKHHHHHKK...',
     '..KKHHHHHHHHKK..',
-    '.KHHHHHHHHHHKFHH',
-    'KHHHHHHHHHHHHKKK',
+    '.KHHHHHHHHHFFKK.',
+    'KHHHHHHHHHHHKKHK',
     'KHHK.KHHHHK.KHHK',
     'KK....KKKK....KK',
     '.....K....K.....',
@@ -216,41 +217,41 @@ const SPRITE_FRAMES: string[][] = [
     '..KKK....KKK....',
     '.KKKK....KKKK...',
   ],
-  // 10: polar bear (Ice Climber glasses & shorts) walk frame A
+  // 10: ice golem walk frame A
   [
-    '...KKK....KKK...',
-    '..KPPPKKKKPPPK..',
-    '..KPPPPPPPPPPK..',
-    '.KPPKKKKKKKKPPK.',
-    '.KPPKHHHHHHKPPK.',
-    '.KPPPPPPPPPPPPK.',
-    '..KPPPPPPPKKPK..',
-    '..KPPPPPPPPPPK..',
-    '.KPPPPPPPPPPPPK.',
-    '.KPPPPPPPPPPPPK.',
-    '..KHHHHHHHHHHK..',
-    '..KHHHHHHHHHHK..',
-    '..KPPPK..KPPPK..',
-    '..KPPPK..KPPPK..',
-    '..KKKK....KKKK..',
+    '................',
+    '....KKKKKKKK....',
+    '...KIIIIIIIIK...',
+    '..KIIPPIIIIIIK..',
+    '..KIKKKKKKKKIK..',
+    '..KIKHHKKHHKIK..',
+    '..KIKKKKKKKKIK..',
+    '.KIIIIIIIIIIIIK.',
+    'KIISSSSSSSSSSIIK',
+    'KISSSSSSSSSSSSIK',
+    'KISSIISSSSIISSIK',
+    '.KSSSSSSSSSSSSK.',
+    '..KKSSSKKSSSKK..',
+    '..KSSSK..KSSSK..',
+    '..KKKKK..KKKKK..',
     '................',
   ],
-  // 11: polar bear walk frame B
+  // 11: ice golem walk frame B
   [
-    '...KKK....KKK...',
-    '..KPPPKKKKPPPK..',
-    '..KPPPPPPPPPPK..',
-    '.KPPKKKKKKKKPPK.',
-    '.KPPKHHHHHHKPPK.',
-    '.KPPPPPPPPPPPPK.',
-    '..KPPPPPPPKKPK..',
-    '..KPPPPPPPPPPK..',
-    '.KPPPPPPPPPPPPK.',
-    '.KPPPPPPPPPPPPK.',
-    '..KHHHHHHHHHHK..',
-    '..KHHHHHHHHHHK..',
-    '...KPPPKKPPPK...',
-    '...KPPPKKPPPK...',
+    '................',
+    '....KKKKKKKK....',
+    '...KIIIIIIIIK...',
+    '..KIIPPIIIIIIK..',
+    '..KIKKKKKKKKIK..',
+    '..KIKHHKKHHKIK..',
+    '..KIKKKKKKKKIK..',
+    '.KIIIIIIIIIIIIK.',
+    'KIISSSSSSSSSSIIK',
+    'KISSSSSSSSSSSSIK',
+    'KISSIISSSSIISSIK',
+    '.KSSSSSSSSSSSSK.',
+    '...KSSSKKSSSK...',
+    '...KSSSKKSSSK...',
     '...KKKK..KKKK...',
     '................',
   ],
@@ -357,7 +358,7 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
   const spawnX = clamp(pageX - size / 2, 24, window.innerWidth - size - 24);
   const spawnY = Math.max(24, pageY - size / 2);
 
-  // Ice Climber intro: pop out of the portrait face and plummet all the way to the bottom platform
+  // Intro: pop out of the portrait face and plummet all the way to the bottom platform
   let intro = true;
   let npcWorld: NpcWorld | null = null;
   let state: State = {
@@ -384,6 +385,12 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
   renderer.burst(spawnX + size / 2, spawnY + size / 2, 'pop');
   const ui = buildUi(input, triggerJump, triggerAttack, () => toggle({ anchor, pageX, pageY }));
 
+  // dark bubble over his head: the page is light down here, so a light one would vanish
+  const greeting = document.createElement('div');
+  greeting.className = styles.speech;
+  greeting.textContent = 'Climb to the top and see what we can build together.';
+  let greetingHide = 0;
+
   // the page follows the climber frame by frame, so smooth scrolling would lag behind
   const html = document.documentElement;
   const prevScrollBehavior = html.style.scrollBehavior;
@@ -391,22 +398,33 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
 
   const onKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Escape') return toggle({ anchor, pageX, pageY });
-    if (e.key === 'ArrowLeft') input.left = true;
-    else if (e.key === 'ArrowRight') input.right = true;
-    else if (e.key === 'ArrowUp') {
+    const key = e.key.toLowerCase();
+    if (e.key === 'ArrowLeft' || key === 'a') input.left = true;
+    else if (e.key === 'ArrowRight' || key === 'd') input.right = true;
+    else if (e.key === 'ArrowUp' || key === 'w') {
       input.jumpHeld = true;
       if (!e.repeat) triggerJump();
-    } else if (e.key === 'ArrowDown') {
+    } else if (e.key === 'ArrowDown' || key === 's') {
       if (!intro) input.drop = !e.repeat;
-    } else if (e.key === ' ' || e.key === 'x' || e.key === 'X' || e.key === 'z' || e.key === 'Z' || e.key === 'f' || e.key === 'F' || e.key === 'Enter') {
+    } else if (
+      e.key === ' ' ||
+      e.key === 'x' ||
+      e.key === 'X' ||
+      e.key === 'z' ||
+      e.key === 'Z' ||
+      e.key === 'f' ||
+      e.key === 'F' ||
+      e.key === 'Enter'
+    ) {
       if (!e.repeat) triggerAttack();
     } else return;
     e.preventDefault();
   };
   const onKeyUp = (e: KeyboardEvent) => {
-    if (e.key === 'ArrowLeft') input.left = false;
-    if (e.key === 'ArrowRight') input.right = false;
-    if (e.key === 'ArrowUp') input.jumpHeld = false;
+    const key = e.key.toLowerCase();
+    if (e.key === 'ArrowLeft' || key === 'a') input.left = false;
+    if (e.key === 'ArrowRight' || key === 'd') input.right = false;
+    if (e.key === 'ArrowUp' || key === 'w') input.jumpHeld = false;
   };
   const onBlur = () => {
     input.left = input.right = false;
@@ -458,6 +476,11 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
         state.jumpsLeft = 1;
         state.dropping = null;
         intro = false;
+        // greet only after the first landing, not during the fall or on respawns
+        if (!greetingHide) {
+          ui.append(greeting);
+          greetingHide = window.setTimeout(() => greeting.remove(), GREETING_MS);
+        }
         measure();
         npcWorld = createNpcWorld(staticFloors, size, window.innerWidth, baseTop);
         renderer.burst(state.x + size / 2, baseTop, 'land');
@@ -553,6 +576,11 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
           ? 1
           : 0;
     renderer.draw(state, window.scrollX, window.scrollY, pose, dt, intro, npcWorld?.npcs);
+    if (greeting.isConnected) {
+      // keep the bubble on screen when he is near an edge
+      greeting.style.left = `${clamp(state.x - window.scrollX + size / 2, 130, window.innerWidth - 130)}px`;
+      greeting.style.top = `${state.y - window.scrollY}px`;
+    }
     // page-space position and NPC count, readable by tests and tooling
     renderer.canvas.dataset.x = String(Math.round(state.x));
     renderer.canvas.dataset.feet = String(Math.round(state.y + size));
@@ -564,6 +592,7 @@ function start({ anchor, pageX, pageY }: ClimberOptions): () => void {
 
   return () => {
     cancelAnimationFrame(raf);
+    window.clearTimeout(greetingHide);
     window.clearInterval(refresh);
     window.removeEventListener('keydown', onKeyDown);
     window.removeEventListener('keyup', onKeyUp);
@@ -645,7 +674,8 @@ function buildUi(
   } else {
     const hint = document.createElement('div');
     hint.className = styles.hint;
-    hint.textContent = '← → walk · ↑↑ double jump · space hammer · ↓ drop · esc exit';
+    hint.textContent =
+      '← → / A D walk · ↑↑ / W W double jump · space hammer · ↓ / S drop · esc exit';
     root.append(hint);
   }
 
