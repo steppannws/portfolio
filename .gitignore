@@ -31,3 +31,5 @@ docs/superpowers/
 # TypeScript build info
 *.tsbuildinfo
 .superpowers/
+
+.playwright-mcp/
