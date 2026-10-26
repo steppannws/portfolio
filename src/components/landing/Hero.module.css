@@ -110,6 +110,9 @@
  * plate or edge fade behind it.
  */
 .portrait {
+  position: relative;
+  /* clips the cameo while he is still off-screen */
+  overflow: hidden;
   /* starts under the name's right end so the two overlap */
   grid-column: 5 / -1;
   grid-row: 1;
@@ -126,6 +129,54 @@
   object-fit: cover;
   object-position: 0% 100%;
   filter: grayscale(1) contrast(1.08);
+}
+
+/* easter-egg cameo: the climber walks in along the rule the portrait stands on; a tap starts the game */
+.cameo {
+  position: absolute;
+  right: 4%;
+  bottom: 0;
+  /* same size as the playable climber (controller.ts: 16px sprite × 4, × 3 under 700px) */
+  width: 48px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  animation: cameo-walk 3.6s linear both;
+}
+
+.cameo svg {
+  display: block;
+  width: 100%;
+}
+
+/* two frames stacked; the stride frame shows on alternate steps, then he stands still */
+.cameo svg + svg {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  animation: cameo-stride 0.6s steps(1) 6;
+}
+
+@media (min-width: 701px) {
+  .cameo {
+    width: 64px;
+  }
+}
+
+@keyframes cameo-walk {
+  from {
+    transform: translateX(160%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes cameo-stride {
+  50% {
+    opacity: 1;
+  }
 }
 
 /* four-cell data strip on a rule, the only mono block above the fold */

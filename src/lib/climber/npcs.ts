@@ -1,6 +1,6 @@
 import { JUMP, type State, type Surface } from './engine';
 
-export type NpcKind = 'seal' | 'ice' | 'bird' | 'bear' | 'pterodactyl';
+export type NpcKind = 'bug' | 'ice' | 'moth' | 'golem' | 'wyrm';
 
 export interface Npc {
   id: number;
@@ -27,13 +27,13 @@ export interface Npc {
   stunned: number;
   /** true while flying off-screen after being killed */
   dying?: boolean;
-  /** id of the ice block currently being pushed by this seal */
+  /** id of the ice block currently being pushed by this bug */
   carryingId?: number;
 }
 
 export interface NpcWorld {
   npcs: Npc[];
-  /** true once the climber has latched onto the summit pterodactyl */
+  /** true once the climber has latched onto the summit wyrm */
   summitCleared: boolean;
   clearTimer: number;
   hurtCooldown: number;
@@ -55,12 +55,12 @@ let nextNpcId = 1;
 const randRange = (rng: () => number, min: number, max: number) => min + rng() * (max - min);
 
 /**
- * Spawns Ice Climber NPCs across the measured page platforms with randomized positions,
+ * Spawns enemy NPCs across the measured page platforms with randomized positions,
  * speeds, directions, and action timers:
- * - Seals (Topi) on platforms that patrol, scurry, hop, and push/kick ice blocks
- * - Polar Bears on wide section ledges that hop-stomp, charge, and toss ice
- * - Swooping mountain birds (Nitpicker) that patrol and dive toward the climber
- * - The summit Pterodactyl circling above the highest hero platform
+ * - Bugs on platforms that patrol, scurry, hop, and push/kick ice blocks
+ * - Ice Golems on wide section ledges that hop-stomp, charge, and toss ice
+ * - Swooping mountain moths that patrol and dive toward the climber
+ * - The summit Wyrm circling above the highest hero platform
  */
 export function createNpcWorld(
   floors: Surface[],
@@ -77,28 +77,28 @@ export function createNpcWorld(
   );
   const highestTop = validFloors.reduce((min, f) => Math.min(min, f.top), 240);
 
-  // 1. Summit Pterodactyl circling above the hero heading
-  const pteroY = Math.max(56, highestTop - size * 2.1);
-  const pteroDir: 1 | -1 = rng() < 0.5 ? 1 : -1;
+  // 1. Summit Wyrm circling above the hero heading
+  const wyrmY = Math.max(56, highestTop - size * 2.1);
+  const wyrmDir: 1 | -1 = rng() < 0.5 ? 1 : -1;
   npcs.push({
     id: nextNpcId++,
-    kind: 'pterodactyl',
+    kind: 'wyrm',
     x: randRange(rng, viewportWidth * 0.2, viewportWidth * 0.7),
-    y: pteroY,
-    vx: pteroDir * randRange(rng, 2.0, 2.6),
+    y: wyrmY,
+    vx: wyrmDir * randRange(rng, 2.0, 2.6),
     vy: 0,
-    facing: pteroDir,
+    facing: wyrmDir,
     frame: 7,
     scale: 1.5,
     minX: Math.max(24, viewportWidth * 0.08),
     maxX: Math.max(160, viewportWidth * 0.92 - size * 1.5),
-    baseY: pteroY,
+    baseY: wyrmY,
     phase: randRange(rng, 0, Math.PI * 2),
     timer: 0,
     stunned: 0,
   });
 
-  // 2. Seals (Topi) & Polar Bears on platforms spaced vertically down the mountain
+  // 2. Bugs & Ice Golems on platforms spaced vertically down the mountain
   const candidatePlatforms = validFloors
     .filter((f) => f.right - f.left >= size * 2.4 && f.top > highestTop + size * 1.2)
     .sort((a, b) => a.top - b.top);
@@ -115,8 +115,8 @@ export function createNpcWorld(
     }
   }
 
-  let hasSeal = false;
-  let hasBear = false;
+  let hasBug = false;
+  let hasGolem = false;
   chosenPlatforms.forEach((p, idx) => {
     const minX = Math.max(0, p.left);
     const maxX = Math.min(viewportWidth - size, p.right - size);
@@ -127,29 +127,29 @@ export function createNpcWorld(
       minX + Math.min(size * 0.65, (maxX - minX) * 0.25),
       Math.max(minX + 8, maxX - Math.min(size * 0.65, (maxX - minX) * 0.25))
     );
-    const wideEnoughForBear = maxX - minX >= size * 2.5;
-    let isBear = wideEnoughForBear && rng() < 0.38;
-    if (idx === 0 && hasSeal) isBear = wideEnoughForBear;
-    if (!hasBear && idx === chosenPlatforms.length - 1 && wideEnoughForBear) isBear = true;
-    if (!hasSeal && idx === chosenPlatforms.length - 1 && isBear && chosenPlatforms.length > 1) {
-      // keep at least one seal and one bear when multiple platforms exist
-    } else if (!hasSeal && idx === 0) {
-      isBear = false;
+    const wideEnoughForGolem = maxX - minX >= size * 2.5;
+    let isGolem = wideEnoughForGolem && rng() < 0.38;
+    if (idx === 0 && hasBug) isGolem = wideEnoughForGolem;
+    if (!hasGolem && idx === chosenPlatforms.length - 1 && wideEnoughForGolem) isGolem = true;
+    if (!hasBug && idx === chosenPlatforms.length - 1 && isGolem && chosenPlatforms.length > 1) {
+      // keep at least one bug and one golem when multiple platforms exist
+    } else if (!hasBug && idx === 0) {
+      isGolem = false;
     }
-    if (isBear) hasBear = true;
-    else hasSeal = true;
+    if (isGolem) hasGolem = true;
+    else hasBug = true;
 
-    const speed = isBear ? randRange(rng, 0.9, 1.45) : randRange(rng, 1.2, 1.95);
+    const speed = isGolem ? randRange(rng, 0.9, 1.45) : randRange(rng, 1.2, 1.95);
     npcs.push({
       id: nextNpcId++,
-      kind: isBear ? 'bear' : 'seal',
+      kind: isGolem ? 'golem' : 'bug',
       x: startX,
       y: p.top - size,
       vx: dir * speed,
       vy: 0,
       facing: dir,
-      frame: isBear ? 10 : 2,
-      scale: isBear ? 1.12 : 1,
+      frame: isGolem ? 10 : 2,
+      scale: isGolem ? 1.12 : 1,
       minX,
       maxX,
       baseY: p.top,
@@ -160,7 +160,7 @@ export function createNpcWorld(
     });
   });
 
-  // 3. Swooping birds (Nitpicker) patrolling across randomized altitude bands
+  // 3. Swooping moths patrolling across randomized altitude bands
   const span = Math.max(600, baseTop - highestTop);
   const baseRatios = [0.12, 0.24, 0.36, 0.48, 0.6, 0.72, 0.85];
   baseRatios.forEach((ratio) => {
@@ -171,7 +171,7 @@ export function createNpcWorld(
     const maxX = Math.max(120, viewportWidth - size - 16);
     npcs.push({
       id: nextNpcId++,
-      kind: 'bird',
+      kind: 'moth',
       x: randRange(rng, minX, maxX),
       y: alt,
       vx: dir * randRange(rng, 2.0, 3.4),
@@ -232,7 +232,7 @@ function killNpc(n: Npc, pushDir: 1 | -1, world: NpcWorld, toRemove: Set<number>
 }
 
 /**
- * Advances all NPCs (seals, bears, ice blocks, birds, summit pterodactyl) and resolves
+ * Advances all NPCs (bugs, golems, ice blocks, moths, summit wyrm) and resolves
  * combat and hazard collisions with the climber.
  */
 export function stepNpcs(
@@ -258,14 +258,14 @@ export function stepNpcs(
   // Dynamic reinforcement spawns near the climber's current altitude
   if (!world.summitCleared) {
     world.spawnCooldown = (world.spawnCooldown ?? 180) - dt;
-    const activeEnemies = world.npcs.filter((n) => !n.dying && n.kind !== 'pterodactyl').length;
+    const activeEnemies = world.npcs.filter((n) => !n.dying && n.kind !== 'wyrm').length;
     if (world.spawnCooldown <= 0 && activeEnemies < 26) {
       world.spawnCooldown = Math.round(randRange(rng, 140, 260));
       const fromLeft = rng() < 0.5;
       const dir: 1 | -1 = fromLeft ? 1 : -1;
 
       if (rng() < 0.45) {
-        // Spawn a surprise swooping bird entering near the player's height
+        // Spawn a surprise swooping moth entering near the player's height
         const alt = Math.max(
           90,
           Math.min(baseTop - size * 2, state.y + randRange(rng, -size * 3.5, size * 2))
@@ -274,7 +274,7 @@ export function stepNpcs(
         const maxX = Math.max(120, viewportWidth - size - 16);
         toAdd.push({
           id: nextNpcId++,
-          kind: 'bird',
+          kind: 'moth',
           x: fromLeft ? minX : maxX,
           y: alt,
           vx: dir * randRange(rng, 2.2, 3.6),
@@ -291,7 +291,7 @@ export function stepNpcs(
           stunned: 0,
         });
       } else {
-        // Spawn a seal or polar bear on a nearby platform that isn't overcrowded
+        // Spawn a bug or ice golem on a nearby platform that isn't overcrowded
         const nearbyPlatforms = floors.filter(
           (f) =>
             Number.isFinite(f.left) &&
@@ -306,21 +306,22 @@ export function stepNpcs(
           const minX = Math.max(0, p.left);
           const maxX = Math.min(viewportWidth - size, p.right - size);
           const crowded = world.npcs.some(
-            (n) => (n.kind === 'seal' || n.kind === 'bear') && !n.dying && Math.abs(n.baseY - p.top) < 16
+            (n) =>
+              (n.kind === 'bug' || n.kind === 'golem') && !n.dying && Math.abs(n.baseY - p.top) < 16
           );
           if (!crowded && maxX - minX >= size * 1.4) {
-            const isBear = maxX - minX >= size * 2.5 && rng() < 0.42;
-            const speed = isBear ? randRange(rng, 0.95, 1.55) : randRange(rng, 1.3, 2.1);
+            const isGolem = maxX - minX >= size * 2.5 && rng() < 0.42;
+            const speed = isGolem ? randRange(rng, 0.95, 1.55) : randRange(rng, 1.3, 2.1);
             toAdd.push({
               id: nextNpcId++,
-              kind: isBear ? 'bear' : 'seal',
+              kind: isGolem ? 'golem' : 'bug',
               x: fromLeft ? minX + 6 : maxX - 6,
               y: p.top - size,
               vx: dir * speed,
               vy: 0,
               facing: dir,
-              frame: isBear ? 10 : 2,
-              scale: isBear ? 1.12 : 1,
+              frame: isGolem ? 10 : 2,
+              scale: isGolem ? 1.12 : 1,
               minX,
               maxX,
               baseY: p.top,
@@ -349,18 +350,18 @@ export function stepNpcs(
         n.stunned = 0;
         const dir: 1 | -1 = rng() < 0.5 ? 1 : -1;
         n.facing = dir;
-        if (n.kind === 'seal' || n.kind === 'bear') {
+        if (n.kind === 'bug' || n.kind === 'golem') {
           if (n.maxX - n.minX >= size * 2.5 && rng() < 0.35) {
-            n.kind = n.kind === 'seal' ? 'bear' : 'seal';
-            n.scale = n.kind === 'bear' ? 1.12 : 1;
+            n.kind = n.kind === 'bug' ? 'golem' : 'bug';
+            n.scale = n.kind === 'golem' ? 1.12 : 1;
           }
         }
         n.x = dir > 0 ? n.minX + 8 : n.maxX - 8;
-        n.y = n.kind === 'bird' ? n.baseY : n.baseY - size;
+        n.y = n.kind === 'moth' ? n.baseY : n.baseY - size;
         const speed =
-          n.kind === 'bird'
+          n.kind === 'moth'
             ? randRange(rng, 2.0, 3.4)
-            : n.kind === 'bear'
+            : n.kind === 'golem'
               ? randRange(rng, 0.95, 1.5)
               : randRange(rng, 1.25, 2.0);
         n.vx = dir * speed;
@@ -376,7 +377,7 @@ export function stepNpcs(
       continue;
     }
 
-    if (n.kind === 'pterodactyl') {
+    if (n.kind === 'wyrm') {
       if (world.summitCleared) {
         world.clearTimer += dt;
         n.x += n.facing * 2.8 * dt;
@@ -413,9 +414,9 @@ export function stepNpcs(
       continue;
     }
 
-    if (n.kind === 'seal' || n.kind === 'bear') {
+    if (n.kind === 'bug' || n.kind === 'golem') {
       n.x += n.vx * dt;
-      // Vertical hop physics on the platform (for bear ground-pound leaps or seal hops)
+      // Vertical hop physics on the platform (for golem ground-pound leaps or bug hops)
       const groundY = n.baseY - size;
       if (n.y < groundY || n.vy !== 0) {
         n.vy = Math.min(n.vy + 0.45 * dt, 10);
@@ -426,7 +427,7 @@ export function stepNpcs(
         }
       }
 
-      const baseFrame = n.kind === 'bear' ? 10 : 2;
+      const baseFrame = n.kind === 'golem' ? 10 : 2;
       n.frame = Math.floor(n.phase * 2) % 2 === 0 ? baseFrame : baseFrame + 1;
 
       // Spontaneous randomized actions: hop, dash, or turn toward the climber
@@ -434,32 +435,30 @@ export function stepNpcs(
       if (n.actionTimer <= 0 && n.carryingId === undefined) {
         n.actionTimer = Math.round(randRange(rng, 55, 145));
         const roll = rng();
-        if (n.kind === 'bear' && roll < 0.42 && n.y >= groundY) {
-          // Polar bear jump-stomp + speed surge
+        if (n.kind === 'golem' && roll < 0.42 && n.y >= groundY) {
+          // Ice golem jump-stomp + speed surge
           n.vy = -randRange(rng, 5.4, 7.0);
           n.vx = n.facing * randRange(rng, 1.35, 2.05);
-        } else if (n.kind === 'seal' && roll < 0.3 && n.y >= groundY) {
-          // Little seal hop
+        } else if (n.kind === 'bug' && roll < 0.3 && n.y >= groundY) {
+          // Little bug hop
           n.vy = -randRange(rng, 4.0, 5.2);
         } else if (roll < 0.65) {
           // Sudden direction reversal or turn toward the player if nearby
           const nearPlayerY = Math.abs(state.y - n.y) < size * 2.5;
-          const dir: 1 | -1 = nearPlayerY
-            ? state.x >= n.x
-              ? 1
-              : -1
-            : (-n.facing as 1 | -1);
+          const dir: 1 | -1 = nearPlayerY ? (state.x >= n.x ? 1 : -1) : (-n.facing as 1 | -1);
           n.facing = dir;
-          const baseSpeed = n.kind === 'bear' ? randRange(rng, 0.95, 1.6) : randRange(rng, 1.25, 2.2);
+          const baseSpeed =
+            n.kind === 'golem' ? randRange(rng, 0.95, 1.6) : randRange(rng, 1.25, 2.2);
           n.vx = dir * baseSpeed;
         } else {
           // Speed dash along current direction
-          const dashSpeed = n.kind === 'bear' ? randRange(rng, 1.5, 2.2) : randRange(rng, 1.9, 2.75);
+          const dashSpeed =
+            n.kind === 'golem' ? randRange(rng, 1.5, 2.2) : randRange(rng, 1.9, 2.75);
           n.vx = n.facing * dashSpeed;
         }
       }
 
-      // Spawn an ice block in front of the seal/bear at randomized intervals
+      // Spawn an ice block in front of the bug/golem at randomized intervals
       if (n.carryingId === undefined) {
         n.timer -= dt;
         if (n.timer <= 0 && n.x > n.minX + size * 0.6 && n.x < n.maxX - size * 0.6) {
@@ -516,7 +515,7 @@ export function stepNpcs(
 
     if (n.kind === 'ice') {
       const isHeld = world.npcs.some(
-        (s) => (s.kind === 'seal' || s.kind === 'bear') && !s.dying && s.carryingId === n.id
+        (s) => (s.kind === 'bug' || s.kind === 'golem') && !s.dying && s.carryingId === n.id
       );
       if (!isHeld) {
         const feetBefore = n.y + size;
@@ -548,8 +547,8 @@ export function stepNpcs(
       continue;
     }
 
-    if (n.kind === 'bird') {
-      // Spontaneous bird behaviors: dive toward player altitude, reverse, or speed up
+    if (n.kind === 'moth') {
+      // Spontaneous moth behaviors: dive toward player altitude, reverse, or speed up
       n.actionTimer = (n.actionTimer ?? 70) - dt;
       if (n.actionTimer <= 0) {
         n.actionTimer = Math.round(randRange(rng, 45, 115));
@@ -565,11 +564,8 @@ export function stepNpcs(
           n.vx = dir * randRange(rng, 2.5, 3.8);
         } else {
           // Random altitude drift and speed change
-          n.baseY = Math.max(
-            90,
-            Math.min(baseTop - size * 2, n.baseY + randRange(rng, -55, 55))
-          );
-          if (rng() < 0.35) n.facing = (-n.facing) as 1 | -1;
+          n.baseY = Math.max(90, Math.min(baseTop - size * 2, n.baseY + randRange(rng, -55, 55)));
+          if (rng() < 0.35) n.facing = -n.facing as 1 | -1;
           n.vx = n.facing * randRange(rng, 2.0, 3.4);
         }
       }
@@ -606,7 +602,7 @@ export function stepNpcs(
   for (const n of world.npcs) {
     if (n.dying || n.stunned > 0 || toRemove.has(n.id)) continue;
 
-    if (n.kind === 'pterodactyl') {
+    if (n.kind === 'wyrm') {
       const w = size * n.scale;
       const nLeft = n.x - (w - size) / 2;
       const nRight = nLeft + w;
@@ -636,12 +632,8 @@ export function stepNpcs(
     }
 
     if (pRight > nLeft && pLeft < nRight && pBottom > nTop && pTop < nBottom) {
-      // 2. Stomp kill from above (jumping onto the head of a seal, bear, or bird)
-      if (
-        n.kind !== 'ice' &&
-        state.vy > 0 &&
-        pBottom - state.vy * dt <= nTop + size * 0.48
-      ) {
+      // 2. Stomp kill from above (jumping onto the head of a bug, golem, or moth)
+      if (n.kind !== 'ice' && state.vy > 0 && pBottom - state.vy * dt <= nTop + size * 0.48) {
         killNpc(n, state.facing, world, toRemove);
         state.vy = JUMP * 0.88;
         state.onGround = false;

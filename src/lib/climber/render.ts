@@ -77,7 +77,12 @@ export function createRenderer(sheet: HTMLCanvasElement, frames: number, size: n
 
   // two motion-trail ghost sprites visible during the high-speed intro descent
   const trailMaterials = [0.34, 0.16].map(
-    (opacity) => new MeshBasicMaterial({ map: frameTextures[1] ?? frameTextures[0], transparent: true, opacity })
+    (opacity) =>
+      new MeshBasicMaterial({
+        map: frameTextures[1] ?? frameTextures[0],
+        transparent: true,
+        opacity,
+      })
   );
   const trails = trailMaterials.map((mat) => {
     const m = new Mesh(geometry, mat);
@@ -149,14 +154,34 @@ export function createRenderer(sheet: HTMLCanvasElement, frames: number, size: n
         const angle = (i / 8) * Math.PI * 2;
         const speed = 2 + (i % 2) * 1.3;
         const color = i % 2 === 0 ? 0x62b6ff : 0xe9e5db;
-        spawnParticle(x, y, Math.cos(angle) * speed, Math.sin(angle) * speed - 1.2, 0.25, 18, px, px, color);
+        spawnParticle(
+          x,
+          y,
+          Math.cos(angle) * speed,
+          Math.sin(angle) * speed - 1.2,
+          0.25,
+          18,
+          px,
+          px,
+          color
+        );
       }
     } else if (kind === 'summit') {
       for (let i = 0; i < 20; i++) {
         const angle = (i / 20) * Math.PI * 2;
         const speed = 3 + (i % 4) * 1.4;
         const color = i % 3 === 0 ? 0xdd4318 : i % 3 === 1 ? 0x62b6ff : 0xe9e5db;
-        spawnParticle(x, y, Math.cos(angle) * speed, Math.sin(angle) * speed - 2, 0.15, 34, px, px, color);
+        spawnParticle(
+          x,
+          y,
+          Math.cos(angle) * speed,
+          Math.sin(angle) * speed - 2,
+          0.15,
+          34,
+          px,
+          px,
+          color
+        );
       }
     }
   };
@@ -206,7 +231,7 @@ export function createRenderer(sheet: HTMLCanvasElement, frames: number, size: n
         const nx = Math.round(n.x - scrollX) + size / 2;
         const ny = Math.round(n.y - scrollY) + size / 2;
         const flipY = n.stunned > 0 ? -1 : 1;
-        nm.position.set(nx, -(ny + (1 - n.scale) * (size / 2)), n.kind === 'pterodactyl' ? 1.2 : 0.8);
+        nm.position.set(nx, -(ny + (1 - n.scale) * (size / 2)), n.kind === 'wyrm' ? 1.2 : 0.8);
         nm.scale.set(n.facing * n.scale, flipY * n.scale, 1);
       }
 

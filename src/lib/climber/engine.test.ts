@@ -76,7 +76,7 @@ describe('step', () => {
     expect(s.y).toBe(100 - SIZE);
   });
 
-  it('adds Mario-style horizontal and vertical velocity boost when jumping at speed', () => {
+  it('adds arcade-style horizontal and vertical velocity boost when jumping at speed', () => {
     const wide: Surface = { left: 0, right: 1000, top: 500 };
     // build up running speed on the ground
     const running = run({ ...spawn(100, 500 - SIZE), onGround: true }, [wide], 25, {
@@ -129,7 +129,11 @@ describe('step', () => {
     // player standing on the band floor while a word sweeps through their body
     const bandFloor: Surface = { left: 0, right: 1000, top: 450 };
     const sweepingWord: Surface = { left: 90, right: 300, top: 400, bottom: 450, vx: -2.5 };
-    const sSwept = run({ ...spawn(100, 450 - SIZE), onGround: true }, [bandFloor, sweepingWord], 10);
+    const sSwept = run(
+      { ...spawn(100, 450 - SIZE), onGround: true },
+      [bandFloor, sweepingWord],
+      10
+    );
     expect(sSwept.x).toBe(75);
   });
 
@@ -216,7 +220,7 @@ describe('collectSurfaces', () => {
 });
 
 describe('npcs', () => {
-  it('spawns seals, polar bears, birds and the summit pterodactyl, allows killing NPCs, and clears the summit on grab', () => {
+  it('spawns bugs, ice golems, moths and the summit wyrm, allows killing NPCs, and clears the summit on grab', () => {
     const floors: Surface[] = [
       { left: 50, right: 550, top: 220 },
       { left: 40, right: 860, top: 650 },
@@ -224,12 +228,12 @@ describe('npcs', () => {
       { left: -Infinity, right: Infinity, top: 1800 },
     ];
     const world = createNpcWorld(floors, SIZE, VIEW, 1800);
-    expect(world.npcs.some((n) => n.kind === 'pterodactyl')).toBe(true);
-    expect(world.npcs.some((n) => n.kind === 'seal')).toBe(true);
-    expect(world.npcs.some((n) => n.kind === 'bear')).toBe(true);
-    expect(world.npcs.some((n) => n.kind === 'bird')).toBe(true);
+    expect(world.npcs.some((n) => n.kind === 'wyrm')).toBe(true);
+    expect(world.npcs.some((n) => n.kind === 'bug')).toBe(true);
+    expect(world.npcs.some((n) => n.kind === 'golem')).toBe(true);
+    expect(world.npcs.some((n) => n.kind === 'moth')).toBe(true);
 
-    // advance until the first seal spawns an ice block
+    // advance until the first bug spawns an ice block
     const player = spawn(100, 1800 - SIZE);
     for (let i = 0; i < 70; i++) {
       stepNpcs(world, player, floors, SIZE, VIEW, 1800, 1);
@@ -243,35 +247,35 @@ describe('npcs', () => {
     expect(hitEvents.playerDied).toBeDefined();
 
     // swinging the hammer kills a platform enemy in front of the climber
-    const bear = world.npcs.find((n) => n.kind === 'bear')!;
+    const golem = world.npcs.find((n) => n.kind === 'golem')!;
     const attacker: State = {
-      ...spawn(bear.x - SIZE * 0.4, bear.y),
+      ...spawn(golem.x - SIZE * 0.4, golem.y),
       facing: 1,
       onGround: true,
     };
     const killEvents = stepNpcs(world, attacker, floors, SIZE, VIEW, 1800, 1, true);
     expect(killEvents.npcKilled).toBeDefined();
-    expect(bear.dying).toBe(true);
+    expect(golem.dying).toBe(true);
     expect(world.kills).toBeGreaterThanOrEqual(1);
 
-    // stomping an active seal from above also kills it and bounces the player upward
+    // stomping an active bug from above also kills it and bounces the player upward
     const killsBeforeStomp = world.kills;
-    const seal = world.npcs.find((n) => n.kind === 'seal' && !n.dying)!;
+    const bug = world.npcs.find((n) => n.kind === 'bug' && !n.dying)!;
     const stomper: State = {
-      ...spawn(seal.x, seal.y - SIZE * 0.5),
+      ...spawn(bug.x, bug.y - SIZE * 0.5),
       vy: 6,
       onGround: false,
     };
     const stompEvents = stepNpcs(world, stomper, floors, SIZE, VIEW, 1800, 1, false);
     expect(stompEvents.npcKilled).toBeDefined();
-    expect(seal.dying).toBe(true);
+    expect(bug.dying).toBe(true);
     expect(stomper.vy).toBeLessThan(0);
     expect(world.kills).toBeGreaterThan(killsBeforeStomp);
 
-    // jump onto the summit pterodactyl and verify the climber latches on
-    const ptero = world.npcs.find((n) => n.kind === 'pterodactyl')!;
+    // jump onto the summit wyrm and verify the climber latches on
+    const wyrm = world.npcs.find((n) => n.kind === 'wyrm')!;
     const climberAtSummit: State = {
-      ...spawn(ptero.x, ptero.y + 8),
+      ...spawn(wyrm.x, wyrm.y + 8),
       vy: -4,
       onGround: false,
     };
@@ -279,7 +283,7 @@ describe('npcs', () => {
     expect(world.summitCleared).toBe(true);
     expect(events.summitGrabbed).toBeDefined();
 
-    // subsequent frames carry the climber along with the pterodactyl
+    // subsequent frames carry the climber along with the wyrm
     const beforeX = climberAtSummit.x;
     stepNpcs(world, climberAtSummit, floors, SIZE, VIEW, 1800, 1);
     expect(climberAtSummit.x).not.toBe(beforeX);

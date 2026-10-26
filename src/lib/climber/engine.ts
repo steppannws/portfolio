@@ -21,7 +21,7 @@ export interface Input {
   right: boolean;
   /** one-shot: consumed by the step that sees it */
   jump: boolean;
-  /** whether the jump button is currently held down (for variable-height Mario hops) */
+  /** whether the jump button is currently held down (for variable-height arcade hops) */
   jumpHeld?: boolean;
   /** one-shot: fall through the current floor */
   drop: boolean;
@@ -193,7 +193,7 @@ export function step(
       s.vy = s.vy < 0 ? -Math.hypot(s.vy, jumpImpulse) : jumpImpulse;
     }
 
-    // releasing jump early cuts upward velocity for Mario-style short hops
+    // releasing jump early cuts upward velocity for arcade-style short hops
     if (input.jumpHeld === false && s.vy < -4) {
       s.vy *= Math.pow(0.82, dt);
     }
